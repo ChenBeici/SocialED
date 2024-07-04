@@ -1,8 +1,8 @@
 
-Bert Module
+KPGNN Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.KPGNN
     :members:
     :undoc-members:
     :show-inheritance:

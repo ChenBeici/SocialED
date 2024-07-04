@@ -1,8 +1,8 @@
 
-Bert Module
+Event2012 Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.Event2012
     :members:
     :undoc-members:
     :show-inheritance:
