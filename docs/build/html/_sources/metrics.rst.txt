@@ -1,8 +1,8 @@
 
-Bert Module
+metrics Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.metrics
     :members:
     :undoc-members:
     :show-inheritance:
