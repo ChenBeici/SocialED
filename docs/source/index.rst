@@ -11,6 +11,16 @@ Welcome to SocialED's documentation!
    :caption: Contents:
 
    api
+   Bert
+   Event2012
+   KPGNN
+   LDA
+   SBERT
+   WMD
+   clkd
+   glove
+   metrics
+   word2vec
 
 Indices and tables
 ==================
