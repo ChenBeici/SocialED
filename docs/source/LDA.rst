@@ -1,8 +1,8 @@
 
-Bert Module
+LDA Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.LDA
     :members:
     :undoc-members:
     :show-inheritance:

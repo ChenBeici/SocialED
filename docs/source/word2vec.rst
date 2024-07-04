@@ -1,8 +1,8 @@
 
-Bert Module
+word2vec Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.word2vec
     :members:
     :undoc-members:
     :show-inheritance:

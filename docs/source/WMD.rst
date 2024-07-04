@@ -1,8 +1,8 @@
 
-Bert Module
+WMD Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.WMD
     :members:
     :undoc-members:
     :show-inheritance:

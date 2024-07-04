@@ -1,8 +1,8 @@
 
-Bert Module
+glove Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.glove
     :members:
     :undoc-members:
     :show-inheritance:

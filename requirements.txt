@@ -1,3 +1,8 @@
 sphinx
 sphinx-rtd-theme
 sphinx-autodoc-typehints
+transformers
+torch
+scipy
+sentence-transformers
+tqdm

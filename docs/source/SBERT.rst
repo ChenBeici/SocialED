@@ -1,8 +1,8 @@
 
-Bert Module
+SBERT Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.SBERT
     :members:
     :undoc-members:
     :show-inheritance:

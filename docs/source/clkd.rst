@@ -1,8 +1,8 @@
 
-Bert Module
+clkd Module
 ===================
 
-.. automodule:: examples.Bert
+.. automodule:: examples.clkd
     :members:
     :undoc-members:
     :show-inheritance:
