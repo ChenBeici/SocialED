@@ -146,30 +146,30 @@ kpgnn.run()
 
 
 We provide their statistics as follows.
-=============  =======  =========  ===========  ====================================
-Algorithm      Type1    Type2      Type3        Reference                                 
-=============  =======  =========  ===========  ====================================
-|-------------|--------|---------|-------------|------------------------------------|
-| **LDA**     | Others | Offline | Supervised  | (David M. Blei et al. 2003)        |
-| **BiLSTM**  | Others | Offline | Supervised  | (Alex Graves et al. 2005)          |
-| **Word2Vec**| Others | Offline | Supervised  | (Tomas Mikolov et al. 2013)        |
-| **GLOVE**   | Others | Offline | Supervised  | (Jeffrey Pennington et al. 2014)   |
-| **WMD**     | Others | Offline | Supervised  | (Matt Kusner et al. 2015)          |
-| **BERT**    | PLM    | Offline | Supervised  | (J. Devlin et al. 2018)            |
-| **SBERT**   | PLM    | Offline | Supervised  | (Nils Reimers et al. 2019)         |
-| **EventX**  | Others | Online  | Supervised  | (BANG LIU et al. 2020)             |
-| **CLKD**    | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2021)          |
-| **MVGAN**   | GNN    | Offline | Supervised  | (Wanqiu Cui et al. 2021)           |
-| **PP-GCN**  | GNN    | Online  | Supervised  | (Hao Peng et al. 2021)             |
-| **KPGNN**   | GNN    | Online  | Supervised  | (Yuwei Cao et al. 2021)            |
-| **Finevent**| GNN    | Online  | Supervised  | (Hao Peng et al. 2022)             |
-| **QSGNN**   | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2022)          |
-| **ETGNN**   | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)          |
-| **HCRC**    | GNN    | Online  | Unsupervised| (Yuanyuan Guo et al. 2023)         |
-| **UCLsed**  | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)          |
-| **RPLMsed** | PLM    | Online  | Supervised  | (Pu Li et al. 2024)                |
-| **HISevent**| Others | Online  | Unsupervised| (Yuwei Cao et al. 2024)            |
-=============  ========  ========  ===========  ====================================
+
+
+| Algorithm   | Type1  | Type2   | Type3       | Reference                        |
+|-------------|--------|---------|-------------|----------------------------------|
+| **LDA**     | Others | Offline | Supervised  | (David M. Blei et al. 2003)      |
+| **BiLSTM**  | Others | Offline | Supervised  | (Alex Graves et al. 2005)        |
+| **Word2Vec**| Others | Offline | Supervised  | (Tomas Mikolov et al. 2013)      |
+| **GLOVE**   | Others | Offline | Supervised  | (Jeffrey Pennington et al. 2014) |
+| **WMD**     | Others | Offline | Supervised  | (Matt Kusner et al. 2015)        |
+| **BERT**    | PLM    | Offline | Supervised  | (J. Devlin et al. 2018)          |
+| **SBERT**   | PLM    | Offline | Supervised  | (Nils Reimers et al. 2019)       |
+| **EventX**  | Others | Online  | Supervised  | (BANG LIU et al. 2020)           |
+| **CLKD**    | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2021)        |
+| **MVGAN**   | GNN    | Offline | Supervised  | (Wanqiu Cui et al. 2021)         |
+| **PP-GCN**  | GNN    | Online  | Supervised  | (Hao Peng et al. 2021)           |
+| **KPGNN**   | GNN    | Online  | Supervised  | (Yuwei Cao et al. 2021)          |
+| **Finevent**| GNN    | Online  | Supervised  | (Hao Peng et al. 2022)           |
+| **QSGNN**   | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2022)        |
+| **ETGNN**   | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)        |
+| **HCRC**    | GNN    | Online  | Unsupervised| (Yuanyuan Guo et al. 2023)       |
+| **UCLsed**  | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)        |
+| **RPLMsed** | PLM    | Online  | Supervised  | (Pu Li et al. 2024)              |
+| **HISevent**| Others | Online  | Unsupervised| (Yuwei Cao et al. 2024)          |
+
                                 
 ## 6. Collected Datasets
 
