@@ -1,37 +1,65 @@
-# socailED
+<div  align="center">    
+<img src="./docs/socialED1.png" width = "600" height = "200" alt="pygdebias" align=center />
+</div>
+
+
+# socialED
 
 A Python Library for Social Event Detection
 
+Social event detection is a critical task in natural language processing and has widespread
+applications in various domains such as disaster response, public health monitoring, and
+social media analysis.SocialED is an open-source Python library designed for social event
+detection tasks in natural language processing. As the first comprehensive library of its
+kind, SocialED supports a wide array of state-of-the-art methods for social event detection
+under an easy-to-use, well-documented API tailored for both researchers and practitioners.
+SocialED offers modularized components of various detection algorithms, allowing users to
+easily customize each algorithm for their specific needs. To streamline the development
+of detection workflows, SocialED provides numerous commonly used utility functions. To
+handle large datasets efficiently. SocialED adheres to best practices in code reliability
+and maintainability, including unit testing, continuous integration, and code coverage. To
+ensure accessibility, SocialED is released under a permissive BSD 2-Clause license and
+is available at https://github.com/RingBDStack/socialED and on the Python Package
+Index (PyPI)
 
-### Algorithms Overview
 
-| Traditional Algorithms          | GNN-based Algorithms             | PLM-based Algorithms             |
-|---------------------------------|----------------------------------|----------------------------------|
-| - LDA                           | - CLKD                           | - RPLMsed                        |
-| - BiLSTM                        | - MVGAN                          |                                  |
-| ...                             | ...                              |                                  |
-| - EventX                        | - KPGNN                          |                                  |
 
-### Methods
+                                    +-------------------------------------+
+                                    |               SocialED              |
+                                    +-------------------------------------+
 
-| Function      | Description |
-|---------------|-------------|
-| prediction()  | Prediction  |
-| fit()         | Fit         |
++---------------------------------+  +---------------------------------+  +---------------------------------+
+|       Traditional Algorithms    |  |        GNN-based Algorithms     |  |        PLM-based Algorithms     |
+|  - LDA                          |  |  - CLKD                         |  |  - RPLMsed                      |
+|  - BiLSTM                       |  |  - MVGAN                        |  |                                 |
+|  ...                            |  |  ...                            |  |                                 |
+|  - EventX                       |  |  - KPGNN                        |  |                                 |
++---------------------------------+  +---------------------------------+  +---------------------------------+
+            |                                         |                                      |
+            v                                         v                                      v
++-----------------------+                +-----------------------+               +-----------------------+
+|         prediction()  |                |         fit()         |               |         fit()         |
++-----------------------+                +-----------------------+               +-----------------------+
+                                         +-----------------------+               +-----------------------+
+                                         |     prediction()      |               |     prediction()      |
+                                         +-----------------------+               +-----------------------+
 
-### Additional Information
 
-| Category            | Details                         |
-|---------------------|----------------------------------|
-| Datasets            | - Events2012                    |
-|                     | - Events2018                    |
-|                     | - MAVEN                         |
-|                     | ...                              |
-| Evaluation Metrics  | - NMI                            |
-|                     | - ARI                            |
-|                     | - F1-score                       |
-| Model Tasks         | - Training                       |
-|                     | - Prediction                     |
++-----------------------+                +-----------------------+               +-----------------------+
+|         prediction()  |                |         fit()         |               |         fit()         |
++-----------------------+                +-----------------------+               +-----------------------+
+                                         +-----------------------+               +-----------------------+
+                                         |     prediction()      |               |     prediction()      |
+                                         +-----------------------+               +-----------------------+
+
++-------------------+                       +-------------------+                   +-------------------+
+|     Datasets      |                       | Evaluation Metrics|                   |     Model Tasks   |
+|  - Events2012     |                       |  - NMI            |                   |  - Training       |
+|  - Events2018     |                       |  - ARI            |                   |  - Prediction     |
+|  ...              |                       |  ...              |                   +-------------------+
+|  - MAVEN          |                       |  - F1-score       |
++-------------------+                       +-------------------+
+
 
 ## Folder Structure
 
