@@ -2,6 +2,8 @@
 
 version: 2
 
+
+
 # 构建文档的配置
 build:
   os: ubuntu-22.04

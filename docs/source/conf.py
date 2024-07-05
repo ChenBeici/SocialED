@@ -1,61 +1,83 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../'))
+from os.path import dirname, abspath
 
-
-# -- Project information -----------------------------------------------------
+sys.path.insert(0, abspath('..'))
+root_dir = dirname(dirname(abspath(__file__)))
 
 project = 'SocialED'
-copyright = '2024, Beici'
-author = 'Beici'
+copyright = '2024 SocialED Team'
+author = 'SocialED Team'
 
-# The full version, including alpha/beta/rc tags
+version = '0.1.0'
 release = '0.1.0'
 
-
-# -- General configuration ---------------------------------------------------
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
-
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.coverage',
+    "sphinx.ext.mathjax",
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.napoleon',
+    'sphinx_gallery.gen_gallery',
+    'sphinx_autodoc_typehints',
 ]
 
+bibtex_bibfiles = ['references.bib']
 
-# Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+source_suffix = '.rst'
+master_doc = 'index'
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
-
-
-# -- Options for HTML output -------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'alabaster'
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
+html_theme = "furo"
+html_favicon = '_static/socialed.ico'
 html_static_path = ['_static']
+
+htmlhelp_basename = 'socialeddoc'
+
+latex_elements = {}
+
+latex_documents = [
+    (master_doc, 'socialed.tex', 'SocialED Documentation',
+     'SocialED Team', 'manual'),
+]
+
+man_pages = [
+    (master_doc, 'socialed', 'SocialED Documentation',
+     [author], 1)
+]
+
+texinfo_documents = [
+    (master_doc, 'socialed', 'SocialED Documentation',
+     author, 'SocialED', 'One line description of project.',
+     'Miscellaneous'),
+]
+
+from sphinx_gallery.sorting import FileNameSortKey
+
+html_static_path = []
+
+sphinx_gallery_conf = {
+    'examples_dirs': '../examples/',
+    'gallery_dirs': 'tutorials/',
+    'within_subsection_order': FileNameSortKey,
+    'filename_pattern': '.py',
+    'download_all_examples': False,
+}
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/{.major}".format(sys.version_info), None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
+    "networkx": ("https://networkx.org/documentation/stable/", None),
+    'torch': ("https://pytorch.org/docs/master", None),
+    'torch_geometric': ("https://pytorch-geometric.readthedocs.io/en/latest", None),
+}
+
+0
+
