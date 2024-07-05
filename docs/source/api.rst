@@ -4,52 +4,52 @@ API Documentation
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: examples.Bert
+.. automodule:: SocialED.detector.Bert
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.Event2012
+.. automodule:: SocialED.detector.Event2012
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.KPGNN
+.. automodule:: SocialED.detector.KPGNN
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.LDA
+.. automodule:: SocialED.detector.LDA
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.SBERT
+.. automodule:: SocialED.detector.SBERT
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.WMD
+.. automodule:: SocialED.detector.WMD
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.clkd
+.. automodule:: SocialED.detector.clkd
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.glove
+.. automodule:: SocialED.detector.glove
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.metrics
+.. automodule:: SocialED.detector.metrics
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: examples.word2vec
+.. automodule:: SocialED.detector.word2vec
     :members:
     :undoc-members:
     :show-inheritance:
