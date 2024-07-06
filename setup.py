@@ -12,7 +12,7 @@ setup(
     description='A Python Library for Social Event Detection',
     install_requires=requirements,
     include_package_data=True,
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/kobebryantlakers/socialED',
     classifiers=[
