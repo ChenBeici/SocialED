@@ -47,4 +47,4 @@ source_suffix = '.rst'
 
 html_theme = 'furo'
 html_static_path = ['_static']
-html_favicon = 'pygod.ico'
+html_favicon = 'socialed.ico'
