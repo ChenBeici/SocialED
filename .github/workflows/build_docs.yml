@@ -15,7 +15,7 @@ jobs:
 
     - name: Trigger Read the Docs build
       run: |
-        curl -X POST -d "" https://readthedocs.org/api/v3/projects/{your_project_slug}/builds/ \
+        curl -X POST -d "" https://readthedocs.org/api/v3/projects/socialed/builds/ \
         -H "Authorization: Token ${{ secrets.RTD_TOKEN }}"
       env:
         RTD_TOKEN: ${{ secrets.RTD_TOKEN }}
