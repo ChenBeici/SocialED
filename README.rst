@@ -1,15 +1,16 @@
-<div  align="center">    
-<img src="./docs/socialED.png" width = "600" height = "200" alt="socialED" align=center />
-</div>
+.. image:: ./source/SocialED.png
+   :width: 1050
+   :alt: PyGOD Logo
+   :align: center
 
-
-# SocialED
+SocialED
+========
 
 A Python Library for Social Event Detection
 
 Social event detection is a critical task in natural language processing and has widespread
 applications in various domains such as disaster response, public health monitoring, and
-social media analysis.SocialED is an open-source Python library designed for social event
+social media analysis. SocialED is an open-source Python library designed for social event
 detection tasks in natural language processing. As the first comprehensive library of its
 kind, SocialED supports a wide array of state-of-the-art methods for social event detection
 under an easy-to-use, well-documented API tailored for both researchers and practitioners.
@@ -20,13 +21,11 @@ handle large datasets efficiently. SocialED adheres to best practices in code re
 and maintainability, including unit testing, continuous integration, and code coverage. To
 ensure accessibility, SocialED is released under a permissive BSD 2-Clause license and
 is available at https://github.com/RingBDStack/socialED and on the Python Package
-Index (PyPI)
+Index (PyPI).
 
-
-
-                                    +-------------------------------------+
-                                    |               SocialED              |
-                                    +-------------------------------------+
++-------------------------------------+
+|               SocialED              |
++-------------------------------------+
 
 +---------------------------------+  +---------------------------------+  +---------------------------------+
 |       Traditional Algorithms    |  |        GNN-based Algorithms     |  |        PLM-based Algorithms     |
@@ -44,7 +43,6 @@ Index (PyPI)
                                          |     prediction()      |               |     prediction()      |
                                          +-----------------------+               +-----------------------+
 
-
 +-----------------------+                +-----------------------+               +-----------------------+
 |         prediction()  |                |         fit()         |               |         fit()         |
 +-----------------------+                +-----------------------+               +-----------------------+
@@ -60,97 +58,101 @@ Index (PyPI)
 |  - MAVEN          |                       |  - F1-score       |
 +-------------------+                       +-------------------+
 
+Folder Structure
+----------------
 
-## Folder Structure
+::
 
-.
-├── build
-├── dist
-├── docs
-├── examples
-│   └── KPGNN_example.py
-├── socialED
-│   ├── datasets
-│   │   ├── __init__.py
-│   │   ├── data
-│   │   ├── ACE2005.py
-│   │   ├── Arabic_Twitter.py
-│   │   ├── CrisisLexT26.py
-│   │   ├── CrisisLexT6.py
-│   │   ├── Event2012.py
-│   │   ├── Event2018.py
-│   │   ├── MAVEN.py
-│   │   └── __pycache__
-│   ├── detector
-│   │   ├── __init__.py
-│   │   ├── 1-LDA
-│   │   ├── 2-BiLSTM
-│   │   ├── 3-word2vec
-│   │   ├── 4-glove
-│   │   ├── 5-WMD
-│   │   ├── 6-bert
-│   │   ├── 7-sbert
-│   │   ├── 8-EventX
-│   │   ├── 9-CLKD
-│   │   ├── 11-PPGCN
-│   │   ├── 11-PPGCNS
-│   │   ├── 12-KPGNN
-│   │   ├── 13-FinEvent
-│   │   ├── 14-QSGNN
-│   │   ├── 17-UCL_SED
-│   │   ├── 18-RPLM_SED
-│   │   ├── 19-HISEvent
-│   │   └── __pycache__
-│   ├── __init__.py
-│   ├── metrics
-│   ├── __pycache__
-│   └── utils
-├── LICENSE
-├── README.md
-├── requirements.txt
-├── setup.cfg
-├── setup.py
-└── socialED.egg-info
+    .
+    ├── build
+    ├── dist
+    ├── docs
+    ├── examples
+    │   └── KPGNN_example.py
+    ├── socialED
+    │   ├── datasets
+    │   │   ├── __init__.py
+    │   │   ├── data
+    │   │   ├── ACE2005.py
+    │   │   ├── Arabic_Twitter.py
+    │   │   ├── CrisisLexT26.py
+    │   │   ├── CrisisLexT6.py
+    │   │   ├── Event2012.py
+    │   │   ├── Event2018.py
+    │   │   ├── MAVEN.py
+    │   │   └── __pycache__
+    │   ├── detector
+    │   │   ├── __init__.py
+    │   │   ├── 1-LDA
+    │   │   ├── 2-BiLSTM
+    │   │   ├── 3-word2vec
+    │   │   ├── 4-glove
+    │   │   ├── 5-WMD
+    │   │   ├── 6-bert
+    │   │   ├── 7-sbert
+    │   │   ├── 8-EventX
+    │   │   ├── 9-CLKD
+    │   │   ├── 11-PPGCN
+    │   │   ├── 11-PPGCNS
+    │   │   ├── 12-KPGNN
+    │   │   ├── 13-FinEvent
+    │   │   ├── 14-QSGNN
+    │   │   ├── 17-UCL_SED
+    │   │   ├── 18-RPLM_SED
+    │   │   ├── 19-HISEvent
+    │   │   └── __pycache__
+    │   ├── __init__.py
+    │   ├── metrics
+    │   ├── __pycache__
+    │   └── utils
+    ├── LICENSE
+    ├── README.md
+    ├── requirements.txt
+    ├── setup.cfg
+    ├── setup.py
+    └── socialED.egg-info
 
-
-## Installation
+Installation
+------------
 
 ### Manually
 
-```bash
-# Set up the environment
-conda create -n socialED python=3.8
-conda activate socailED
+.. code-block:: bash
 
-# Installation
-git clone https://github.com/yukobebryantlakers/socialED.git
-pip install -r requirements.txt
-pip install socialED
-```
+    # Set up the environment
+    conda create -n socialED python=3.8
+    conda activate socailED
 
-## Usage & Example
+    # Installation
+    git clone https://github.com/yukobebryantlakers/socialED.git
+    pip install -r requirements.txt
+    pip install socialED
 
-~~~python
-from socialED import KPGNN, args_define
-from Event2012 import Event2012_Dataset
+Usage & Example
+---------------
 
-# Load the dataset using the Event2012_Dataset class
-dataset = Event2012_Dataset.load_data()
-args = args_define.args
+.. code-block:: python
 
-# Create an instance of the KPGNN class with the parsed arguments and loaded dataset
-kpgnn = KPGNN(args, dataset)
+    from socialED import KPGNN, args_define
+    from Event2012 import Event2012_Dataset
 
-# Run the KPGNN instance
-kpgnn.run()
-~~~
+    # Load the dataset using the Event2012_Dataset class
+    dataset = Event2012_Dataset.load_data()
+    args = args_define.args
 
+    # Create an instance of the KPGNN class with the parsed arguments and loaded dataset
+    kpgnn = KPGNN(args, dataset)
 
-## Collected Algorithms
+    # Run the KPGNN instance
+    kpgnn.run()
+
+Collected Algorithms
+--------------------
 
 19 different methods in total are implemented in this library. We provide an overview of their characteristics as follows.
 
-## Algorithm Descriptions
+Algorithm Descriptions
+----------------------
 
 - **LDA**: Latent Dirichlet Allocation (LDA) is a generative statistical model that allows sets of observations to be explained by unobserved groups. It is particularly useful for discovering the hidden thematic structure in large text corpora.
 - **BiLSTM**: Bi-directional Long Short-Term Memory (BiLSTM) networks enhance the capabilities of traditional LSTMs by processing sequences in both forward and backward directions. This bidirectional approach is effective for tasks like sequence classification and time series prediction.
@@ -163,36 +165,52 @@ kpgnn.run()
 - **CLKD**: cross-lingual knowledge distillation (CLKD) combines a convolutional neural network with dynamic time warping to align sequences and detect events in streaming data. This online algorithm is effective for real-time applications.
 - **MVGAN**: Multi-View Graph Attention Network (MVGAN) leverages multiple data views to enhance event detection accuracy. This offline algorithm uses GANs to model complex data distributions, improving robustness against noise and incomplete data.
 
-
-
-
 We provide their statistics as follows.
 
-
-| Algorithm   | Type1  | Type2   | Type3       | Reference                        |
-|-------------|--------|---------|-------------|----------------------------------|
-| **LDA**     | Others | Offline | Supervised  | (David M. Blei et al. 2003)      |
-| **BiLSTM**  | Others | Offline | Supervised  | (Alex Graves et al. 2005)        |
-| **Word2Vec**| Others | Offline | Supervised  | (Tomas Mikolov et al. 2013)      |
++-------------+--------+---------+-------------+---------------------------+
+| Algorithm   | Type1  | Type2   | Type3       | Reference                 |
++=============+========+=========+=============+===========================+
+| **LDA**     | Others | Offline | Supervised  | (David M. Blei et al. 2003)|
++-------------+--------+---------+-------------+---------------------------+
+| **BiLSTM**  | Others | Offline | Supervised  | (Alex Graves et al. 2005)  |
++-------------+--------+---------+-------------+---------------------------+
+| **Word2Vec**| Others | Offline | Supervised  | (Tomas Mikolov et al. 2013)|
++-------------+--------+---------+-------------+---------------------------+
 | **GLOVE**   | Others | Offline | Supervised  | (Jeffrey Pennington et al. 2014) |
-| **WMD**     | Others | Offline | Supervised  | (Matt Kusner et al. 2015)        |
-| **BERT**    | PLM    | Offline | Supervised  | (J. Devlin et al. 2018)          |
-| **SBERT**   | PLM    | Offline | Supervised  | (Nils Reimers et al. 2019)       |
-| **EventX**  | Others | Online  | Supervised  | (BANG LIU et al. 2020)           |
-| **CLKD**    | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2021)        |
-| **MVGAN**   | GNN    | Offline | Supervised  | (Wanqiu Cui et al. 2021)         |
-| **PP-GCN**  | GNN    | Online  | Supervised  | (Hao Peng et al. 2021)           |
-| **KPGNN**   | GNN    | Online  | Supervised  | (Yuwei Cao et al. 2021)          |
-| **Finevent**| GNN    | Online  | Supervised  | (Hao Peng et al. 2022)           |
-| **QSGNN**   | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2022)        |
-| **ETGNN**   | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)        |
-| **HCRC**    | GNN    | Online  | Unsupervised| (Yuanyuan Guo et al. 2023)       |
-| **UCLsed**  | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)        |
-| **RPLMsed** | PLM    | Online  | Supervised  | (Pu Li et al. 2024)              |
-| **HISevent**| Others | Online  | Unsupervised| (Yuwei Cao et al. 2024)          |
++-------------+--------+---------+-------------+---------------------------+
+| **WMD**     | Others | Offline | Supervised  | (Matt Kusner et al. 2015)  |
++-------------+--------+---------+-------------+---------------------------+
+| **BERT**    | PLM    | Offline | Supervised  | (J. Devlin et al. 2018)    |
++-------------+--------+---------+-------------+---------------------------+
+| **SBERT**   | PLM    | Offline | Supervised  | (Nils Reimers et al. 2019) |
++-------------+--------+---------+-------------+---------------------------+
+| **EventX**  | Others | Online  | Supervised  | (BANG LIU et al. 2020)     |
++-------------+--------+---------+-------------+---------------------------+
+| **CLKD**    | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2021)  |
++-------------+--------+---------+-------------+---------------------------+
+| **MVGAN**   | GNN    | Offline | Supervised  | (Wanqiu Cui et al. 2021)   |
++-------------+--------+---------+-------------+---------------------------+
+| **PP-GCN**  | GNN    | Online  | Supervised  | (Hao Peng et al. 2021)     |
++-------------+--------+---------+-------------+---------------------------+
+| **KPGNN**   | GNN    | Online  | Supervised  | (Yuwei Cao et al. 2021)    |
++-------------+--------+---------+-------------+---------------------------+
+| **Finevent**| GNN    | Online  | Supervised  | (Hao Peng et al. 2022)     |
++-------------+--------+---------+-------------+---------------------------+
+| **QSGNN**   | GNN    | Online  | Supervised  | (Jiaqian Ren et al. 2022)  |
++-------------+--------+---------+-------------+---------------------------+
+| **ETGNN**   | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)  |
++-------------+--------+---------+-------------+---------------------------+
+| **HCRC**    | GNN    | Online  | Unsupervised| (Yuanyuan Guo et al. 2023) |
++-------------+--------+---------+-------------+---------------------------+
+| **UCLsed**  | GNN    | Offline | Supervised  | (Jiaqian Ren et al. 2023)  |
++-------------+--------+---------+-------------+---------------------------+
+| **RPLMsed** | PLM    | Online  | Supervised  | (Pu Li et al. 2024)        |
++-------------+--------+---------+-------------+---------------------------+
+| **HISevent**| Others | Online  | Unsupervised| (Yuwei Cao et al. 2024)    |
++-------------+--------+---------+-------------+---------------------------+
 
-                                
-## 6. Collected Datasets
+Collected Datasets
+------------------
 
 -   **ACE2005**: The ACE2005 dataset is a comprehensive collection of news articles annotated for entities, relations, and events. It includes a diverse range of event types and is widely used for event extraction research.
 -   **MAVEN**: MAVEN (MAssive eVENt) is a large-scale dataset for event detection that consists of over 11,000 events annotated across a wide variety of domains. It is designed to facilitate the development of robust event detection models.
@@ -207,33 +225,42 @@ We provide their statistics as follows.
 
 We provide their statistics as follows.
 
-| Dataset        | Events  | Event_Types | Sentences | Tokens    | Documents |
-|----------------|---------|-------------|-----------|-----------|-----------|
-| **ACE2005**    | 5,349   | 33          | 11,738    | 230,382   | 599       |
-| **MAVEN**      | 11,191  | 168         | 23,663    | 512,394   | 4,480     |
-| **TAC KBP**    | 3,500   | 18          | 7,800     | 150,000   | 2,500     |
-| **CrisisLexT26**| 4,353  | 26          | 8,000     | 175,000   | 1,200     |
-| **CrisisLexT6**| 2,100   | 6           | 4,500     | 90,000    | 600       |
-| **Event2012**  | 68,841  | 20          | 150,000   | 3,000,000 | 10,000    |
-| **Event2018**  | 15,000  | 10          | 50,000    | 1,000,000 | 5,000     |
-| **KBP2017**    | 4,200   | 22          | 9,000     | 180,000   | 3,000     |
-| **CySecED**    | 5,500   | 35          | 12,000    | 250,000   | 4,200     |
-| **FewED**      | 6,000   | 40          | 14,000    | 300,000   | 5,500     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| Dataset        | Events | Event_Types  | Sentences | Tokens    | Documents |
++================+========+==============+===========+===========+===========+
+| **ACE2005**    | 5,349  | 33           | 11,738    | 230,382   | 599       |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **MAVEN**      | 11,191 | 168          | 23,663    | 512,394   | 4,480     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **TAC KBP**    | 3,500  | 18           | 7,800     | 150,000   | 2,500     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **CrisisLexT26**| 4,353 | 26           | 8,000     | 175,000   | 1,200     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **CrisisLexT6**| 2,100  | 6            | 4,500     | 90,000    | 600       |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **Event2012**  | 68,841 | 20           | 150,000   | 3,000,000 | 10,000    |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **Event2018**  | 15,000 | 10           | 50,000    | 1,000,000 | 5,000     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **KBP2017**    | 4,200  | 22           | 9,000     | 180,000   | 3,000     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **CySecED**    | 5,500  | 35           | 12,000    | 250,000   | 4,200     |
++----------------+--------+--------------+-----------+-----------+-----------+
+| **FewED**      | 6,000  | 40           | 14,000    | 300,000   | 5,500     |
++----------------+--------+--------------+-----------+-----------+-----------+
 
+How to Contribute
+-----------------
 
+You are welcome to become part of this project. See `contribute guide <./docs/contribute.md>`_ for more information.
 
+Authors & Acknowledgements
+--------------------------
 
-## How to Contribute
-You are welcome to become part of this project. See [contribute guide](./docs/contribute.md) for more information.
-
-
-## Authors & Acknowledgements
-
-
-## Contact
+Contact
+-------
 
 Reach out to us by submitting an issue report or sending an email to sy2339225@buaa.edu.
 
-## References
-
-
+References
+----------
