@@ -1,7 +1,7 @@
 .. SocialED documentation master file, created by
    sphinx-quickstart on Thu Jul  6 16:45:06 2024.
    You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+   contain the root toctree directive.
 
 
 .. figure:: socialED.png
@@ -33,7 +33,6 @@ See examples below for detecting outliers with PyGOD in 5 lines!
 
 .. code-block:: python
 
-
     # train a dominant detector
     from pygod.detector import DOMINANT
 
@@ -48,11 +47,8 @@ See examples below for detecting outliers with PyGOD in 5 lines!
 
 ----
 
-
-
 .. toctree::
    :maxdepth: 2
-   :hidden:
    :caption: Getting Started
 
    install
@@ -62,7 +58,6 @@ See examples below for detecting outliers with PyGOD in 5 lines!
 
 .. toctree::
    :maxdepth: 3
-   :hidden:
    :caption: API References
 
    SocialED.datasets
@@ -73,11 +68,8 @@ See examples below for detecting outliers with PyGOD in 5 lines!
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
    :caption: Additional Information
 
    cite
    team
    reference
-
-
