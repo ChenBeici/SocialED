@@ -11,3 +11,4 @@ sphinx_gallery
 setuptools
 matplotlib
 furo
+recommonmark
