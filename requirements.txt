@@ -7,3 +7,7 @@ scipy
 sentence-transformers
 tqdm
 sphinxcontrib-bibtex
+sphinx_gallery
+setuptools
+matplotlib
+furo
