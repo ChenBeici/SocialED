@@ -1,4 +1,4 @@
-.. image:: ./source/SocialED.png
+.. image:: https://raw.githubusercontent.com/SocialED/blob/main/source/socialED.png
    :width: 1050
    :alt: PyGOD Logo
    :align: center
