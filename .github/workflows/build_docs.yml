@@ -1,4 +1,4 @@
-name: Build and Deploy Docs to Read the Docs
+name: Read the Docs
 
 on:
   push:

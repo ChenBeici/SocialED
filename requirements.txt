@@ -6,3 +6,4 @@ torch
 scipy
 sentence-transformers
 tqdm
+sphinxcontrib-bibtex
