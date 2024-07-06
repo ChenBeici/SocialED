@@ -1,6 +1,7 @@
-.. image:: https://raw.githubusercontent.com/SocialED/blob/main/source/socialED.png
+.. image:: https://github.com/ChenBeici/SocialED/blob/main/source/socialED.png?raw=true
+   :target: https://github.com/ChenBeici/SocialED/blob/main/source/socialED.png?raw=true
    :width: 1050
-   :alt: PyGOD Logo
+   :alt: socialED Logo
    :align: center
 
 SocialED
