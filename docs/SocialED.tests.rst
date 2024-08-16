@@ -1,0 +1,21 @@
+SocialED.tests package
+======================
+
+Submodules
+----------
+
+SocialED.tests.testlda module
+-----------------------------
+
+.. automodule:: SocialED.tests.testlda
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: SocialED.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,192 +1,108 @@
-import argparse
+import os
 import pandas as pd
 import numpy as np
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import adjusted_rand_score, adjusted_mutual_info_score, normalized_mutual_info_score
-from sklearn.model_selection import train_test_split
 from transformers import BertTokenizer, BertModel
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
 import torch
 import logging
 
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-class args_define():
-    parser = argparse.ArgumentParser()
-    # Hyper-parameters for BERT
-    parser.add_argument('--max_length', default=128, type=int,
-                        help="Maximum length of the text sequences.")
-    parser.add_argument('--batch_size', default=32, type=int,
-                        help="Batch size for BERT embeddings extraction.")
-    parser.add_argument('--num_clusters', default=10, type=int,
-                        help="Number of clusters for document clustering.")
-
-    # Other arguments
-    parser.add_argument('--use_cuda', dest='use_cuda', default=False,
-                        action='store_true',
-                        help="Use cuda")
-    parser.add_argument('--data_path', default='./incremental_test_100messagesperday/', #default='./incremental_0808/',
-                        type=str, help="Path of features, labels and edges")
-    parser.add_argument('--mask_path', default=None,
-                        type=str, help="File path that contains the training, validation and test masks")
-    parser.add_argument('--resume_path', default=None,
-                        type=str,
-                        help="File path that contains the partially performed experiment that needs to be resume.")
-    parser.add_argument('--resume_point', default=0, type=int,
-                        help="The block model to be loaded.")
-    parser.add_argument('--resume_current', dest='resume_current', default=True,
-                        action='store_false',
-                        help="If true, continue to train the resumed model of the current block(to resume a partally trained initial/mantenance block);\
-                            If false, start the next(infer/predict) block from scratch;")
-    parser.add_argument('--log_interval', default=10, type=int,
-                        help="Log interval")
-
-    args = parser.parse_args()
-
-class BERTModel:
-    def __init__(self, args, dataset):
-        self.args = args
+class BERT:
+    def __init__(self, dataset, model_name='../model_needed/bert-base-uncased', max_length=128):
         self.dataset = dataset
-        self.max_length = self.args.max_length
-        self.batch_size = self.args.batch_size
-        self.num_clusters = self.args.num_clusters
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.model = BertModel.from_pretrained('bert-base-uncased')
-        self.device = torch.device('cuda' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
-        self.model.to(self.device)
+        self.model_name = model_name
+        self.max_length = max_length
+        self.df = None
+        self.train_df = None
+        self.test_df = None
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
+        self.model = BertModel.from_pretrained(self.model_name).to(self.device)
 
     def preprocess(self):
         """
         Data preprocessing: tokenization, stop words removal, etc.
         """
-        df = pd.DataFrame(self.dataset, columns=[
-            "event_id", "tweet_id", "text", "user_id", "created_at", "user_loc",
-            "place_type", "place_full_name", "place_country_code", "hashtags", 
-            "user_mentions", "image_urls", "entities", "words", "filtered_words", 
-            "sampled_words"
-        ])
-        df['processed_text'] = df['filtered_words'].apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
+        df = self.dataset
+        df['processed_text'] = df['filtered_words'].apply(lambda x: ' '.join([str(word).lower() for word in x]) if isinstance(x, list) else '')
         self.df = df
         return df
 
-    def encode_texts(self, texts):
+    def get_bert_embeddings(self, text):
         """
-        Use BERT tokenizer to encode texts.
+        Get BERT embeddings for a given text.
         """
-        logging.info("Encoding texts...")
-        encodings = self.tokenizer(texts, truncation=True, padding=True, max_length=self.max_length, return_tensors='pt')
-        logging.info("Completed encoding texts.")
-        return encodings
-
-    def extract_bert_embeddings(self, encodings):
-        """
-        Use BERT model to extract text embeddings.
-        """
-        logging.info("Extracting BERT embeddings...")
-        input_ids = encodings['input_ids'].to(self.device)
-        attention_mask = encodings['attention_mask'].to(self.device)
-        embeddings = []
-
-        self.model.eval()
+        inputs = self.tokenizer(text, return_tensors='pt', max_length=self.max_length, truncation=True, padding='max_length')
+        inputs = {key: val.to(self.device) for key, val in inputs.items()}
         with torch.no_grad():
-            for i in range(0, len(input_ids), self.batch_size):
-                batch_input_ids = input_ids[i:i+self.batch_size]
-                batch_attention_mask = attention_mask[i:i+self.batch_size]
-                outputs = self.model(batch_input_ids, attention_mask=batch_attention_mask)
-                last_hidden_state = outputs.last_hidden_state
-                # Get the embeddings of [CLS] token
-                cls_embeddings = last_hidden_state[:, 0, :].cpu().numpy()
-                embeddings.append(cls_embeddings)
-        
-        embeddings = np.vstack(embeddings)
-        logging.info("Completed extracting BERT embeddings.")
-        return embeddings
+            outputs = self.model(**inputs)
+        last_hidden_states = outputs.last_hidden_state
+        mean_embedding = torch.mean(last_hidden_states, dim=1).squeeze().cpu().numpy()
+        return mean_embedding
 
-    def cluster_documents(self, embeddings):
+    def detection(self):
         """
-        Cluster documents.
+        Detect events by comparing BERT embeddings.
         """
-        logging.info("Clustering documents...")
-        clustering_model = AgglomerativeClustering(n_clusters=self.num_clusters)
-        labels = clustering_model.fit_predict(embeddings)
-        logging.info("Completed clustering documents.")
-        return labels
-
-    def evaluate_model(self, ground_truths, predicted_labels):
-        """
-        Evaluate clustering results.
-        """
-        logging.info("Evaluating clustering...")
-        ari = adjusted_rand_score(ground_truths, predicted_labels)
-        ami = adjusted_mutual_info_score(ground_truths, predicted_labels)
-        nmi = normalized_mutual_info_score(ground_truths, predicted_labels)
-        logging.info(f"Adjusted Rand Index (ARI): {ari}")
-        logging.info(f"Adjusted Mutual Information (AMI): {ami}")
-        logging.info(f"Normalized Mutual Information (NMI): {nmi}")
-        return ari, ami, nmi
-
-    def fit(self):
-        """
-        Train the BERT model and cluster the documents.
-        """
-        # Preprocess data
-        self.preprocess()
-
-        # Split data into train and test sets
         train_df, test_df = train_test_split(self.df, test_size=0.2, random_state=42)
         self.train_df = train_df
         self.test_df = test_df
 
-        # Encode texts
-        train_texts = train_df['processed_text'].tolist()
-        train_encodings = self.encode_texts(train_texts)
+        logging.info("Calculating BERT embeddings for the training set...")
+        train_df['bert_embedding'] = train_df['processed_text'].apply(self.get_bert_embeddings)
+        logging.info("BERT embeddings calculated for the training set.")
 
-        # Extract BERT embeddings
-        train_embeddings = self.extract_bert_embeddings(train_encodings)
+        logging.info("Calculating BERT embeddings for the test set...")
+        test_df['bert_embedding'] = test_df['processed_text'].apply(self.get_bert_embeddings)
+        logging.info("BERT embeddings calculated for the test set.")
 
-        # Cluster documents
-        self.train_labels = self.cluster_documents(train_embeddings)
+        train_embeddings = np.stack(self.train_df['bert_embedding'].values)
+        test_embeddings = np.stack(self.test_df['bert_embedding'].values)
+        
+        predictions = []
+        for test_emb in test_embeddings:
+            distances = np.linalg.norm(train_embeddings - test_emb, axis=1)
+            closest_idx = np.argmin(distances)
+            predictions.append(self.train_df.iloc[closest_idx]['event_id'])
 
-        return self.train_labels
+        ground_truths = self.test_df['event_id'].tolist()    
+        return ground_truths, predictions
 
-    def prediction(self):
+    def evaluate(self, ground_truths, predictions):
         """
-        Predict the clusters for the test data.
+        Evaluate the BERT-based model.
         """
-        # Encode texts
-        test_texts = self.test_df['processed_text'].tolist()
-        test_encodings = self.encode_texts(test_texts)
 
-        # Extract BERT embeddings
-        test_embeddings = self.extract_bert_embeddings(test_encodings)
+        # Calculate Adjusted Rand Index (ARI)
+        ari = metrics.adjusted_rand_score(ground_truths, predictions)
+        print(f"Adjusted Rand Index (ARI): {ari}")
 
-        # Cluster documents
-        self.test_labels = self.cluster_documents(test_embeddings)
+        # Calculate Adjusted Mutual Information (AMI)
+        ami = metrics.adjusted_mutual_info_score(ground_truths, predictions)
+        print(f"Adjusted Mutual Information (AMI): {ami}")
 
-        return self.test_labels
+        # Calculate Normalized Mutual Information (NMI)
+        nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
+        print(f"Normalized Mutual Information (NMI): {nmi}")
 
-    def evaluate(self):
-        """
-        Evaluate the clustering results.
-        """
-        ground_truths = self.test_df['event_id'].tolist()
-        return self.evaluate_model(ground_truths, self.test_labels)
+        return ari, ami, nmi
 
 # Main function
 if __name__ == "__main__":
-    from Event2012 import Event2012_Dataset
+    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
     dataset = Event2012_Dataset.load_data()
-    args = args_define.args
 
-    bert_model = BERTModel(args, dataset)
+    bert = BERT(dataset)
     
-    # Train the model
-    bert_model.fit()
+    # Data preprocessing
+    bert.preprocess()
     
-    # Prediction
-    predictions = bert_model.prediction()
-    print(predictions)
-    
-    # Evaluate model
-    bert_model.evaluate()
+    # Detection
+    ground_truths, predictions = bert.detection()
+
+    # Evaluation
+    bert.evaluate(ground_truths, predictions)
