@@ -1,5 +1,5 @@
-.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
-   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
+.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/socialED.png?raw=true
+   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/socialED.png?raw=true
    :width: 1050
    :alt: SocialED Logo
    :align: center
