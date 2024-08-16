@@ -1,5 +1,5 @@
-.. image:: https://github.com/ChenBeici/SocialED/blob/main/source/SocialED.png?raw=true
-   :target: https://github.com/ChenBeici/SocialED/blob/main/source/SocialED.png?raw=true
+.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
+   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
    :width: 1050
    :alt: SocialED Logo
    :align: center
@@ -70,19 +70,21 @@ See examples below for detecting outliers with SocialED in 5 lines!
 Folder Structure
 ================
 
-.
-├── LICENSE
-├── MANIFEST.in
-├── README.rst
-├── docs
-├── SocialED
-│   ├── __init__.py
-│   ├── datasets    
-│   ├── detector  
-│   └── metrics  
-├── requirements.txt
-├── setup.cfg
-└── setup.py
+::
+
+   .
+   ├── LICENSE
+   ├── MANIFEST.in
+   ├── README.rst
+   ├── docs
+   ├── SocialED
+   │   ├── __init__.py
+   │   ├── datasets    
+   │   ├── detector  
+   │   └── metrics  
+   ├── requirements.txt
+   ├── setup.cfg
+   └── setup.py
 
 
 Installation
@@ -164,9 +166,9 @@ Algorithm Descriptions
 
 We provide their statistics as follows.
 
-==================  =====  ==========  ==========  ============  =====================
+==================  =====  ==========  ==========  ============  =========================
 Algorithm           Year   Category    Environment  Supervision   Ref
-==================  =====  ==========  ==========  ============  =====================
+==================  =====  ==========  ==========  ============  =========================
 LDA                 2003   Others      Offline      Supervised     [#Blei2003lda]_
 BiLSTM              2005   Others      Offline      Supervised     [#Graves2005bilstm]_
 Word2Vec            2013   Others      Offline      Supervised     [#Mikolov2013word2vec]_
@@ -186,7 +188,7 @@ HCRC                2023   GNN         Online       Unsupervised   [#Guo2023hcrc
 UCLSED              2023   GNN         Offline      Supervised     [#Ren2023uclsad]_
 RPLMSED             2024   PLM         Online       Supervised     [#Li2024rplmsed]_
 HISEvent            2024   Others      Online       Unsupervised   [#Cao2024hisevent]_
-==================  =====  ==========  ==========  ============  =====================
+==================  =====  ==========  ==========  ============  ==========================
 
 
 
