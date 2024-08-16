@@ -37,6 +37,8 @@ extensions = [
 
 bibtex_bibfiles = ['zreferences.bib']
 
+autodoc_mock_imports = ['en_core_web_lg', 'spacy', 'torch.nn', 'torch','transformers'] 
+
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.metrics package" href="SocialED.metrics.html" /><link rel="prev" title="SocialED.dataset package" href="SocialED.dataset.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
         <title>SocialED.detector package - SocialED documentation</title>
@@ -202,19 +202,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">SocialED</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of SocialED</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="SocialED.html">SocialED package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of SocialED package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset package</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">SocialED.detector package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SocialED.tests.html">SocialED.tests package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SocialED.utils.html">SocialED.utils package</a></li>
-</ul>
-</li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">A Blitz Introduction</a></li>
 </ul>
 
 </div>
@@ -260,11 +250,190 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="socialed-detector-bert-module">
-<h2>SocialED.detector.bert module<a class="headerlink" href="#socialed-detector-bert-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.bert">
+<span id="socialed-detector-bert-module"></span><h2>SocialED.detector.bert module<a class="headerlink" href="#module-SocialED.detector.bert" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bert.</span></span><span class="sig-name descname"><span class="pre">BERT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_needed/bert-base-uncased'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect events by comparing BERT embeddings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the BERT-based model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.get_bert_embeddings">
+<span class="sig-name descname"><span class="pre">get_bert_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.get_bert_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.get_bert_embeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get BERT embeddings for a given text.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="socialed-detector-bilstm-module">
-<h2>SocialED.detector.bilstm module<a class="headerlink" href="#socialed-detector-bilstm-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.bilstm">
+<span id="socialed-detector-bilstm-module"></span><h2>SocialED.detector.bilstm module<a class="headerlink" href="#module-SocialED.detector.bilstm" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">BiLSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_keep_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_hidden_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_dim2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bi_directional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_saved/Bilstm/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect events using the best trained model on the test data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model on the training data and save the best model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.load_embeddings">
+<span class="sig-name descname"><span class="pre">load_embeddings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.load_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.load_embeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load pre-trained word embeddings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.run_train">
+<span class="sig-name descname"><span class="pre">run_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.run_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.run_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the training and evaluation process for the BiLSTM model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.split">
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the dataset into training, validation, and test sets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.BiLSTM.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#BiLSTM.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.BiLSTM.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the BiLSTM model.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.FunctionNegativeTripletSelector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">FunctionNegativeTripletSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_selection_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#FunctionNegativeTripletSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.FunctionNegativeTripletSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.detector.bilstm.TripletSelector" title="SocialED.detector.bilstm.TripletSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">TripletSelector</span></code></a></p>
+<p>For each positive pair, takes the hardest negative sample (with the greatest triplet loss value) to create a triplet
+Margin should match the margin used in triplet loss.
+negative_selection_fn should take array of loss_values for a given anchor-positive pair and all negative samples
+and return a negative index for that pair</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.FunctionNegativeTripletSelector.get_triplets">
+<span class="sig-name descname"><span class="pre">get_triplets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#FunctionNegativeTripletSelector.get_triplets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.FunctionNegativeTripletSelector.get_triplets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.HardestNegativeTripletSelector">
+<span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">HardestNegativeTripletSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#HardestNegativeTripletSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.HardestNegativeTripletSelector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.LSTM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">LSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.LSTM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.LSTM.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#LSTM.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.LSTM.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.LSTM.init_hidden">
+<span class="sig-name descname"><span class="pre">init_hidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#LSTM.init_hidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.LSTM.init_hidden" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.OnlineTripletLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">OnlineTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#OnlineTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.OnlineTripletLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Online Triplets loss
+Takes a batch of embeddings and corresponding labels.
+Triplets are generated using triplet_selector object that take embeddings and targets and return indices of
+triplets</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.OnlineTripletLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#OnlineTripletLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.OnlineTripletLoss.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.RandomNegativeTripletSelector">
+<span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">RandomNegativeTripletSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#RandomNegativeTripletSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.RandomNegativeTripletSelector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.TripletSelector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">TripletSelector</span></span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#TripletSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.TripletSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implementation should return indices of anchors, positive and negative samples
+return np array of shape [N_triplets x 3]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.TripletSelector.get_triplets">
+<span class="sig-name descname"><span class="pre">get_triplets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#TripletSelector.get_triplets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.TripletSelector.get_triplets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.VectorizeData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">VectorizeData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#VectorizeData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.VectorizeData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.VectorizeData.pad_data">
+<span class="sig-name descname"><span class="pre">pad_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#VectorizeData.pad_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.VectorizeData.pad_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.hardest_negative">
+<span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">hardest_negative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#hardest_negative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.hardest_negative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.pdist">
+<span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">pdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vectors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#pdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.pdist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.detector.bilstm.random_hard_negative">
+<span class="sig-prename descclassname"><span class="pre">SocialED.detector.bilstm.</span></span><span class="sig-name descname"><span class="pre">random_hard_negative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bilstm.html#random_hard_negative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bilstm.random_hard_negative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 <section id="socialed-detector-clkd-module">
 <h2>SocialED.detector.clkd module<a class="headerlink" href="#socialed-detector-clkd-module" title="Permalink to this heading">¶</a></h2>
@@ -278,8 +447,61 @@
 <section id="socialed-detector-finevent-module">
 <h2>SocialED.detector.finevent module<a class="headerlink" href="#socialed-detector-finevent-module" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="socialed-detector-glove-module">
-<h2>SocialED.detector.glove module<a class="headerlink" href="#socialed-detector-glove-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.glove">
+<span id="socialed-detector-glove-module"></span><h2>SocialED.detector.glove module<a class="headerlink" href="#module-SocialED.detector.glove" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.glove.</span></span><span class="sig-name descname"><span class="pre">GloVe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_saved/GloVe/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_needed/glove.6B.100d.txt'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.create_vectors">
+<span class="sig-name descname"><span class="pre">create_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.create_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.create_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create GloVe vectors for each document.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign clusters to each document.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.load_glove_vectors">
+<span class="sig-name descname"><span class="pre">load_glove_vectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.load_glove_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.load_glove_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GloVe pre-trained word vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.load_model">
+<span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the KMeans model from a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.glove.GloVe.text_to_glove_vector">
+<span class="sig-name descname"><span class="pre">text_to_glove_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/glove.html#GloVe.text_to_glove_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.glove.GloVe.text_to_glove_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert text to GloVe vector representation.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="socialed-detector-hcrc-module">
 <h2>SocialED.detector.hcrc module<a class="headerlink" href="#socialed-detector-hcrc-module" title="Permalink to this heading">¶</a></h2>
@@ -355,11 +577,83 @@
 <section id="socialed-detector-uclsed-module">
 <h2>SocialED.detector.uclsed module<a class="headerlink" href="#socialed-detector-uclsed-module" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="socialed-detector-wmd-module">
-<h2>SocialED.detector.wmd module<a class="headerlink" href="#socialed-detector-wmd-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.wmd">
+<span id="socialed-detector-wmd-module"></span><h2>SocialED.detector.wmd module<a class="headerlink" href="#module-SocialED.detector.wmd" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.wmd.WMD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.wmd.</span></span><span class="sig-name descname"><span class="pre">WMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_saved/WMD/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/wmd.html#WMD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.wmd.WMD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.wmd.WMD.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/wmd.html#WMD.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.wmd.WMD.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect events using WMD by calculating the distance between messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.wmd.WMD.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/wmd.html#WMD.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.wmd.WMD.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.wmd.WMD.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/wmd.html#WMD.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.wmd.WMD.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the Word2Vec model and save it to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.wmd.WMD.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/wmd.html#WMD.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.wmd.WMD.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="socialed-detector-word2vec-module">
-<h2>SocialED.detector.word2vec module<a class="headerlink" href="#socialed-detector-word2vec-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.word2vec">
+<span id="socialed-detector-word2vec-module"></span><h2>SocialED.detector.word2vec module<a class="headerlink" href="#module-SocialED.detector.word2vec" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.word2vec.</span></span><span class="sig-name descname"><span class="pre">WORD2VEC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model_saved/Word2vec/word2vec_model.model'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect events by representing each document as the average Word2Vec embedding of its words.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.document_vector">
+<span class="sig-name descname"><span class="pre">document_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.document_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.document_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a document vector by averaging the Word2Vec embeddings of its words.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the Word2Vec model and save it to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.load_model">
+<span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the Word2Vec model from a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.word2vec.WORD2VEC.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/word2vec.html#WORD2VEC.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.word2vec.WORD2VEC.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-contents">
 <h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
@@ -371,26 +665,8 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="SocialED.metrics.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">SocialED.metrics package</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="SocialED.dataset.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">SocialED.dataset package</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -423,13 +699,74 @@
             <ul>
 <li><a class="reference internal" href="#">SocialED.detector package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#socialed-detector-bert-module">SocialED.detector.bert module</a></li>
-<li><a class="reference internal" href="#socialed-detector-bilstm-module">SocialED.detector.bilstm module</a></li>
+<li><a class="reference internal" href="#module-SocialED.detector.bert">SocialED.detector.bert module</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT"><code class="docutils literal notranslate"><span class="pre">BERT</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.detection"><code class="docutils literal notranslate"><span class="pre">BERT.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.evaluate"><code class="docutils literal notranslate"><span class="pre">BERT.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.get_bert_embeddings"><code class="docutils literal notranslate"><span class="pre">BERT.get_bert_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.preprocess"><code class="docutils literal notranslate"><span class="pre">BERT.preprocess()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-SocialED.detector.bilstm">SocialED.detector.bilstm module</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM"><code class="docutils literal notranslate"><span class="pre">BiLSTM</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.detection"><code class="docutils literal notranslate"><span class="pre">BiLSTM.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.evaluate"><code class="docutils literal notranslate"><span class="pre">BiLSTM.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.fit"><code class="docutils literal notranslate"><span class="pre">BiLSTM.fit()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.load_embeddings"><code class="docutils literal notranslate"><span class="pre">BiLSTM.load_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.preprocess"><code class="docutils literal notranslate"><span class="pre">BiLSTM.preprocess()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.run_train"><code class="docutils literal notranslate"><span class="pre">BiLSTM.run_train()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.split"><code class="docutils literal notranslate"><span class="pre">BiLSTM.split()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.BiLSTM.train"><code class="docutils literal notranslate"><span class="pre">BiLSTM.train()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.FunctionNegativeTripletSelector"><code class="docutils literal notranslate"><span class="pre">FunctionNegativeTripletSelector</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.FunctionNegativeTripletSelector.get_triplets"><code class="docutils literal notranslate"><span class="pre">FunctionNegativeTripletSelector.get_triplets()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.HardestNegativeTripletSelector"><code class="docutils literal notranslate"><span class="pre">HardestNegativeTripletSelector()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.LSTM"><code class="docutils literal notranslate"><span class="pre">LSTM</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.LSTM.forward"><code class="docutils literal notranslate"><span class="pre">LSTM.forward()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.LSTM.init_hidden"><code class="docutils literal notranslate"><span class="pre">LSTM.init_hidden()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.OnlineTripletLoss"><code class="docutils literal notranslate"><span class="pre">OnlineTripletLoss</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.OnlineTripletLoss.forward"><code class="docutils literal notranslate"><span class="pre">OnlineTripletLoss.forward()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.RandomNegativeTripletSelector"><code class="docutils literal notranslate"><span class="pre">RandomNegativeTripletSelector()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.TripletSelector"><code class="docutils literal notranslate"><span class="pre">TripletSelector</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.TripletSelector.get_triplets"><code class="docutils literal notranslate"><span class="pre">TripletSelector.get_triplets()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.VectorizeData"><code class="docutils literal notranslate"><span class="pre">VectorizeData</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.VectorizeData.pad_data"><code class="docutils literal notranslate"><span class="pre">VectorizeData.pad_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.hardest_negative"><code class="docutils literal notranslate"><span class="pre">hardest_negative()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.pdist"><code class="docutils literal notranslate"><span class="pre">pdist()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bilstm.random_hard_negative"><code class="docutils literal notranslate"><span class="pre">random_hard_negative()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#socialed-detector-clkd-module">SocialED.detector.clkd module</a></li>
 <li><a class="reference internal" href="#socialed-detector-etgnn-module">SocialED.detector.etgnn module</a></li>
 <li><a class="reference internal" href="#socialed-detector-eventx-module">SocialED.detector.eventx module</a></li>
 <li><a class="reference internal" href="#socialed-detector-finevent-module">SocialED.detector.finevent module</a></li>
-<li><a class="reference internal" href="#socialed-detector-glove-module">SocialED.detector.glove module</a></li>
+<li><a class="reference internal" href="#module-SocialED.detector.glove">SocialED.detector.glove module</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe"><code class="docutils literal notranslate"><span class="pre">GloVe</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.create_vectors"><code class="docutils literal notranslate"><span class="pre">GloVe.create_vectors()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.detection"><code class="docutils literal notranslate"><span class="pre">GloVe.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.evaluate"><code class="docutils literal notranslate"><span class="pre">GloVe.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.fit"><code class="docutils literal notranslate"><span class="pre">GloVe.fit()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.load_glove_vectors"><code class="docutils literal notranslate"><span class="pre">GloVe.load_glove_vectors()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.load_model"><code class="docutils literal notranslate"><span class="pre">GloVe.load_model()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.preprocess"><code class="docutils literal notranslate"><span class="pre">GloVe.preprocess()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.glove.GloVe.text_to_glove_vector"><code class="docutils literal notranslate"><span class="pre">GloVe.text_to_glove_vector()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#socialed-detector-hcrc-module">SocialED.detector.hcrc module</a></li>
 <li><a class="reference internal" href="#socialed-detector-hisevent-module">SocialED.detector.hisevent module</a></li>
 <li><a class="reference internal" href="#socialed-detector-kpgnn-module">SocialED.detector.kpgnn module</a></li>
@@ -451,8 +788,28 @@
 <li><a class="reference internal" href="#socialed-detector-rplmsed-module">SocialED.detector.rplmsed module</a></li>
 <li><a class="reference internal" href="#socialed-detector-sbert-module">SocialED.detector.sbert module</a></li>
 <li><a class="reference internal" href="#socialed-detector-uclsed-module">SocialED.detector.uclsed module</a></li>
-<li><a class="reference internal" href="#socialed-detector-wmd-module">SocialED.detector.wmd module</a></li>
-<li><a class="reference internal" href="#socialed-detector-word2vec-module">SocialED.detector.word2vec module</a></li>
+<li><a class="reference internal" href="#module-SocialED.detector.wmd">SocialED.detector.wmd module</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.wmd.WMD"><code class="docutils literal notranslate"><span class="pre">WMD</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.wmd.WMD.detection"><code class="docutils literal notranslate"><span class="pre">WMD.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.wmd.WMD.evaluate"><code class="docutils literal notranslate"><span class="pre">WMD.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.wmd.WMD.fit"><code class="docutils literal notranslate"><span class="pre">WMD.fit()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.wmd.WMD.preprocess"><code class="docutils literal notranslate"><span class="pre">WMD.preprocess()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-SocialED.detector.word2vec">SocialED.detector.word2vec module</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC"><code class="docutils literal notranslate"><span class="pre">WORD2VEC</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.detection"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.document_vector"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.document_vector()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.evaluate"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.fit"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.fit()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.load_model"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.load_model()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.word2vec.WORD2VEC.preprocess"><code class="docutils literal notranslate"><span class="pre">WORD2VEC.preprocess()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>

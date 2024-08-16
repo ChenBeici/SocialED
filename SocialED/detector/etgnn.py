@@ -19,42 +19,6 @@ import torch.nn.functional as F
 from sklearn.cluster import KMeans
 
 
-class args_define:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--file_path", type=str, default='../model_saved/ETGNN/',help="file saved path ",)
-    parser.add_argument("--lang", type=str, default='French',help="file saved path ",)
-    parser.add_argument("--epoch", type=int, help="epoch num", default=2)
-    parser.add_argument("--batch_size", type=int, default=20000)
-    parser.add_argument("--neighbours_num", type=int, default=80)
-    parser.add_argument("--GNN_h_dim", type=int, default=256)
-    parser.add_argument("--GNN_out_dim", type=int, default=256)
-    parser.add_argument("--E_h_dim", type=int, default=128)
-    #parser.add_argument("--use_uncertainty", action="store_true", help="whether or not to user uncertainty")
-    parser.add_argument("--use_uncertainty",  default=True, help="whether or not to user uncertainty")
-
-    parser.add_argument("--use_cuda", default=True, help="whether or not to user cuda")
-    #parser.add_argument("--use_cuda", action="store_true", help="whether or not to user cuda")
-    parser.add_argument("--gpuid", type=int, default=0)
-    parser.add_argument("--mode",type=int,default=0)
-    uncertainty_type_group = parser.add_mutually_exclusive_group()
-    uncertainty_type_group.add_argument(
-        "--mse",
-        default=False,
-        help="Set this argument when using uncertainty. Sets loss function to Expected Mean Square Error.",
-    )
-    uncertainty_type_group.add_argument(
-        "--digamma",
-        default=True,
-        help="Set this argument when using uncertainty. Sets loss function to Expected Cross Entropy.",
-    )
-    uncertainty_type_group.add_argument(
-        "--log",
-        default=False,
-        help="Set this argument when using uncertainty. Sets loss function to Negative Log of the Expected Likelihood.",
-    )
-    parser.add_argument("--save_path", type=str, default="../model_saved/ETGNN/Eng_CrisisLexT26/evi1020191139", help="dataset choosen from [CrisisLexT27]")
-    args = parser.parse_args()
-
 class ETGNN:
     def __init__(self, args, dataset):
         pass
@@ -1013,6 +977,43 @@ def ava_split_data(length, labels, classes):
 
 if __name__ == "__main__":
     from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    
+    class args_define:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--file_path", type=str, default='../model_saved/ETGNN/',help="file saved path ",)
+        parser.add_argument("--lang", type=str, default='French',help="file saved path ",)
+        parser.add_argument("--epoch", type=int, help="epoch num", default=2)
+        parser.add_argument("--batch_size", type=int, default=20000)
+        parser.add_argument("--neighbours_num", type=int, default=80)
+        parser.add_argument("--GNN_h_dim", type=int, default=256)
+        parser.add_argument("--GNN_out_dim", type=int, default=256)
+        parser.add_argument("--E_h_dim", type=int, default=128)
+        #parser.add_argument("--use_uncertainty", action="store_true", help="whether or not to user uncertainty")
+        parser.add_argument("--use_uncertainty",  default=True, help="whether or not to user uncertainty")
+
+        parser.add_argument("--use_cuda", default=True, help="whether or not to user cuda")
+        #parser.add_argument("--use_cuda", action="store_true", help="whether or not to user cuda")
+        parser.add_argument("--gpuid", type=int, default=0)
+        parser.add_argument("--mode",type=int,default=0)
+        uncertainty_type_group = parser.add_mutually_exclusive_group()
+        uncertainty_type_group.add_argument(
+            "--mse",
+            default=False,
+            help="Set this argument when using uncertainty. Sets loss function to Expected Mean Square Error.",
+        )
+        uncertainty_type_group.add_argument(
+            "--digamma",
+            default=True,
+            help="Set this argument when using uncertainty. Sets loss function to Expected Cross Entropy.",
+        )
+        uncertainty_type_group.add_argument(
+            "--log",
+            default=False,
+            help="Set this argument when using uncertainty. Sets loss function to Negative Log of the Expected Likelihood.",
+        )
+        parser.add_argument("--save_path", type=str, default="../model_saved/ETGNN/Eng_CrisisLexT26/evi1020191139", help="dataset choosen from [CrisisLexT27]")
+        args = parser.parse_args()
+
 
     args = args_define.args
     dataset = Event2018_Dataset.load_data()

@@ -1,9 +1,8 @@
-.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/socialED.png?raw=true
-   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/socialED.png?raw=true
+.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
+   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
    :width: 1050
    :alt: SocialED Logo
    :align: center
-
 
 .. image:: https://readthedocs.org/projects/pygod/badge/?version=latest
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
@@ -90,7 +89,18 @@ Folder Structure
 Installation
 ------------
 
-### Manually
+
+
+It is recommended to use **pip** for installation.
+Please make sure **the latest version** is installed, as PyGOD is updated frequently:
+
+.. code-block:: bash
+
+   pip install SocialEd            # normal install
+   pip install --upgrade SocialED  # or update if needed
+
+
+Alternatively, you could clone and run setup.py file:
 
 .. code-block:: bash
 
@@ -100,8 +110,9 @@ Installation
 
     # Installation
     git clone https://github.com/ChenBeici/SocialED.git
+    cd SocialED
     pip install -r requirements.txt
-    pip install SocialED
+    pip install .
 
 **Required Dependencies**\ :
 
@@ -110,8 +121,21 @@ Installation
 * scikit-learn>=1.2.2
 * scipy>=1.10.1
 * networkx>=2.3
-* torch>=2.0.0
-* torch_geometric>=2.3.0
+* torch>=2.3.0
+* torch_geometric>=2.5.3
+* dgl>=0.6.0
+
+API Cheatsheet & Reference
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Full API Reference: (https://docs.SocialED.org). API cheatsheet for all detectors:
+
+* **preprocess()**\ :  Preprocess the dataset.
+* **fit()**\ : Fit the detector with train data.
+* **detector()**\: Initialize and configure the detection model, preparing it for training and prediction tasks.
+* **evaluate(predictions, groundtruth)**\: Assess the performance of the detector by comparing predictions with the actual data.
+
+
 
 
 Usage & Example
@@ -178,8 +202,6 @@ BERT                2018   PLM         Offline      Supervised     [#Devlin2018b
 SBERT               2019   PLM         Offline      Supervised     [#Reimers2019sbert]_
 EventX              2020   Others      Online       Supervised     [#Liu2020eventx]_
 CLKD                2021   GNN         Online       Supervised     [#Ren2021clkd]_
-MVGAN               2021   GNN         Offline      Supervised     [#Cui2021mvgan]_
-PP-GCN              2021   GNN         Online       Supervised     [#Peng2021ppgcn]_
 KPGNN               2021   GNN         Online       Supervised     [#Cao2021kpgnn]_
 FinEvent            2022   GNN         Online       Supervised     [#Peng2022finevent]_
 QSGNN               2022   GNN         Online       Supervised     [#Ren2022qsgnn]_
@@ -226,19 +248,6 @@ FewED                 6,000     40              14,000      300,000     5,500
 
 
 
-
-API Cheatsheet & Reference
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Full API Reference: (https://docs.SocialED.org). API cheatsheet for all detectors:
-
-* **preprocess()**\ :  Preprocess the dataset.
-* **fit()**\ : Fit the detector with train data.
-* **detector()**\: Initialize and configure the detection model, preparing it for training and prediction tasks.
-* **evaluate(predictions, groundtruth)**\: Assess the performance of the detector by comparing predictions with the actual data.
-
-
-
 How to Contribute
 -----------------
 
@@ -246,13 +255,9 @@ You are welcome to become part of this project.
 See `contribution guide <https://github.com/pygod-team/pygod/blob/main/CONTRIBUTING.rst>`_ for more information.
 
 
-
-
-
 Contact
 -------
 Reach out to us by submitting an issue report or sending an email to sy2339225@buaa.edu.
-
 
 
 References

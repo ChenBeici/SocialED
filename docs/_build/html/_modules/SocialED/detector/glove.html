@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.detector.lda - SocialED documentation</title>
+        <title>SocialED.detector.glove - SocialED documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
@@ -238,44 +238,46 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for SocialED.detector.lda</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">os</span>
+          <h1>Source code for SocialED.detector.glove</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gensim.models.ldamodel</span> <span class="kn">import</span> <span class="n">LdaModel</span>
-<span class="kn">from</span> <span class="nn">gensim</span> <span class="kn">import</span> <span class="n">corpora</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 
-<div class="viewcode-block" id="LDA"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA">[docs]</a><span class="k">class</span> <span class="nc">LDA</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> 
-                 <span class="n">num_topics</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> 
-                 <span class="n">passes</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> 
-                 <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> 
-                 <span class="n">alpha</span><span class="o">=</span><span class="s1">&#39;symmetric&#39;</span><span class="p">,</span> 
-                 <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                 <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
-                 <span class="n">eval_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> 
-                 <span class="n">chunksize</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> 
-                 <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;../model_saved/LDA/&#39;</span><span class="p">):</span>
+<span class="c1"># Setup logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> : </span><span class="si">%(levelname)s</span><span class="s1"> : </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GloVe"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe">[docs]</a><span class="k">class</span> <span class="nc">GloVe</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;../model_saved/GloVe/&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;../model_needed/glove.6B.100d.txt&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_topics</span> <span class="o">=</span> <span class="n">num_topics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">passes</span> <span class="o">=</span> <span class="n">passes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">iterations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_clusters</span> <span class="o">=</span> <span class="n">num_clusters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eval_every</span> <span class="o">=</span> <span class="n">eval_every</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span> <span class="o">=</span> <span class="n">chunksize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;kmeans_model&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;lda_model&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embeddings_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_glove_vectors</span><span class="p">()</span>
 
-<div class="viewcode-block" id="LDA.preprocess"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.load_glove_vectors"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.load_glove_vectors">[docs]</a>    <span class="k">def</span> <span class="nf">load_glove_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load GloVe pre-trained word vectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings_index</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                <span class="n">embeddings_index</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">coefs</span>
+        <span class="k">return</span> <span class="n">embeddings_index</span></div>
+
+<div class="viewcode-block" id="GloVe.preprocess"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data preprocessing: tokenization, stop words removal, etc.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -284,66 +286,73 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="LDA.create_corpus"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.create_corpus">[docs]</a>    <span class="k">def</span> <span class="nf">create_corpus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">text_column</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.text_to_glove_vector"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.text_to_glove_vector">[docs]</a>    <span class="k">def</span> <span class="nf">text_to_glove_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create corpus and dictionary required for LDA model.</span>
+<span class="sd">        Convert text to GloVe vector representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="n">valid_words</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embeddings_index</span><span class="p">:</span>
+                <span class="n">embedding</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embeddings_index</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+                <span class="n">valid_words</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">valid_words</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">embedding</span> <span class="o">/=</span> <span class="n">valid_words</span>
+        <span class="k">return</span> <span class="n">embedding</span></div>
+
+<div class="viewcode-block" id="GloVe.create_vectors"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.create_vectors">[docs]</a>    <span class="k">def</span> <span class="nf">create_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">text_column</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create GloVe vectors for each document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">texts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">text_column</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">corpora</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
-        <span class="n">corpus</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span><span class="o">.</span><span class="n">doc2bow</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">corpus</span><span class="p">,</span> <span class="n">dictionary</span></div>
+        <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">text_to_glove_vector</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">vectors</span></div>
 
-<div class="viewcode-block" id="LDA.load_model"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.load_model"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load the LDA model from a file.</span>
+<span class="sd">        Load the KMeans model from a file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading LDA model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
-        <span class="n">lda_model</span> <span class="o">=</span> <span class="n">LdaModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;LDA model loaded successfully.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading KMeans model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="n">kmeans_model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">kmeans_model</span> <span class="o">=</span> <span class="n">kmeans_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_vectors</span><span class="p">)</span>  <span class="c1"># 重新训练模型</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;KMeans model loaded successfully.&quot;</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">lda_model</span> <span class="o">=</span> <span class="n">lda_model</span>
-        <span class="k">return</span> <span class="n">lda_model</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kmeans_model</span> <span class="o">=</span> <span class="n">kmeans_model</span>
+        <span class="k">return</span> <span class="n">kmeans_model</span></div>
 
-<div class="viewcode-block" id="LDA.display_topics"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.display_topics">[docs]</a>    <span class="k">def</span> <span class="nf">display_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Display topics generated by the LDA model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">topics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lda_model</span><span class="o">.</span><span class="n">show_topics</span><span class="p">(</span><span class="n">num_words</span><span class="o">=</span><span class="n">num_words</span><span class="p">,</span> <span class="n">formatted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Topic </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="p">[</span><span class="n">word</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">topic</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="LDA.fit"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.fit"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">train_df</span><span class="p">,</span> <span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="n">train_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">test_df</span>
-        <span class="n">train_corpus</span><span class="p">,</span> <span class="n">train_dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_corpus</span><span class="p">(</span><span class="n">train_df</span><span class="p">,</span> <span class="s1">&#39;processed_text&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_vectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vectors</span><span class="p">(</span><span class="n">train_df</span><span class="p">,</span> <span class="s1">&#39;processed_text&#39;</span><span class="p">)</span>
 
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Training LDA model...&quot;</span><span class="p">)</span>
-        <span class="n">lda_model</span> <span class="o">=</span> <span class="n">LdaModel</span><span class="p">(</span><span class="n">corpus</span><span class="o">=</span><span class="n">train_corpus</span><span class="p">,</span> <span class="n">id2word</span><span class="o">=</span><span class="n">train_dictionary</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_topics</span><span class="p">,</span> <span class="n">passes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">passes</span><span class="p">,</span>
-                             <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                             <span class="n">eval_every</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_every</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;LDA model trained successfully.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Training KMeans model...&quot;</span><span class="p">)</span>
+        <span class="n">kmeans_model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">kmeans_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_vectors</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;KMeans model trained successfully.&quot;</span><span class="p">)</span>
         
         <span class="c1"># Save the trained model to a file</span>
-        <span class="n">lda_model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LDA model saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">kmeans_model</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;KMeans model saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LDA.detection"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.detection">[docs]</a>    <span class="k">def</span> <span class="nf">detection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.detection"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.detection">[docs]</a>    <span class="k">def</span> <span class="nf">detection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign topics to each document.</span>
+<span class="sd">        Assign clusters to each document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>  <span class="c1"># Ensure the model is loaded before making detections</span>
-        <span class="n">corpus</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_corpus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">,</span> <span class="s1">&#39;processed_text&#39;</span><span class="p">)</span>
-        <span class="n">topics</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lda_model</span><span class="o">.</span><span class="n">get_document_topics</span><span class="p">(</span><span class="n">bow</span><span class="p">)</span> <span class="k">for</span> <span class="n">bow</span> <span class="ow">in</span> <span class="n">corpus</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_vectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">,</span> <span class="s1">&#39;processed_text&#39;</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmeans_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_vectors</span><span class="p">)</span>
 
         <span class="c1"># Get the ground truth labels and predicted labels</span>
         <span class="n">ground_truths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="s1">&#39;event_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span></div>
+        <span class="n">predicted_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predicted_labels</span></div>
 
-<div class="viewcode-block" id="LDA.evaluate"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.lda.LDA.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">):</span>
+<div class="viewcode-block" id="GloVe.evaluate"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.glove.GloVe.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -357,39 +366,27 @@
 
         <span class="c1"># Calculate Adjusted Rand Index (ARI)</span>
         <span class="n">ari</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Rand Index (ARI): </span><span class="si">{</span><span class="n">ari</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Get the current date and time</span>
-        <span class="n">current_datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Save results to a file in append mode</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">+</span> <span class="s2">&quot;_evaluation.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Date and Time: </span><span class="si">{</span><span class="n">current_datetime</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalized Mutual Information (NMI): </span><span class="si">{</span><span class="n">nmi</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Mutual Information (AMI): </span><span class="si">{</span><span class="n">ami</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Rand Index (ARI): </span><span class="si">{</span><span class="n">ari</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Add a newline for better readability</span></div></div>
-
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Rand Index (ARI): </span><span class="si">{</span><span class="n">ari</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
 
 <span class="c1"># Main function</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">data_sets</span> <span class="kn">import</span> <span class="n">Event2012_Dataset</span><span class="p">,</span> <span class="n">Event2018_Dataset</span><span class="p">,</span> <span class="n">MAVEN_Dataset</span><span class="p">,</span> <span class="n">Arabic_Dataset</span>
 
     <span class="n">dataset</span> <span class="o">=</span> <span class="n">Event2012_Dataset</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
-    
-    <span class="n">lda</span> <span class="o">=</span> <span class="n">LDA</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">glove</span> <span class="o">=</span> <span class="n">GloVe</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
     <span class="c1"># Data preprocessing</span>
-    <span class="n">lda</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
+    <span class="n">glove</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
     
-    <span class="c1"># Train the LDA model</span>
-    <span class="n">lda</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="c1"># Train the KMeans model</span>
+    <span class="n">glove</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
     
-    <span class="c1"># detection</span>
-    <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">lda</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>
-    
+    <span class="c1"># Detection</span>
+    <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predicted_labels</span> <span class="o">=</span> <span class="n">glove</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>
+
     <span class="c1"># Evaluate the model</span>
-    <span class="n">lda</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+    <span class="n">glove</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predicted_labels</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
