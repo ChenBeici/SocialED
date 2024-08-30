@@ -1,10 +1,10 @@
-SocialED.detector package
+SocialED.detector 
 =========================
 
 Submodules
 ----------
 
-SocialED.detector.bert module
+SocialED.detector.bert 
 -----------------------------
 
 .. automodule:: SocialED.detector.bert
@@ -12,7 +12,7 @@ SocialED.detector.bert module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.bilstm module
+SocialED.detector.bilstm 
 -------------------------------
 
 .. automodule:: SocialED.detector.bilstm
@@ -20,7 +20,7 @@ SocialED.detector.bilstm module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.clkd module
+SocialED.detector.clkd 
 -----------------------------
 
 .. automodule:: SocialED.detector.clkd
@@ -28,7 +28,7 @@ SocialED.detector.clkd module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.etgnn module
+SocialED.detector.etgnn 
 ------------------------------
 
 .. automodule:: SocialED.detector.etgnn
@@ -36,7 +36,7 @@ SocialED.detector.etgnn module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.eventx module
+SocialED.detector.eventx 
 -------------------------------
 
 .. automodule:: SocialED.detector.eventx
@@ -44,7 +44,7 @@ SocialED.detector.eventx module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.finevent module
+SocialED.detector.finevent 
 ---------------------------------
 
 .. automodule:: SocialED.detector.finevent
@@ -52,7 +52,7 @@ SocialED.detector.finevent module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.glove module
+SocialED.detector.glove 
 ------------------------------
 
 .. automodule:: SocialED.detector.glove
@@ -60,7 +60,7 @@ SocialED.detector.glove module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.hcrc module
+SocialED.detector.hcrc 
 -----------------------------
 
 .. automodule:: SocialED.detector.hcrc
@@ -68,7 +68,7 @@ SocialED.detector.hcrc module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.hisevent module
+SocialED.detector.hisevent 
 ---------------------------------
 
 .. automodule:: SocialED.detector.hisevent
@@ -76,7 +76,7 @@ SocialED.detector.hisevent module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.kpgnn module
+SocialED.detector.kpgnn 
 ------------------------------
 
 .. automodule:: SocialED.detector.kpgnn
@@ -84,7 +84,7 @@ SocialED.detector.kpgnn module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.lda module
+SocialED.detector.lda 
 ----------------------------
 
 .. automodule:: SocialED.detector.lda
@@ -92,7 +92,7 @@ SocialED.detector.lda module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.qsgnn module
+SocialED.detector.qsgnn 
 ------------------------------
 
 .. automodule:: SocialED.detector.qsgnn
@@ -100,15 +100,8 @@ SocialED.detector.qsgnn module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.rename module
--------------------------------
 
-.. automodule:: SocialED.detector.rename
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-SocialED.detector.rplmsed module
+SocialED.detector.rplmsed 
 --------------------------------
 
 .. automodule:: SocialED.detector.rplmsed
@@ -116,7 +109,7 @@ SocialED.detector.rplmsed module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.sbert module
+SocialED.detector.sbert 
 ------------------------------
 
 .. automodule:: SocialED.detector.sbert
@@ -124,7 +117,7 @@ SocialED.detector.sbert module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.uclsed module
+SocialED.detector.uclsed 
 -------------------------------
 
 .. automodule:: SocialED.detector.uclsed
@@ -132,7 +125,7 @@ SocialED.detector.uclsed module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.wmd module
+SocialED.detector.wmd 
 ----------------------------
 
 .. automodule:: SocialED.detector.wmd
@@ -140,7 +133,7 @@ SocialED.detector.wmd module
    :undoc-members:
    :show-inheritance:
 
-SocialED.detector.word2vec module
+SocialED.detector.word2vec 
 ---------------------------------
 
 .. automodule:: SocialED.detector.word2vec

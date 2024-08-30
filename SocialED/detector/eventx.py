@@ -22,30 +22,22 @@ import logging
 
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-class args_define():
-    parser = argparse.ArgumentParser()
-
-    # Model and training parameters
-    parser.add_argument('--mask_path', default='../model_saved/eventX/split_indices/test_indices_2048.npy', type=str, help="Path to the test mask.")
-    parser.add_argument('--file_path', default='../model_saved/eventX/', type=str, help="Path to save the results.")
-    parser.add_argument('--num_repeats', default=5, type=int, help="Number of experiment repetitions.")
-    parser.add_argument('--min_cooccur_time', default=2, type=int, help="Minimum co-occurrence time.")
-    parser.add_argument('--min_prob', default=0.15, type=float, help="Minimum conditional probability.")
-    parser.add_argument('--max_kw_num', default=3, type=int, help="Maximum number of keywords in a community.")
-    
-    args = parser.parse_args()
-
 
 class EventX:
-    def __init__(self, args, dataset):
-        self.args = args
+    def __init__(self, dataset,
+                 mask_path='../model_saved/eventX/split_indices/test_indices_2048.npy',
+                 file_path='../model_saved/eventX/',
+                 num_repeats=5,
+                 min_cooccur_time=2,
+                 min_prob=0.15,
+                 max_kw_num=3):
         self.dataset = dataset
-        self.file_path = self.args.file_path
-        self.mask_path = self.args.mask_path
-        self.num_repeats = self.args.num_repeats
-        self.min_cooccur_time = self.args.min_cooccur_time
-        self.min_prob = self.args.min_prob
-        self.max_kw_num = self.args.max_kw_num
+        self.mask_path = mask_path
+        self.file_path = file_path
+        self.num_repeats = num_repeats
+        self.min_cooccur_time = min_cooccur_time
+        self.min_prob = min_prob
+        self.max_kw_num = max_kw_num
 
 
     #construct offline df
@@ -318,8 +310,7 @@ if __name__=="__main__":
     from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
     dataset = MAVEN_Dataset.load_data()
-    args = args_define.args
-    eventx = EventX(args,dataset)
+    eventx = EventX(dataset)
     
     # Data preprocessing
     eventx.preprocess()

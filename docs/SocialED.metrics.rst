@@ -1,10 +1,10 @@
-SocialED.metrics package
+SocialED.metrics 
 ========================
 
 Submodules
 ----------
 
-SocialED.metrics.metric module
+SocialED.metrics.metric 
 ------------------------------
 
 .. automodule:: SocialED.metrics.metric

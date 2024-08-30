@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.tests" href="SocialED.tests.html" /><link rel="prev" title="SocialED.metrics" href="SocialED.metrics.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.utils package - SocialED documentation</title>
+    <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
+        <title>Utility Functions - SocialED documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
@@ -204,7 +204,21 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">A Blitz Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.tests.html">SocialED.tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="team.html">Core Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
 
 </div>
@@ -245,28 +259,680 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="socialed-utils-package">
-<h1>SocialED.utils package<a class="headerlink" href="#socialed-utils-package" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+          <section id="utility-functions">
+<h1>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this heading">¶</a></h1>
+<section id="module-SocialED.utils.data">
+<span id="socialed-utils-data-module"></span><h2>SocialED.utils.data module<a class="headerlink" href="#module-SocialED.utils.data" title="Permalink to this heading">¶</a></h2>
+<p>Utility functions for manipulating data</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.check_consistent_shape">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">check_consistent_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#check_consistent_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.check_consistent_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal shape to check input data shapes are consistent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training samples.</p></li>
+<li><p><strong>y_train</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples.</p></li>
+<li><p><strong>y_test</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples.</p></li>
+<li><p><strong>y_train_pred</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted binary labels of the training samples.</p></li>
+<li><p><strong>y_test_pred</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted binary labels of the test samples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – The training samples.</p></li>
+<li><p><strong>y_train</strong> (<em>list or array of shape (n_samples,)</em>) – The ground truth of training samples.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – The test samples.</p></li>
+<li><p><strong>y_test</strong> (<em>list or array of shape (n_samples,)</em>) – The ground truth of test samples.</p></li>
+<li><p><strong>y_train_pred</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – The predicted binary labels of the training samples.</p></li>
+<li><p><strong>y_test_pred</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – The predicted binary labels of the test samples.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.evaluate_print">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">evaluate_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clf_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#evaluate_print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.evaluate_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for evaluating and printing the results for examples.
+Default metrics include ROC and Precision &#64; n</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clf_name</strong> (<em>str</em>) – The name of the detector.</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth. Binary (0: inliers, 1: outliers).</p></li>
+<li><p><strong>y_pred</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The raw outlier scores as returned by a fitted model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.generate_data">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">generate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behaviour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'new'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#generate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.generate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to generate synthesized data.
+Normal data is generated by a multivariate Gaussian distribution and
+outliers are generated by a uniform distribution.
+“X_train, X_test, y_train, y_test” are returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_train</strong> (<em>int</em><em>, </em><em>(</em><em>default=1000</em><em>)</em>) – The number of training points to generate.</p></li>
+<li><p><strong>n_test</strong> (<em>int</em><em>, </em><em>(</em><em>default=500</em><em>)</em>) – The number of test points to generate.</p></li>
+<li><p><strong>n_features</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of features (dimensions).</p></li>
+<li><p><strong>contamination</strong> (<em>float in</em><em> (</em><em>0.</em><em>, </em><em>0.5</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=0.1</em><em>)</em>) – The amount of contamination of the data set, i.e.
+the proportion of outliers in the data set. Used when fitting to
+define the threshold on the decision function.</p></li>
+<li><p><strong>train_only</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If true, generate train data only.</p></li>
+<li><p><strong>offset</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – Adjust the value range of Gaussian and Uniform.</p></li>
+<li><p><strong>behaviour</strong> (<em>str</em><em>, </em><em>default='new'</em>) – Behaviour of the returned datasets which can be either ‘old’ or
+‘new’. Passing <code class="docutils literal notranslate"><span class="pre">behaviour='new'</span></code> returns
+“X_train, X_test, y_train, y_test”, while passing <code class="docutils literal notranslate"><span class="pre">behaviour='old'</span></code>
+returns “X_train, y_train, X_test, y_test”.</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – If int, random_state is the seed used by the random number generator;
+If RandomState instance, random_state is the random number generator;
+If None, the random number generator is the RandomState instance used
+by <cite>np.random</cite>.</p></li>
+<li><p><strong>n_nan</strong> (<em>int</em>) – The number of values that are missing (np.NaN). Defaults to zero.</p></li>
+<li><p><strong>n_inf</strong> (<em>int</em>) – The number of values that are infinite. (np.infty). Defaults to zero.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array of shape (n_train, n_features)</em>) – Training data.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array of shape (n_test, n_features)</em>) – Test data.</p></li>
+<li><p><strong>y_train</strong> (<em>numpy array of shape (n_train,)</em>) – Training ground truth.</p></li>
+<li><p><strong>y_test</strong> (<em>numpy array of shape (n_test,)</em>) – Test ground truth.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.generate_data_categorical">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">generate_data_categorical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_informative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_category_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_category_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#generate_data_categorical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.generate_data_categorical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to generate synthesized categorical data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_train</strong> (<em>int</em><em>, </em><em>(</em><em>default=1000</em><em>)</em>) – The number of training points to generate.</p></li>
+<li><p><strong>n_test</strong> (<em>int</em><em>, </em><em>(</em><em>default=500</em><em>)</em>) – The number of test points to generate.</p></li>
+<li><p><strong>n_features</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of features for each sample.</p></li>
+<li><p><strong>n_informative</strong> (<em>int in</em><em> (</em><em>1</em><em>, </em><em>n_features</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of informative features in the outlier points.
+The higher the easier the outlier detection should be.
+Note that n_informative should not be less than or
+equal n_features.</p></li>
+<li><p><strong>n_category_in</strong> (<em>int in</em><em> (</em><em>1</em><em>, </em><em>n_inliers</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of categories in the inlier points.</p></li>
+<li><p><strong>n_category_out</strong> (<em>int in</em><em> (</em><em>1</em><em>, </em><em>n_outliers</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of categories in the outlier points.</p></li>
+<li><p><strong>contamination</strong> (<em>float in</em><em> (</em><em>0.</em><em>, </em><em>0.5</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=0.1</em><em>)</em>) – The amount of contamination of the data set, i.e.
+the proportion of outliers in the data set.</p></li>
+<li><p><strong>shuffle</strong> (<em>bool</em><em>, </em><em>optional</em><em>(</em><em>default=True</em><em>)</em>) – If True, inliers will be shuffled which makes more noisy distribution.</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – If int, random_state is the seed used by the random number generator;
+If RandomState instance, random_state is the random number generator;
+If None, the random number generator is the RandomState instance used
+by <cite>np.random</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array of shape (n_train, n_features)</em>) – Training data.</p></li>
+<li><p><strong>y_train</strong> (<em>numpy array of shape (n_train,)</em>) – Training ground truth.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array of shape (n_test, n_features)</em>) – Test data.</p></li>
+<li><p><strong>y_test</strong> (<em>numpy array of shape (n_test,)</em>) – Test ground truth.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.generate_data_clusters">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">generate_data_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_in_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#generate_data_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.generate_data_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Utility function to generate synthesized data in clusters.</dt><dd><p>Generated data can involve the low density pattern problem and global
+outliers which are considered as difficult tasks for outliers detection
+algorithms.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_train</strong> (<em>int</em><em>, </em><em>(</em><em>default=1000</em><em>)</em>) – The number of training points to generate.</p></li>
+<li><p><strong>n_test</strong> (<em>int</em><em>, </em><em>(</em><em>default=500</em><em>)</em>) – The number of test points to generate.</p></li>
+<li><p><strong>n_clusters</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of centers (i.e. clusters) to generate.</p></li>
+<li><p><strong>n_features</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=2</em><em>)</em>) – The number of features for each sample.</p></li>
+<li><p><strong>contamination</strong> (<em>float in</em><em> (</em><em>0.</em><em>, </em><em>0.5</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=0.1</em><em>)</em>) – The amount of contamination of the data set, i.e.
+the proportion of outliers in the data set.</p></li>
+<li><p><strong>size</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='same'</em><em>)</em>) – Size of each cluster: ‘same’ generates clusters with same size,
+‘different’ generate clusters with different sizes.</p></li>
+<li><p><strong>density</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='same'</em><em>)</em>) – Density of each cluster: ‘same’ generates clusters with same density,
+‘different’ generate clusters with different densities.</p></li>
+<li><p><strong>dist</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=0.25</em><em>)</em>) – Distance between clusters. Should be between 0. and 1.0
+It is used to avoid clusters overlapping as much as possible.
+However, if number of samples and number of clusters are too high,
+it is unlikely to separate them fully even if <code class="docutils literal notranslate"><span class="pre">dist</span></code> set to 1.0</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – If int, random_state is the seed used by the random number generator;
+If RandomState instance, random_state is the random number generator;
+If None, the random number generator is the RandomState instance used
+by <cite>np.random</cite>.</p></li>
+<li><p><strong>return_in_clusters</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If True, the function returns x_train, y_train, x_test, y_test each as
+a list of numpy arrays where each index represents a cluster.
+If False, it returns x_train, y_train, x_test, y_test each as numpy
+array after joining the sequence of clusters arrays,</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array of shape (n_train, n_features)</em>) – Training data.</p></li>
+<li><p><strong>y_train</strong> (<em>numpy array of shape (n_train,)</em>) – Training ground truth.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array of shape (n_test, n_features)</em>) – Test data.</p></li>
+<li><p><strong>y_test</strong> (<em>numpy array of shape (n_test,)</em>) – Test ground truth.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.data.get_outliers_inliers">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.data.</span></span><span class="sig-name descname"><span class="pre">get_outliers_inliers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/data.html#get_outliers_inliers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.data.get_outliers_inliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to separate inliers from outliers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input samples</p></li>
+<li><p><strong>y</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of input samples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_outliers</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – Outliers.</p></li>
+<li><p><strong>X_inliers</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – Inliers.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="socialed-utils-data-module">
-<h2>SocialED.utils.data module<a class="headerlink" href="#socialed-utils-data-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.utils.example">
+<span id="socialed-utils-example-module"></span><h2>SocialED.utils.example module<a class="headerlink" href="#module-SocialED.utils.example" title="Permalink to this heading">¶</a></h2>
+<p>Utility functions for running examples</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.example.data_visualize">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.example.</span></span><span class="sig-name descname"><span class="pre">data_visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/example.html#data_visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.example.data_visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the synthetic samples generated by
+generate_data_cluster function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training samples.</p></li>
+<li><p><strong>y_train</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples.</p></li>
+<li><p><strong>show_figure</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure.</p></li>
+<li><p><strong>save_figure</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.example.visualize">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.example.</span></span><span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clf_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/example.html#visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples.
+Internal use only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clf_name</strong> (<em>str</em>) – The name of the detector.</p></li>
+<li><p><strong>X_train</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training samples.</p></li>
+<li><p><strong>y_train</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples.</p></li>
+<li><p><strong>y_test</strong> (<em>list</em><em> or </em><em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples.</p></li>
+<li><p><strong>y_train_pred</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted binary labels of the training samples.</p></li>
+<li><p><strong>y_test_pred</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted binary labels of the test samples.</p></li>
+<li><p><strong>show_figure</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure.</p></li>
+<li><p><strong>save_figure</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="socialed-utils-example-module">
-<h2>SocialED.utils.example module<a class="headerlink" href="#socialed-utils-example-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.utils.stat_models">
+<span id="socialed-utils-stat-models-module"></span><h2>SocialED.utils.stat_models module<a class="headerlink" href="#module-SocialED.utils.stat_models" title="Permalink to this heading">¶</a></h2>
+<p>A collection of statistical models</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.stat_models.column_ecdf">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.stat_models.</span></span><span class="sig-name descname"><span class="pre">column_ecdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/SocialED/utils/stat_models.html#column_ecdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.stat_models.column_ecdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to compute the column wise empirical cumulative distribution of a 2D feature matrix,
+where the rows are samples and the columns are features per sample. The accumulation is done in the positive
+direction of the sample axis.</p>
+<p>E.G.
+p(1) = 0.2, p(0) = 0.3, p(2) = 0.1, p(6) = 0.4
+ECDF E(5) = p(x &lt;= 5)
+ECDF E would be E(-1) = 0, E(0) = 0.3, E(1) = 0.5, E(2) = 0.6, E(3) = 0.6, E(4) = 0.6, E(5) = 0.6, E(6) = 1</p>
+<p>Similar to and tested against:
+<a class="reference external" href="https://www.statsmodels.org/stable/generated/statsmodels.distributions.empirical_distribution.ECDF.html">https://www.statsmodels.org/stable/generated/statsmodels.distributions.empirical_distribution.ECDF.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.stat_models.ecdf_terminate_equals_inplace">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.stat_models.</span></span><span class="sig-name descname"><span class="pre">ecdf_terminate_equals_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/stat_models.html#ecdf_terminate_equals_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.stat_models.ecdf_terminate_equals_inplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a helper function for computing the ecdf of an array. It has been outsourced from the original
+function in order to be able to use the njit compiler of numpy for increased speeds, as it unfortunately
+needs a loop over all rows and columns of a matrix. It acts in place on the probabilities’ matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<em>a feature matrix where the rows are samples and each column is a feature !</em><em>(</em><em>expected to be sorted</em><em>)</em><em>!</em>) – </p></li>
+<li><p><strong>probabilities</strong> (<em>a probability matrix that will be used building the ecdf. It has values between 0 and 1 and</em>) – is also sorted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.stat_models.pairwise_distances_no_broadcast">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.stat_models.</span></span><span class="sig-name descname"><span class="pre">pairwise_distances_no_broadcast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/stat_models.html#pairwise_distances_no_broadcast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.stat_models.pairwise_distances_no_broadcast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to calculate row-wise euclidean distance of two matrix.
+Different from pair-wise calculation, this function would not broadcast.</p>
+<p>For instance, X and Y are both (4,3) matrices, the function would return
+a distance vector with shape (4,), instead of (4,4).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – First input samples</p></li>
+<li><p><strong>Y</strong> (<em>array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Second input samples</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>distance</strong> – Row-wise euclidean distance of X and Y</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array of shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.stat_models.pearsonr_mat">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.stat_models.</span></span><span class="sig-name descname"><span class="pre">pearsonr_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/stat_models.html#pearsonr_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.stat_models.pearsonr_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to calculate pearson matrix (row-wise).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input matrix.</p></li>
+<li><p><strong>w</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_features</em><em>,</em><em>)</em>) – Weights.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pear_mat</strong> – Row-wise pearson score matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array of shape (n_samples, n_samples)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.stat_models.wpearsonr">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.stat_models.</span></span><span class="sig-name descname"><span class="pre">wpearsonr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/stat_models.html#wpearsonr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.stat_models.wpearsonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to calculate the weighted Pearson correlation of two
+samples.</p>
+<p>See <a class="reference external" href="https://stats.stackexchange.com/questions/221246/such-thing-as-a-weighted-correlation">https://stats.stackexchange.com/questions/221246/such-thing-as-a-weighted-correlation</a>
+for more information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n</em><em>,</em><em>)</em>) – Input x.</p></li>
+<li><p><strong>y</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n</em><em>,</em><em>)</em>) – Input y.</p></li>
+<li><p><strong>w</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n</em><em>,</em><em>)</em>) – Weights w.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>scores</strong> – Weighted Pearson Correlation between x and y.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float in range of [-1,1]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="socialed-utils-stat-models-module">
-<h2>SocialED.utils.stat_models module<a class="headerlink" href="#socialed-utils-stat-models-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-utils-torch-utility-module">
-<h2>SocialED.utils.torch_utility module<a class="headerlink" href="#socialed-utils-torch-utility-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-utils-utility-module">
-<h2>SocialED.utils.utility module<a class="headerlink" href="#socialed-utils-utility-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.utils.utility">
+<span id="socialed-utils-utility-module"></span><h2>SocialED.utils.utility module<a class="headerlink" href="#module-SocialED.utils.utility" title="Permalink to this heading">¶</a></h2>
+<p>A set of utility functions to support outlier detection.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.argmaxn">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">argmaxn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'desc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#argmaxn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.argmaxn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of top n elements in the list
+if order is set to ‘desc’, otherwise return the index of n smallest ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_list</strong> (<em>list</em><em>, </em><em>array</em><em>, </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – A list containing all values.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of elements to select.</p></li>
+<li><p><strong>order</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='desc'</em><em>)</em>) – <p>The order to sort {‘desc’, ‘asc’}:</p>
+<ul>
+<li><p>’desc’: descending</p></li>
+<li><p>’asc’: ascending</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>index_list</strong> – The index of the top n elements.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array of shape (n,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.check_detector">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">check_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#check_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.check_detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if fit and decision_function methods exist for given detector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>detector</strong> (<em>pyod.models</em>) – Detector instance for which the check is performed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.check_parameter">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">check_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2147483647</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2147483647</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#check_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.check_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an input is within the defined range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<em>int</em><em>, </em><em>float</em>) – The input parameter to check.</p></li>
+<li><p><strong>low</strong> (<em>int</em><em>, </em><em>float</em>) – The lower bound of the range.</p></li>
+<li><p><strong>high</strong> (<em>int</em><em>, </em><em>float</em>) – The higher bound of the range.</p></li>
+<li><p><strong>param_name</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default=''</em><em>)</em>) – The name of the parameter.</p></li>
+<li><p><strong>include_left</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the lower bound (lower bound &lt;=).</p></li>
+<li><p><strong>include_right</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the higher bound (&lt;= higher bound).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>within_range</strong> – Whether the parameter is within the range of (low, high)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool or raise errors</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.generate_bagging_indices">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">generate_bagging_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#generate_bagging_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.generate_bagging_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly draw feature indices. Internal use only.</p>
+<p>Modified from sklearn/ensemble/bagging.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>RandomState</em>) – A random number generator instance to define the state of the random
+permutations generator.</p></li>
+<li><p><strong>bootstrap_features</strong> (<em>bool</em>) – Specifies whether to bootstrap indice generation</p></li>
+<li><p><strong>n_features</strong> (<em>int</em>) – Specifies the population size when generating indices</p></li>
+<li><p><strong>min_features</strong> (<em>int</em>) – Lower limit for number of features to randomly sample</p></li>
+<li><p><strong>max_features</strong> (<em>int</em>) – Upper limit for number of features to randomly sample</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>feature_indices</strong> – Indices for features to bag</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array, shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.generate_indices">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">generate_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#generate_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.generate_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw randomly sampled indices. Internal use only.</p>
+<p>See sklearn/ensemble/bagging.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>RandomState</em>) – A random number generator instance to define the state of the random
+permutations generator.</p></li>
+<li><p><strong>bootstrap</strong> (<em>bool</em>) – Specifies whether to bootstrap indice generation</p></li>
+<li><p><strong>n_population</strong> (<em>int</em>) – Specifies the population size when generating indices</p></li>
+<li><p><strong>n_samples</strong> (<em>int</em>) – Specifies number of samples to draw</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>indices</strong> – randomly drawn indices</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array, shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.get_diff_elements">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">get_diff_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">li1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">li2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#get_diff_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.get_diff_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the elements in li1 but not li2, and vice versa</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>li1</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 1.</p></li>
+<li><p><strong>li2</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>difference</strong> – The difference between li1 and li2.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.get_intersection">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">get_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lst2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#get_intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.get_intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the overlapping between two lists</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>li1</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 1.</p></li>
+<li><p><strong>li2</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>difference</strong> – The overlapping between li1 and li2.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.get_label_n">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">get_label_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#get_label_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.get_label_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to turn raw outlier scores into binary labels by assign 1
+to top n outlier scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth. Binary (0: inliers, 1: outliers).</p></li>
+<li><p><strong>y_pred</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The raw outlier scores as returned by a fitted model.</p></li>
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – The number of outliers. if not defined, infer using ground truth.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>labels</strong> – binary labels 0: normal points and 1: outliers</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array of shape (n_samples,)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyod.utils.utility</span> <span class="kn">import</span> <span class="n">get_label_n</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_label_n</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="go">array([0, 1, 0, 0, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.get_list_diff">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">get_list_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">li1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">li2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#get_list_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.get_list_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the elements in li1 but not li2. li1-li2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>li1</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 1.</p></li>
+<li><p><strong>li2</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Input list 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>difference</strong> – The difference between li1 and li2.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.get_optimal_n_bins">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">get_optimal_n_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#get_optimal_n_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.get_optimal_n_bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine optimal number of bins for a histogram using the Birge
+Rozenblac method (see <span id="id1">[]</span> for details.)</p>
+<p>See  <a class="reference external" href="https://doi.org/10.1051/ps:2006001">https://doi.org/10.1051/ps:2006001</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The samples to determine the optimal number of bins for.</p></li>
+<li><p><strong>upper_bound</strong> (<em>int</em><em>, </em><em>default=None</em>) – The maximum value of n_bins to be considered.
+If set to None, np.sqrt(X.shape[0]) will be used as upper bound.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>default = 1</em>) – A stabilizing term added to the logarithm to prevent division by zero.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>optimal_n_bins</strong> – The optimal value of n_bins according to the Birge Rozenblac method</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.invert_order">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">invert_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'multiplication'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#invert_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.invert_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert the order of a list of values. The smallest value becomes
+the largest in the inverted list. This is useful while combining
+multiple detectors since their score order could be different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scores</strong> (<em>list</em><em>, </em><em>array</em><em> or </em><em>numpy array with shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The list of values to be inverted</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='multiplication'</em><em>)</em>) – <p>Methods used for order inversion. Valid methods are:</p>
+<ul>
+<li><p>’multiplication’: multiply by -1</p></li>
+<li><p>’subtraction’: max(scores) - scores</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>inverted_scores</strong> – The inverted list</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array of shape (n_samples,)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scores1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">invert_order</span><span class="p">(</span><span class="n">scores1</span><span class="p">)</span>
+<span class="go">array([-0.1, -0.3, -0.5, -0.7, -0.2, -0.1])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">invert_order</span><span class="p">(</span><span class="n">scores1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;subtraction&#39;</span><span class="p">)</span>
+<span class="go">array([0.6, 0.4, 0.2, 0. , 0.5, 0.6])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.precision_n_scores">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">precision_n_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#precision_n_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.precision_n_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to calculate precision &#64; rank n.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth. Binary (0: inliers, 1: outliers).</p></li>
+<li><p><strong>y_pred</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The raw outlier scores as returned by a fitted model.</p></li>
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – The number of outliers. if not defined, infer using ground truth.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>precision_at_rank_n</strong> – Precision at rank n score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.score_to_label">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">score_to_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outliers_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#score_to_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.score_to_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn raw outlier outlier scores to binary labels (0 or 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pred_scores</strong> (<em>list</em><em> or </em><em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Raw outlier scores. Outliers are assumed have larger values.</p></li>
+<li><p><strong>outliers_fraction</strong> (<em>float in</em><em> (</em><em>0</em><em>,</em><em>1</em><em>)</em>) – Percentage of outliers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>outlier_labels</strong> – For each observation, tells whether or not
+it should be considered as an outlier according to the
+fitted model. Return the outlier probability, ranging
+in [0,1].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array of shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.standardizer">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">standardizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_scalar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#standardizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.standardizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conduct Z-normalization on data to turn input samples become zero-mean
+and unit variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The training samples</p></li>
+<li><p><strong>X_t</strong> (<em>numpy array</em><em> of </em><em>shape</em><em> (</em><em>n_samples_new</em><em>, </em><em>n_features</em><em>)</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – The data to be converted</p></li>
+<li><p><strong>keep_scalar</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – The flag to indicate whether to return the scalar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_norm</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – X after the Z-score normalization</p></li>
+<li><p><strong>X_t_norm</strong> (<em>numpy array of shape (n_samples, n_features)</em>) – X_t after the Z-score normalization</p></li>
+<li><p><strong>scalar</strong> (<em>sklearn scalar object</em>) – The scalar used in conversion</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -275,13 +941,31 @@
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="SocialED.tests.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">SocialED.tests</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="SocialED.metrics.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">SocialED.metrics</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024 Your Name
+                Copyright &#169; 2024 beici
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -307,14 +991,46 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">SocialED.utils package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#socialed-utils-data-module">SocialED.utils.data module</a></li>
-<li><a class="reference internal" href="#socialed-utils-example-module">SocialED.utils.example module</a></li>
-<li><a class="reference internal" href="#socialed-utils-stat-models-module">SocialED.utils.stat_models module</a></li>
-<li><a class="reference internal" href="#socialed-utils-torch-utility-module">SocialED.utils.torch_utility module</a></li>
-<li><a class="reference internal" href="#socialed-utils-utility-module">SocialED.utils.utility module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#">Utility Functions</a><ul>
+<li><a class="reference internal" href="#module-SocialED.utils.data">SocialED.utils.data module</a><ul>
+<li><a class="reference internal" href="#SocialED.utils.data.check_consistent_shape"><code class="docutils literal notranslate"><span class="pre">check_consistent_shape()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.data.evaluate_print"><code class="docutils literal notranslate"><span class="pre">evaluate_print()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.data.generate_data"><code class="docutils literal notranslate"><span class="pre">generate_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.data.generate_data_categorical"><code class="docutils literal notranslate"><span class="pre">generate_data_categorical()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.data.generate_data_clusters"><code class="docutils literal notranslate"><span class="pre">generate_data_clusters()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.data.get_outliers_inliers"><code class="docutils literal notranslate"><span class="pre">get_outliers_inliers()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-SocialED.utils.example">SocialED.utils.example module</a><ul>
+<li><a class="reference internal" href="#SocialED.utils.example.data_visualize"><code class="docutils literal notranslate"><span class="pre">data_visualize()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.example.visualize"><code class="docutils literal notranslate"><span class="pre">visualize()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-SocialED.utils.stat_models">SocialED.utils.stat_models module</a><ul>
+<li><a class="reference internal" href="#SocialED.utils.stat_models.column_ecdf"><code class="docutils literal notranslate"><span class="pre">column_ecdf()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.stat_models.ecdf_terminate_equals_inplace"><code class="docutils literal notranslate"><span class="pre">ecdf_terminate_equals_inplace()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.stat_models.pairwise_distances_no_broadcast"><code class="docutils literal notranslate"><span class="pre">pairwise_distances_no_broadcast()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.stat_models.pearsonr_mat"><code class="docutils literal notranslate"><span class="pre">pearsonr_mat()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.stat_models.wpearsonr"><code class="docutils literal notranslate"><span class="pre">wpearsonr()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-SocialED.utils.utility">SocialED.utils.utility module</a><ul>
+<li><a class="reference internal" href="#SocialED.utils.utility.argmaxn"><code class="docutils literal notranslate"><span class="pre">argmaxn()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.check_detector"><code class="docutils literal notranslate"><span class="pre">check_detector()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.check_parameter"><code class="docutils literal notranslate"><span class="pre">check_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.generate_bagging_indices"><code class="docutils literal notranslate"><span class="pre">generate_bagging_indices()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.generate_indices"><code class="docutils literal notranslate"><span class="pre">generate_indices()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.get_diff_elements"><code class="docutils literal notranslate"><span class="pre">get_diff_elements()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.get_intersection"><code class="docutils literal notranslate"><span class="pre">get_intersection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.get_label_n"><code class="docutils literal notranslate"><span class="pre">get_label_n()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.get_list_diff"><code class="docutils literal notranslate"><span class="pre">get_list_diff()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.get_optimal_n_bins"><code class="docutils literal notranslate"><span class="pre">get_optimal_n_bins()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.invert_order"><code class="docutils literal notranslate"><span class="pre">invert_order()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.precision_n_scores"><code class="docutils literal notranslate"><span class="pre">precision_n_scores()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.score_to_label"><code class="docutils literal notranslate"><span class="pre">score_to_label()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.standardizer"><code class="docutils literal notranslate"><span class="pre">standardizer()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

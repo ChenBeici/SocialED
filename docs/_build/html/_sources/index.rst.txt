@@ -19,11 +19,11 @@
    :target: https://docs.socialed.org/en/latest/?badge=latest
    :alt: Documentation status
 
-.. image:: https://img.shields.io/github/stars/socialed-team/socialed.svg
+.. image:: https://img.shields.io/github/stars/chenbeici/socialed.svg
    :target: https://github.com/ChenBeici/SocialED/stargazers
    :alt: GitHub stars
 
-.. image:: https://img.shields.io/github/forks/socialed-team/socialed.svg?color=blue
+.. image:: https://img.shields.io/github/forks/chenbeici/socialed.svg?color=blue
    :target: https://github.com/ChenBeici/SocialED/network
    :alt: GitHub forks
 
@@ -35,11 +35,11 @@
    :target: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml
    :alt: testing
 
-.. image:: https://coveralls.io/repos/github/socialed-team/socialed/badge.svg?branch=main
-   :target: https://coveralls.io/github/socialed-team/socialed?branch=main
+.. image:: https://coveralls.io/repos/github/chenbeici/socialed/badge.svg?branch=main
+   :target: https://coveralls.io/github/chenbeici/socialed?branch=main
    :alt: Coverage Status
 
-.. image:: https://img.shields.io/github/license/socialed-team/socialed.svg
+.. image:: https://img.shields.io/github/license/chenbeici/socialed.svg
    :target: https://github.com/ChenBeici/SocialED/blob/master/LICENSE
    :alt: License
 
@@ -87,32 +87,32 @@ For consistency and accessibility, SocialED is developed on top of `PyTorch <htt
 Implemented Algorithms
 ----------------------
 
-==================  =====  ==========  ==========  ============  =========================
-Algorithm           Year   Category    Environment  Supervision   Ref
-==================  =====  ==========  ==========  ============  =========================
-LDA                 2003   Others      Offline      Supervised     [#Blei2003lda]_
-BiLSTM              2005   Others      Offline      Supervised     [#Graves2005bilstm]_
-Word2Vec            2013   Others      Offline      Supervised     [#Mikolov2013word2vec]_
-GloVe               2014   Others      Offline      Supervised     [#Pennington2014glove]_
-WMD                 2015   Others      Offline      Supervised     [#Kusner2015wmd]_
-BERT                2018   PLM         Offline      Supervised     [#Devlin2018bert]_
-SBERT               2019   PLM         Offline      Supervised     [#Reimers2019sbert]_
-EventX              2020   Others      Online       Supervised     [#Liu2020eventx]_
-CLKD                2021   GNN         Online       Supervised     [#Ren2021clkd]_
-KPGNN               2021   GNN         Online       Supervised     [#Cao2021kpgnn]_
-FinEvent            2022   GNN         Online       Supervised     [#Peng2022finevent]_
-QSGNN               2022   GNN         Online       Supervised     [#Ren2022qsgnn]_
-ETGNN               2023   GNN         Offline      Supervised     [#Ren2023etgnn]_
-HCRC                2023   GNN         Online       Unsupervised   [#Guo2023hcrc]_
-UCLSED              2023   GNN         Offline      Supervised     [#Ren2023uclsad]_
-RPLMSED             2024   PLM         Online       Supervised     [#Li2024rplmsed]_
-HISEvent            2024   Others      Online       Unsupervised   [#Cao2024hisevent]_
-==================  =====  ==========  ==========  ============  ==========================
 
+
+==================  =====  ==========  ============  ==============  =====================================
+Algorithm           Year   Category    Environment   Supervision     Ref
+==================  =====  ==========  ============  ==============  =====================================
+LDA                 2003   Others      Offline       Supervised      :class:`SocialED.detector.LDA`
+BiLSTM              2005   Others      Offline       Supervised      :class:`SocialED.detector.BiLSTM`
+Word2Vec            2013   Others      Offline       Supervised      :class:`SocialED.detector.Word2Vec`
+GloVe               2014   Others      Offline       Supervised      :class:`SocialED.detector.GloVe`
+WMD                 2015   Others      Offline       Supervised      :class:`SocialED.detector.WMD`
+BERT                2018   PLM         Offline       Supervised      :class:`SocialED.detector.BERT`
+SBERT               2019   PLM         Offline       Supervised      :class:`SocialED.detector.SBERT`
+EventX              2020   Others      Online        Supervised      :class:`SocialED.detector.EventX`
+CLKD                2021   GNN         Online        Supervised      :class:`SocialED.detector.CLKD`
+KPGNN               2021   GNN         Online        Supervised      :class:`SocialED.detector.KPGNN`
+FinEvent            2022   GNN         Online        Supervised      :class:`SocialED.detector.FinEvent`
+QSGNN               2022   GNN         Online        Supervised      :class:`SocialED.detector.QSGNN`
+ETGNN               2023   GNN         Offline       Supervised      :class:`SocialED.detector.ETGNN`
+HCRC                2023   GNN         Online        Unsupervised    :class:`SocialED.detector.HCRC`
+UCLSED              2023   GNN         Offline       Supervised      :class:`SocialED.detector.UCLSED`
+RPLMSED             2024   PLM         Online        Supervised      :class:`SocialED.detector.RPLMSED`
+HISEvent            2024   Others      Online        Unsupervised    :class:`SocialED.detector.HISEvent`
+==================  =====  ==========  ============  ==============  =====================================
 
 
 ----
-
 
 .. toctree::
    :maxdepth: 2
@@ -120,20 +120,18 @@ HISEvent            2024   Others      Online       Unsupervised   [#Cao2024hise
    :caption: Getting Started
 
    install
-   tutorials/index
-   quickstart
-   examples
+
 
 .. toctree::
    :maxdepth: 3
    :hidden:
    :caption: API References
 
-   socialed.detector
-   socialed.dataset
-   socialed.metrics
-   socialed.utils
-   socialed.tests
+   SocialED.dataset
+   SocialED.detector
+   SocialED.metrics
+   SocialED.utils
+   SocialED.tests
 
 .. toctree::
    :maxdepth: 2

@@ -152,7 +152,6 @@ class QSGNN:
             json.dump(self.args.__dict__, f, indent=2)
         self.data_split = np.load(self.args.data_path + '/data_split.npy')
 
-
     def fit(self):
         if self.args.use_hardest_neg:
             loss_fn = OnlineTripletLoss(self.args.margin, HardestNegativeTripletSelector(self.args.margin))

@@ -586,6 +586,3 @@ def get_optimal_n_bins(X, upper_bound=None, epsilon=1):
                     b - 1 + np.power(np.log(b), 2.5)))
 
     return np.argmax(maximum_likelihood) + 1
-
-
- 

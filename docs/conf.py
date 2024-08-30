@@ -11,8 +11,8 @@ root_dir = dirname(dirname(abspath(__file__)))
 # -- Project information -----------------------------------------------------
 
 project = 'SocialED'
-copyright = '2024 Your Name'
-author = 'Your Name'
+copyright = '2024 beici'
+author = 'beici'
 
 # 如果您有版本信息，可以使用以下代码获取版本号
 # version_path = os.path.join(root_dir, 'SocialED', 'version.py')
@@ -37,7 +37,7 @@ extensions = [
 
 bibtex_bibfiles = ['zreferences.bib']
 
-autodoc_mock_imports = ['en_core_web_lg', 'spacy', 'torch.nn', 'torch','transformers'] 
+autodoc_mock_imports = ['en_core_web_lg','fr_core_news_lg','dgl.function', 'dgl.dataloading', 'spacy', 'torch.nn', 'torch','transformers','dgl'] 
 
 templates_path = ['_templates']
 source_suffix = '.rst'
@@ -46,7 +46,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
-html_favicon = 'favicon.ico'
+html_favicon = 'SocialED.ico'
 html_static_path = ['_static']
 
 # -- Options for HTMLHelp output ---------------------------------------------
@@ -55,7 +55,7 @@ htmlhelp_basename = 'socialEDdoc'
 # -- Options for LaTeX output ------------------------------------------------
 latex_documents = [
     (master_doc, 'socialED.tex', 'SocialED Documentation',
-     'Your Name', 'manual'),
+     'beici', 'manual'),
 ]
 
 # -- Options for manual page output ------------------------------------------
@@ -75,6 +75,8 @@ texinfo_documents = [
 from sphinx_gallery.sorting import FileNameSortKey
 
 html_static_path = []
+
+
 
 sphinx_gallery_conf = {
     'examples_dirs': 'examples/',   # Path to your example scripts

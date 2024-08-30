@@ -1,4 +1,4 @@
-SocialED.tests package
+SocialED.tests 
 ======================
 
 Submodules

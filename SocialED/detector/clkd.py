@@ -22,7 +22,6 @@ from scipy import sparse
 from dgl.data.utils import save_graphs,load_graphs
 import pickle
 from collections import Counter
-from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 import en_core_web_lg
 import fr_core_news_lg
 from torch.utils.data import Dataset

@@ -13,12 +13,12 @@ from .qsgnn import QSGNN
 from .etgnn import ETGNN
 from .hcrc import HCRC
 from .uclsed import UCLSED
-from .rplmsed import RPLMSED
+from .rplmsed import RPLM_SED
 from .hisevent import HISEvent
 
 
 __all__ = [
     "LDA", "BiLSTM", "WORD2VEC", "GloVe", "WMD",
     "BERT", "SBERT", "EventX", "CLKD",  "KPGNN", "FinEvent",
-    "QSGNN", "ETGNN", "HCRC", "UCLSED", "RPLMSED", "HISEvent"
+    "QSGNN", "ETGNN", "HCRC", "UCLSED", "RPLM_SED", "HISEvent"
 ]

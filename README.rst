@@ -35,14 +35,10 @@ SocialED
 
 A Python Library for Social Event Detection
 
-The field of Social Event Detection (SED) represents a pivotal area of research within the broader domains of artificial 
+The field of Social Event Detection represents a pivotal area of research within the broader domains of artificial 
 intelligence and natural language processing. Its objective is the automated identification and analysis of events from 
 social media platforms such as Twitter and Facebook. Such events encompass a wide range of occurrences, including natural 
 disasters and viral phenomena. 
-The objective of SED is to detect, classify and comprehend these events in real-time by processing vast quantities of 
-unstructured data through techniques such as machine learning, text mining and network analysis. This is crucial for 
-applications such as crisis management, market analysis and public sentiment monitoring, where timely and accurate 
-event detection facilitates informed decision-making.
 
 To address this gap, we present Social Event Detection Python library called **SocialED**, an
 **open-source Python library** designed to facilitate the development and evaluation of social
@@ -51,7 +47,7 @@ event detection algorithms.
 
 **SocialED stands out for**:
 
-* **Broad spectrum** of over 10 social event detection algorithms, including classic techniques like Latent Dirichlet Allocation (LDA) and modern deep learning models such as BiLSTM, Word2Vec, GloVe, and more.
+* **Broad spectrum of over 10 social event detection algorithms**, including classic techniques like Latent Dirichlet Allocation (LDA) and modern deep learning models such as BiLSTM, Word2Vec, GloVe, and more.
 * **Unified APIs, comprehensive documentation, and practical examples** that enable users to format their data consistently, ensuring smooth integration with all social event detectors within SocialED.
 * **Customizable and modular components** that empower users to tailor detection algorithms to meet specific requirements, facilitating the setup of social event detection workflows.
 * **Rich utility functions** that streamline the process of building and executing social event detection tasks.
@@ -96,7 +92,7 @@ Please make sure **the latest version** is installed, as PyGOD is updated freque
 
 .. code-block:: bash
 
-   pip install SocialEd            # normal install
+   pip install SocialED           # normal install
    pip install --upgrade SocialED  # or update if needed
 
 
@@ -128,7 +124,7 @@ Alternatively, you could clone and run setup.py file:
 API Cheatsheet & Reference
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Full API Reference: (https://docs.SocialED.org). API cheatsheet for all detectors:
+Full API Reference: (https://socialed.readthedocs.io). API cheatsheet for all detectors:
 
 * **preprocess()**\ :  Preprocess the dataset.
 * **fit()**\ : Fit the detector with train data.
@@ -190,27 +186,28 @@ Algorithm Descriptions
 
 We provide their statistics as follows.
 
-==================  =====  ==========  ==========  ============  =========================
-Algorithm           Year   Category    Environment  Supervision   Ref
-==================  =====  ==========  ==========  ============  =========================
-LDA                 2003   Others      Offline      Supervised     [#Blei2003lda]_
-BiLSTM              2005   Others      Offline      Supervised     [#Graves2005bilstm]_
-Word2Vec            2013   Others      Offline      Supervised     [#Mikolov2013word2vec]_
-GloVe               2014   Others      Offline      Supervised     [#Pennington2014glove]_
-WMD                 2015   Others      Offline      Supervised     [#Kusner2015wmd]_
-BERT                2018   PLM         Offline      Supervised     [#Devlin2018bert]_
-SBERT               2019   PLM         Offline      Supervised     [#Reimers2019sbert]_
-EventX              2020   Others      Online       Supervised     [#Liu2020eventx]_
-CLKD                2021   GNN         Online       Supervised     [#Ren2021clkd]_
-KPGNN               2021   GNN         Online       Supervised     [#Cao2021kpgnn]_
-FinEvent            2022   GNN         Online       Supervised     [#Peng2022finevent]_
-QSGNN               2022   GNN         Online       Supervised     [#Ren2022qsgnn]_
-ETGNN               2023   GNN         Offline      Supervised     [#Ren2023etgnn]_
-HCRC                2023   GNN         Online       Unsupervised   [#Guo2023hcrc]_
-UCLSED              2023   GNN         Offline      Supervised     [#Ren2023uclsad]_
-RPLMSED             2024   PLM         Online       Supervised     [#Li2024rplmsed]_
-HISEvent            2024   Others      Online       Unsupervised   [#Cao2024hisevent]_
-==================  =====  ==========  ==========  ============  ==========================
+==================  =====  ==========  ============  ==============  =========================
+Algorithm           Year   Category    Environment   Supervision     Ref
+==================  =====  ==========  ============  ==============  =========================
+LDA                 2003   Others      Offline       Supervised      [#Blei2003lda]_
+BiLSTM              2005   Others      Offline       Supervised      [#Graves2005bilstm]_
+Word2Vec            2013   Others      Offline       Supervised      [#Mikolov2013word2vec]_
+GloVe               2014   Others      Offline       Supervised      [#Pennington2014glove]_
+WMD                 2015   Others      Offline       Supervised      [#Kusner2015wmd]_
+BERT                2018   PLM         Offline       Supervised      [#Devlin2018bert]_
+SBERT               2019   PLM         Offline       Supervised      [#Reimers2019sbert]_
+EventX              2020   Others      Online        Supervised      [#Liu2020eventx]_
+CLKD                2021   GNN         Online        Supervised      [#Ren2021clkd]_
+KPGNN               2021   GNN         Online        Supervised      [#Cao2021kpgnn]_
+FinEvent            2022   GNN         Online        Supervised      [#Peng2022finevent]_
+QSGNN               2022   GNN         Online        Supervised      [#Ren2022qsgnn]_
+ETGNN               2023   GNN         Offline       Supervised      [#Ren2023etgnn]_
+HCRC                2023   GNN         Online        Unsupervised    [#Guo2023hcrc]_
+UCLSED              2023   GNN         Offline       Supervised      [#Ren2023uclsad]_
+RPLMSED             2024   PLM         Online        Supervised      [#Li2024rplmsed]_
+HISEvent            2024   Others      Online        Unsupervised    [#Cao2024hisevent]_
+==================  =====  ==========  ============  ==============  =========================
+
 
 
 

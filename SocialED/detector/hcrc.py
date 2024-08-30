@@ -31,25 +31,6 @@ from sklearn.metrics import silhouette_score,calinski_harabasz_score
 def currentTime():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-class args_define:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--file_path", type=str, default='../model_saved/hcrc/', help="Path for saving files.")
-    parser.add_argument("--result_path", type=str, default='../model_saved/hcrc/res.txt', help="Path for saving experimental results. Default is res.txt.")
-    parser.add_argument("--task", type=str, default='DRL', help="Name of the task. Supported names are: DRL, random, semi-supervised, traditional. Default is DRL.")
-    parser.add_argument("--layers", nargs='?', default='[256]', help="The number of units of each layer of the GNN. Default is [256]")
-    parser.add_argument("--N_pred_hid", type=int, default=64, help="The number of hidden units of layer of the predictor. Default is 512")
-    parser.add_argument("--G_pred_hid", type=int, default=16, help="The number of hidden units of layer of the predictor. Default is 512")
-    parser.add_argument("--eval_freq", type=float, default=5, help="The frequency of model evaluation")
-    parser.add_argument("--mad", type=float, default=0.9, help="Moving Average Decay for Teacher Network")
-    parser.add_argument("--Glr", type=float, default=0.0000006, help="learning rate")
-    parser.add_argument("--Nlr", type=float, default=0.00001, help="learning rate")
-    parser.add_argument("--Ges", type=int, default=50, help="Early Stopping Criterion")
-    parser.add_argument("--Nes", type=int, default=2000, help="Early Stopping Criterion")
-    parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--Gepochs", type=int, default=105)
-    parser.add_argument("--Nepochs", type=int, default=100)
-    
-    args = parser.parse_args()
 
 class HCRC:
     def __init__(self, args, dataset):
@@ -589,8 +570,7 @@ class SinglePass:
         return calinski_harabasz_score(data, topic_serial)
 
 class Node_ModelTrainer(embedder):
-
-    def __init__(self, args,block_num):
+    def __init__(self, args, block_num):
         embedder.__init__(self, args)
         self._args = args
         self.block_num = block_num
@@ -602,7 +582,6 @@ class Node_ModelTrainer(embedder):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.device)
         self._device = f'cuda:{args.device}' if torch.cuda.is_available() else "cpu"
         torch.cuda.set_device(self._device)
-        
         
         if block_num == 0 or block_num == 1:
             args.Nes = 200
@@ -1665,6 +1644,26 @@ def df_to_t_features(df):
 if __name__ == "__main__":
     from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
+    class args_define():
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--file_path", type=str, default='../model_saved/hcrc/', help="Path for saving files.")
+        parser.add_argument("--result_path", type=str, default='../model_saved/hcrc/res.txt', help="Path for saving experimental results. Default is res.txt.")
+        parser.add_argument("--task", type=str, default='DRL', help="Name of the task. Supported names are: DRL, random, semi-supervised, traditional. Default is DRL.")
+        parser.add_argument("--layers", nargs='?', default='[256]', help="The number of units of each layer of the GNN. Default is [256]")
+        parser.add_argument("--N_pred_hid", type=int, default=64, help="The number of hidden units of layer of the predictor. Default is 512")
+        parser.add_argument("--G_pred_hid", type=int, default=16, help="The number of hidden units of layer of the predictor. Default is 512")
+        parser.add_argument("--eval_freq", type=float, default=5, help="The frequency of model evaluation")
+        parser.add_argument("--mad", type=float, default=0.9, help="Moving Average Decay for Teacher Network")
+        parser.add_argument("--Glr", type=float, default=0.0000006, help="learning rate")
+        parser.add_argument("--Nlr", type=float, default=0.00001, help="learning rate")
+        parser.add_argument("--Ges", type=int, default=50, help="Early Stopping Criterion")
+        parser.add_argument("--Nes", type=int, default=2000, help="Early Stopping Criterion")
+        parser.add_argument("--device", type=int, default=0)
+        parser.add_argument("--Gepochs", type=int, default=105)
+        parser.add_argument("--Nepochs", type=int, default=100)
+
+        args = parser.parse_args()
+
     args = args_define.args
     dataset = Event2012_Dataset.load_data()
     hcrc = HCRC(args,dataset)
@@ -1672,3 +1671,6 @@ if __name__ == "__main__":
 
     predictions, ground_truths = hcrc.detection()  # 进行预测
     results = hcrc.evaluate(predictions, ground_truths)  # 评估模型
+
+
+

@@ -11,11 +11,34 @@ A Blitz Introduction
 
 .. thumbnail-parent-div-open
 
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Section 1: Data Preparation ---------------------------">
+
+.. only:: html
+
+  .. image:: /tutorials/images/thumb/sphx_glr_example_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_tutorials_example.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">This example shows how to plot a simple line chart using matplotlib with SocialED data.</div>
+    </div>
+
+
 .. thumbnail-parent-div-close
 
 .. raw:: html
 
     </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/example
 
 
 

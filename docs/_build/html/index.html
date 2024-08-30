@@ -3,9 +3,9 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="A Blitz Introduction" href="tutorials/index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="install.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
+    <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
         <title>SocialED documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
@@ -204,7 +204,21 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">A Blitz Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.tests.html">SocialED.tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="team.html">Core Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
 
 </div>
@@ -251,12 +265,12 @@
 <hr class="docutils" />
 <a class="reference external image-reference" href="https://pypi.org/project/socialed/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/socialed.svg?color=brightgreen" /></a>
 <a class="reference external image-reference" href="https://docs.socialed.org/en/latest/?badge=latest"><img alt="Documentation status" src="https://readthedocs.org/projects/socialed/badge/?version=latest" /></a>
-<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/socialed-team/socialed.svg" /></a>
-<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/socialed-team/socialed.svg?color=blue" /></a>
+<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/chenbeici/socialed.svg" /></a>
+<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/chenbeici/socialed.svg?color=blue" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/SocialED/"><img alt="PyPI downloads" src="https://static.pepy.tech/personalized-badge/socialed?period=total&amp;units=international_system&amp;left_color=grey&amp;right_color=blue&amp;left_text=Downloads" /></a>
 <a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml"><img alt="testing" src="https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg" /></a>
-<a class="reference external image-reference" href="https://coveralls.io/github/socialed-team/socialed?branch=main"><img alt="Coverage Status" src="https://coveralls.io/repos/github/socialed-team/socialed/badge.svg?branch=main" /></a>
-<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/socialed-team/socialed.svg" /></a>
+<a class="reference external image-reference" href="https://coveralls.io/github/chenbeici/socialed?branch=main"><img alt="Coverage Status" src="https://coveralls.io/repos/github/chenbeici/socialed/badge.svg?branch=main" /></a>
+<a class="reference external image-reference" href="https://github.com/ChenBeici/SocialED/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/chenbeici/socialed.svg" /></a>
 <hr class="docutils" />
 <p>SocialED is a <strong>Python library</strong> for <strong>social event detection</strong>.
 This field has critical applications, such as detecting events from social media streams and identifying patterns in large-scale social interactions.</p>
@@ -289,6 +303,140 @@ For consistency and accessibility, SocialED is developed on top of <a class="ref
 <hr class="docutils" />
 <section id="implemented-algorithms">
 <h1>Implemented Algorithms<a class="headerlink" href="#implemented-algorithms" title="Permalink to this heading">¶</a></h1>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Algorithm</p></th>
+<th class="head"><p>Year</p></th>
+<th class="head"><p>Category</p></th>
+<th class="head"><p>Environment</p></th>
+<th class="head"><p>Supervision</p></th>
+<th class="head"><p>Ref</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>LDA</p></td>
+<td><p>2003</p></td>
+<td><p>Others</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.LDA</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>BiLSTM</p></td>
+<td><p>2005</p></td>
+<td><p>Others</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.BiLSTM</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Word2Vec</p></td>
+<td><p>2013</p></td>
+<td><p>Others</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.Word2Vec</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>GloVe</p></td>
+<td><p>2014</p></td>
+<td><p>Others</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.GloVe</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>WMD</p></td>
+<td><p>2015</p></td>
+<td><p>Others</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.WMD</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>BERT</p></td>
+<td><p>2018</p></td>
+<td><p>PLM</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.BERT</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>SBERT</p></td>
+<td><p>2019</p></td>
+<td><p>PLM</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.SBERT</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>EventX</p></td>
+<td><p>2020</p></td>
+<td><p>Others</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.EventX</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>CLKD</p></td>
+<td><p>2021</p></td>
+<td><p>GNN</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.CLKD</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>KPGNN</p></td>
+<td><p>2021</p></td>
+<td><p>GNN</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.KPGNN</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>FinEvent</p></td>
+<td><p>2022</p></td>
+<td><p>GNN</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.FinEvent</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>QSGNN</p></td>
+<td><p>2022</p></td>
+<td><p>GNN</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.QSGNN</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>ETGNN</p></td>
+<td><p>2023</p></td>
+<td><p>GNN</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.ETGNN</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>HCRC</p></td>
+<td><p>2023</p></td>
+<td><p>GNN</p></td>
+<td><p>Online</p></td>
+<td><p>Unsupervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.HCRC</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>UCLSED</p></td>
+<td><p>2023</p></td>
+<td><p>GNN</p></td>
+<td><p>Offline</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.UCLSED</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>RPLMSED</p></td>
+<td><p>2024</p></td>
+<td><p>PLM</p></td>
+<td><p>Online</p></td>
+<td><p>Supervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.RPLMSED</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>HISEvent</p></td>
+<td><p>2024</p></td>
+<td><p>Others</p></td>
+<td><p>Online</p></td>
+<td><p>Unsupervised</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SocialED.detector.HISEvent</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr class="docutils" />
 <div class="toctree-wrapper compound">
 </div>
@@ -303,12 +451,12 @@ For consistency and accessibility, SocialED is developed on top of <a class="ref
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tutorials/index.html">
+          <a class="next-page" href="install.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">A Blitz Introduction</div>
+                <div class="title">Installation</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -317,7 +465,7 @@ For consistency and accessibility, SocialED is developed on top of <a class="ref
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024 Your Name
+                Copyright &#169; 2024 beici
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

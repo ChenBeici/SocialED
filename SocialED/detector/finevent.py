@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import en_core_web_lg
 from datetime import datetime
-from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 import torch
 from typing import Any, Dict, List
 import math
@@ -31,60 +30,6 @@ import networkx as nx
 import json
 import torch.optim as optim
 
-class args_define():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--n_epochs', default=5, type=int, help="Number of initial-training/maintenance-training epochs.")
-    parser.add_argument('--window_size', default=3, type=int, help="Maintain the model after predicting window_size blocks.")
-    parser.add_argument('--patience', default=5, type=int, 
-                        help="Early stop if performance did not improve in the last patience epochs.")
-    parser.add_argument('--margin', default=3., type=float, help="Margin for computing triplet losses")
-    parser.add_argument('--lr', default=1e-3, type=float, help="Learning rate")
-    parser.add_argument('--batch_size', default=50, type=int,
-                        help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-    parser.add_argument('--hidden_dim', default=128, type=int, help="Hidden dimension")
-    parser.add_argument('--out_dim', default=64, type=int, help="Output dimension of tweet representations")
-    parser.add_argument('--heads', default=4, type=int, help="Number of heads used in GAT")
-    parser.add_argument('--validation_percent', default=0.2, type=float, help="Percentage of validation nodes(tweets)")
-    parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False, action='store_true',
-                        help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-    parser.add_argument('--is_shared', default=False)
-    parser.add_argument('--inter_opt', default='cat_w_avg')
-    parser.add_argument('--is_initial', default=True)
-    parser.add_argument('--sampler', default='RL_sampler')
-    parser.add_argument('--cluster_type', default='kmeans', help="Types of clustering algorithms")  # dbscan
-
-    # RL-0
-    parser.add_argument('--threshold_start0', default=[[0.2],[0.2],[0.2]], type=float,
-                        help="The initial value of the filter threshold for state1 or state3")
-    parser.add_argument('--RL_step0', default=0.02, type=float,
-                        help="The step size of RL for state1 or state3")
-    parser.add_argument('--RL_start0', default=0, type=int,
-                        help="The starting epoch of RL for state1 or state3")
-
-    # RL-1
-    parser.add_argument('--eps_start', default=0.001, type=float,
-                        help="The initial value of the eps for state2")
-    parser.add_argument('--eps_step', default=0.02, type=float,
-                        help="The step size of eps for state2")
-    parser.add_argument('--min_Pts_start', default=2, type=int,
-                        help="The initial value of the min_Pts for state2")
-    parser.add_argument('--min_Pts_step', default=1, type=int,
-                        help="The step size of min_Pts for state2")
-
-    # other arguments
-    parser.add_argument('--use_cuda', dest='use_cuda', default=True, 
-                        action='store_true', help="Use cuda")
-    parser.add_argument('--data_path', default='../model_saved/finevent/incremental_test/', type=str,
-                        help="Path of features, labels and edges")
-    parser.add_argument('--file_path', default='../model_saved/finevent/', type=str,
-                        help="Path of files to save")
-    # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-    parser.add_argument('--mask_path', default=None, type=str,
-                        help="File path that contains the training, validation and test masks")
-    # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-    parser.add_argument('--log_interval', default=10, type=int,
-                        help="Log interval")
-    args = parser.parse_args()
 
 class Preprocessor:
     def __init__(self):
@@ -2018,6 +1963,61 @@ def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTri
 
 if __name__ == '__main__':
     from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+
+    class args_define():
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--n_epochs', default=5, type=int, help="Number of initial-training/maintenance-training epochs.")
+        parser.add_argument('--window_size', default=3, type=int, help="Maintain the model after predicting window_size blocks.")
+        parser.add_argument('--patience', default=5, type=int, 
+                            help="Early stop if performance did not improve in the last patience epochs.")
+        parser.add_argument('--margin', default=3., type=float, help="Margin for computing triplet losses")
+        parser.add_argument('--lr', default=1e-3, type=float, help="Learning rate")
+        parser.add_argument('--batch_size', default=50, type=int,
+                            help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
+        parser.add_argument('--hidden_dim', default=128, type=int, help="Hidden dimension")
+        parser.add_argument('--out_dim', default=64, type=int, help="Output dimension of tweet representations")
+        parser.add_argument('--heads', default=4, type=int, help="Number of heads used in GAT")
+        parser.add_argument('--validation_percent', default=0.2, type=float, help="Percentage of validation nodes(tweets)")
+        parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False, action='store_true',
+                            help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
+        parser.add_argument('--is_shared', default=False)
+        parser.add_argument('--inter_opt', default='cat_w_avg')
+        parser.add_argument('--is_initial', default=True)
+        parser.add_argument('--sampler', default='RL_sampler')
+        parser.add_argument('--cluster_type', default='kmeans', help="Types of clustering algorithms")  # dbscan
+
+        # RL-0
+        parser.add_argument('--threshold_start0', default=[[0.2],[0.2],[0.2]], type=float,
+                            help="The initial value of the filter threshold for state1 or state3")
+        parser.add_argument('--RL_step0', default=0.02, type=float,
+                            help="The step size of RL for state1 or state3")
+        parser.add_argument('--RL_start0', default=0, type=int,
+                            help="The starting epoch of RL for state1 or state3")
+
+        # RL-1
+        parser.add_argument('--eps_start', default=0.001, type=float,
+                            help="The initial value of the eps for state2")
+        parser.add_argument('--eps_step', default=0.02, type=float,
+                            help="The step size of eps for state2")
+        parser.add_argument('--min_Pts_start', default=2, type=int,
+                            help="The initial value of the min_Pts for state2")
+        parser.add_argument('--min_Pts_step', default=1, type=int,
+                            help="The step size of min_Pts for state2")
+
+        # other arguments
+        parser.add_argument('--use_cuda', dest='use_cuda', default=True, 
+                            action='store_true', help="Use cuda")
+        parser.add_argument('--data_path', default='../model_saved/finevent/incremental_test/', type=str,
+                            help="Path of features, labels and edges")
+        parser.add_argument('--file_path', default='../model_saved/finevent/', type=str,
+                            help="Path of files to save")
+        # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
+        parser.add_argument('--mask_path', default=None, type=str,
+                            help="File path that contains the training, validation and test masks")
+        # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
+        parser.add_argument('--log_interval', default=10, type=int,
+                            help="Log interval")
+        args = parser.parse_args()
 
     args = args_define.args
     dataset = Event2012_Dataset.load_data()

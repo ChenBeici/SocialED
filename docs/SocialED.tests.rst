@@ -1,4 +1,4 @@
-SocialED.tests package
+SocialED.tests 
 ======================
 
 Submodules
@@ -7,15 +7,9 @@ Submodules
 SocialED.tests.testlda module
 -----------------------------
 
-.. automodule:: SocialED.tests.testlda
+.. automodule:: SocialED.tests.test_lda
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: SocialED.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -10,20 +10,11 @@ import logging
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-class args_define():
-    parser = argparse.ArgumentParser()
-    
-    # SBERT parameters
-    parser.add_argument('--model_name', default='../model_needed/paraphrase-MiniLM-L6-v2', type=str,
-                        help="Name of the pre-trained SBERT model.")
-    
-    args = parser.parse_args()
 
 class SBERT:
-    def __init__(self, args, dataset):
-        self.args = args
+    def __init__(self, dataset, model_name='../model_needed/paraphrase-MiniLM-L6-v2'):
         self.dataset = dataset
-        self.model_name = self.args.model_name
+        self.model_name = model_name
         self.df = None
         self.train_df = None
         self.test_df = None
@@ -95,9 +86,8 @@ if __name__ == "__main__":
     from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
     dataset = Event2012_Dataset.load_data()
-    args = args_define.args
 
-    sbert = SBERT(args, dataset)
+    sbert = SBERT(dataset)
     
     # Data preprocessing
     sbert.preprocess()
