@@ -1,6 +1,0 @@
-SocialED.datasets
-=================
-
-Submodules
-----------
-
