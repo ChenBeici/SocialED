@@ -19,4 +19,4 @@ python:
 
 # Sphinx 配置
 sphinx:
-  configuration: source/conf.py
+  configuration: docs/conf.py
