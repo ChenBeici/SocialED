@@ -58,7 +58,7 @@ SocialED includes **10+** graph outlier detection algorithms.
 For consistency and accessibility, SocialED is developed on top of `DGL <https://www.dgl.ai/>`_ 
 and `PyTorch <https://pytorch.org/>`_, and follows the API design of `PyOD <https://github.com/yzhao062/pyod>`_ 
 and `PyGOD <https://github.com/pygod-team/pygod>`_.
-See examples below for detecting outliers with SocialED in 5 lines!!
+See examples below for detecting outliers with SocialED in 5 lines!!!
 
 
 
