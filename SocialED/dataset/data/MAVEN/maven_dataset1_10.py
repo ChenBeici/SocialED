@@ -17,7 +17,7 @@ print("Data converted to dataframe.")
 
 # 筛选 event_type_ids 为 1 到 10 的数据，并且每种类型只取前 300 条
 filtered_data = []
-for event_type_id in range(1, 11):  # 从 1 到 10
+for event_type_id in range(1, 50):  # 从 1 到 10
     filtered_data.append(df[df['event_type_ids'] == event_type_id].head(10))
 
 # 将筛选后的数据合并成一个新的 DataFrame

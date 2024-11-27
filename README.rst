@@ -4,7 +4,7 @@
    :alt: SocialED Logo
    :align: center
 
-.. image:: https://readthedocs.org/projects/pygod/badge/?version=latest
+.. image:: https://readthedocs.org/projects/socialed/badge/?version=latest
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
