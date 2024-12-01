@@ -1,0 +1,1164 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 --><title>Index - SocialED documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">SocialED  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">SocialED  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.tests.html">SocialED.tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="team.html">Core Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.AccumulatedAccuracyMetric">AccumulatedAccuracyMetric (class in SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Arabic_Dataset">Arabic_Dataset (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Arabic_Dataset">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Arabic_preprocessor">Arabic_preprocessor (class in SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.argmaxn">argmaxn() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.AverageNonzeroTripletsMetric">AverageNonzeroTripletsMetric (class in SocialED.detector.clkd)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bert.BERT">BERT (class in SocialED.detector.bert)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM">BiLSTM (class in SocialED.detector.bilstm)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.check_class_sizes">check_class_sizes() (in module SocialED.detector.eventx)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.check_consistent_shape">check_consistent_shape() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.check_detector">check_detector() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.check_parameter">check_parameter() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.classify_docs">classify_docs() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Arabic_preprocessor.clean_text">clean_text() (SocialED.detector.clkd.Arabic_preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD">CLKD (class in SocialED.detector.clkd)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.utils.html#SocialED.utils.stat_models.column_ecdf">column_ecdf() (in module SocialED.utils.stat_models)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.construct_dict">construct_dict() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.construct_graph">construct_graph() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.construct_graph_from_df">construct_graph_from_df() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.construct_incremental_dataset">construct_incremental_dataset() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.construct_kw_graph">construct_kw_graph() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.create_corpus">create_corpus() (SocialED.detector.lda.LDA method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.create_vectors">create_vectors() (SocialED.detector.glove.GloVe method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.utils.html#SocialED.utils.example.data_visualize">data_visualize() (in module SocialED.utils.example)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Dataset">Dataset (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Dataset">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.DatasetLoader">DatasetLoader (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.DatasetLoader">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.MAVEN_Dataset.default_file">default_file (SocialED.dataset.dataset.MAVEN_Dataset attribute)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.MAVEN_Dataset.default_file">(SocialED.dataset.MAVEN_Dataset attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Arabic_Dataset.default_files">default_files (SocialED.dataset.Arabic_Dataset attribute)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Arabic_Dataset.default_files">(SocialED.dataset.dataset.Arabic_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2012_Dataset.default_files">(SocialED.dataset.dataset.Event2012_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2018_Dataset.default_files">(SocialED.dataset.dataset.Event2018_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2012_Dataset.default_files">(SocialED.dataset.Event2012_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2018_Dataset.default_files">(SocialED.dataset.Event2018_Dataset attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Arabic_Dataset.default_path">default_path (SocialED.dataset.Arabic_Dataset attribute)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Arabic_Dataset.default_path">(SocialED.dataset.dataset.Arabic_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2012_Dataset.default_path">(SocialED.dataset.dataset.Event2012_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2018_Dataset.default_path">(SocialED.dataset.dataset.Event2018_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.MAVEN_Dataset.default_path">(SocialED.dataset.dataset.MAVEN_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2012_Dataset.default_path">(SocialED.dataset.Event2012_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2018_Dataset.default_path">(SocialED.dataset.Event2018_Dataset attribute)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.MAVEN_Dataset.default_path">(SocialED.dataset.MAVEN_Dataset attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.detect_kw_communities">detect_kw_communities() (in module SocialED.detector.eventx)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.detect_kw_communities_iter">detect_kw_communities_iter() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bert.BERT.detection">detection() (SocialED.detector.bert.BERT method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.detection">(SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD.detection">(SocialED.detector.clkd.CLKD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.detection">(SocialED.detector.eventx.EventX method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.detection">(SocialED.detector.glove.GloVe method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.detection">(SocialED.detector.lda.LDA method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.sbert.SBERT.detection">(SocialED.detector.sbert.SBERT method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.wmd.WMD.detection">(SocialED.detector.wmd.WMD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.detection">(SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.df_to_t_features">df_to_t_features() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.display_topics">display_topics() (SocialED.detector.lda.LDA method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.lda.display_topics2">display_topics2() (in module SocialED.detector.lda)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.document_vector">document_vector() (SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.documents_to_features">documents_to_features() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Dataset.download">download() (SocialED.dataset.Dataset method)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Dataset.download">(SocialED.dataset.dataset.Dataset method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Dataset.download_zip">download_zip() (SocialED.dataset.Dataset method)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Dataset.download_zip">(SocialED.dataset.dataset.Dataset method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.utils.html#SocialED.utils.stat_models.ecdf_terminate_equals_inplace">ecdf_terminate_equals_inplace() (in module SocialED.utils.stat_models)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer.edge_attention">edge_attention() (SocialED.detector.clkd.GATLayer method)</a>
+</li>
+        <li><a href="SocialED.metrics.html#SocialED.metrics.eval_average_precision">eval_average_precision() (in module SocialED.metrics)</a>
+
+        <ul>
+          <li><a href="SocialED.metrics.html#SocialED.metrics.metric.eval_average_precision">(in module SocialED.metrics.metric)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.metrics.html#SocialED.metrics.eval_f1">eval_f1() (in module SocialED.metrics)</a>
+
+        <ul>
+          <li><a href="SocialED.metrics.html#SocialED.metrics.metric.eval_f1">(in module SocialED.metrics.metric)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.metrics.html#SocialED.metrics.eval_precision_at_k">eval_precision_at_k() (in module SocialED.metrics)</a>
+
+        <ul>
+          <li><a href="SocialED.metrics.html#SocialED.metrics.metric.eval_precision_at_k">(in module SocialED.metrics.metric)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.metrics.html#SocialED.metrics.eval_recall_at_k">eval_recall_at_k() (in module SocialED.metrics)</a>
+
+        <ul>
+          <li><a href="SocialED.metrics.html#SocialED.metrics.metric.eval_recall_at_k">(in module SocialED.metrics.metric)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.metrics.html#SocialED.metrics.eval_roc_auc">eval_roc_auc() (in module SocialED.metrics)</a>
+
+        <ul>
+          <li><a href="SocialED.metrics.html#SocialED.metrics.metric.eval_roc_auc">(in module SocialED.metrics.metric)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bert.BERT.evaluate">evaluate() (SocialED.detector.bert.BERT method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.evaluate">(SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD.evaluate">(SocialED.detector.clkd.CLKD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.evaluate">(SocialED.detector.eventx.EventX method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.evaluate">(SocialED.detector.glove.GloVe method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.evaluate">(SocialED.detector.lda.LDA method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.sbert.SBERT.evaluate">(SocialED.detector.sbert.SBERT method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.wmd.WMD.evaluate">(SocialED.detector.wmd.WMD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.evaluate">(SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD.evaluate2">evaluate2() (SocialED.detector.clkd.CLKD method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.evaluate_model">evaluate_model() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.evaluate_print">evaluate_print() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Event2012_Dataset">Event2012_Dataset (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2012_Dataset">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Event2018_Dataset">Event2018_Dataset (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2018_Dataset">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX">EventX (class in SocialED.detector.eventx)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.extract_embeddings">extract_embeddings() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.extract_time_feature">extract_time_feature() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.fit">fit() (SocialED.detector.bilstm.BiLSTM method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD.fit">(SocialED.detector.clkd.CLKD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.fit">(SocialED.detector.glove.GloVe method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.fit">(SocialED.detector.lda.LDA method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.wmd.WMD.fit">(SocialED.detector.wmd.WMD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.fit">(SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.LSTM.forward">forward() (SocialED.detector.bilstm.LSTM method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.bilstm.OnlineTripletLoss.forward">(SocialED.detector.bilstm.OnlineTripletLoss method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.GAT.forward">(SocialED.detector.clkd.GAT method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer.forward">(SocialED.detector.clkd.GATLayer method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.MultiHeadGATLayer.forward">(SocialED.detector.clkd.MultiHeadGATLayer method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.OnlineTripletLoss.forward">(SocialED.detector.clkd.OnlineTripletLoss method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.FunctionNegativeTripletSelector">FunctionNegativeTripletSelector (class in SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.FunctionNegativeTripletSelector">(class in SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GAT">GAT (class in SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer">GATLayer (class in SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.generate_bagging_indices">generate_bagging_indices() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.generate_data">generate_data() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.generate_data_categorical">generate_data_categorical() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.generate_data_clusters">generate_data_clusters() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.generate_indices">generate_indices() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.generate_initial_features">generate_initial_features() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.generateMasks">generateMasks() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bert.BERT.get_bert_embeddings">get_bert_embeddings() (SocialED.detector.bert.BERT method)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.get_diff_elements">get_diff_elements() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.get_intersection">get_intersection() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.get_label_n">get_label_n() (in module SocialED.utils.utility)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.get_list_diff">get_list_diff() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.get_optimal_n_bins">get_optimal_n_bins() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.data.get_outliers_inliers">get_outliers_inliers() (in module SocialED.utils.data)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.sbert.SBERT.get_sbert_embeddings">get_sbert_embeddings() (SocialED.detector.sbert.SBERT method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.FunctionNegativeTripletSelector.get_triplets">get_triplets() (SocialED.detector.bilstm.FunctionNegativeTripletSelector method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.bilstm.TripletSelector.get_triplets">(SocialED.detector.bilstm.TripletSelector method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.FunctionNegativeTripletSelector.get_triplets">(SocialED.detector.clkd.FunctionNegativeTripletSelector method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.TripletSelector.get_triplets">(SocialED.detector.clkd.TripletSelector method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.get_word2id_emb">get_word2id_emb() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.getdata">getdata() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.getlinear_transform_features">getlinear_transform_features() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe">GloVe (class in SocialED.detector.glove)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.graph_statistics">graph_statistics() (in module SocialED.detector.clkd)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.hardest_negative">hardest_negative() (in module SocialED.detector.bilstm)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.HardestNegativeTripletSelector">HardestNegativeTripletSelector() (in module SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.HardestNegativeTripletSelector">(in module SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.infer">infer() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.LSTM.init_hidden">init_hidden() (SocialED.detector.bilstm.LSTM method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.initial_maintain">initial_maintain() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.intersection">intersection() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.invert_order">invert_order() (in module SocialED.utils.utility)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA">LDA (class in SocialED.detector.lda)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.SocialDataset.load_adj_matrix">load_adj_matrix() (SocialED.detector.clkd.SocialDataset method)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.Arabic_Dataset.load_data">load_data() (SocialED.dataset.Arabic_Dataset static method)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Arabic_Dataset.load_data">(SocialED.dataset.dataset.Arabic_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.DatasetLoader.load_data">(SocialED.dataset.dataset.DatasetLoader method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2012_Dataset.load_data">(SocialED.dataset.dataset.Event2012_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.Event2018_Dataset.load_data">(SocialED.dataset.dataset.Event2018_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.MAVEN_Dataset.load_data">(SocialED.dataset.dataset.MAVEN_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.DatasetLoader.load_data">(SocialED.dataset.DatasetLoader method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2012_Dataset.load_data">(SocialED.dataset.Event2012_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.Event2018_Dataset.load_data">(SocialED.dataset.Event2018_Dataset static method)</a>
+</li>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.MAVEN_Dataset.load_data">(SocialED.dataset.MAVEN_Dataset static method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.load_embeddings">load_embeddings() (SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.load_glove_vectors">load_glove_vectors() (SocialED.detector.glove.GloVe method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.load_model">load_model() (SocialED.detector.glove.GloVe method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.load_model">(SocialED.detector.lda.LDA method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.load_model">(SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.LSTM">LSTM (class in SocialED.detector.bilstm)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.map_communities">map_communities() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.map_dicts">map_dicts() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.map_tweets">map_tweets() (SocialED.detector.eventx.EventX method)</a>
+</li>
+        <li><a href="SocialED.dataset.html#SocialED.dataset.MAVEN_Dataset">MAVEN_Dataset (class in SocialED.dataset)</a>
+
+        <ul>
+          <li><a href="SocialED.dataset.html#SocialED.dataset.dataset.MAVEN_Dataset">(class in SocialED.dataset.dataset)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer.message_func">message_func() (SocialED.detector.clkd.GATLayer method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Metric">Metric (class in SocialED.detector.clkd)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="SocialED.dataset.html#module-SocialED.dataset">SocialED.dataset</a>
+</li>
+          <li><a href="SocialED.dataset.html#module-SocialED.dataset.dataset">SocialED.dataset.dataset</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.bert">SocialED.detector.bert</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.bilstm">SocialED.detector.bilstm</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.clkd">SocialED.detector.clkd</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.eventx">SocialED.detector.eventx</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.glove">SocialED.detector.glove</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.lda">SocialED.detector.lda</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.sbert">SocialED.detector.sbert</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.wmd">SocialED.detector.wmd</a>
+</li>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.word2vec">SocialED.detector.word2vec</a>
+</li>
+          <li><a href="SocialED.metrics.html#module-SocialED.metrics">SocialED.metrics</a>
+</li>
+          <li><a href="SocialED.metrics.html#module-SocialED.metrics.metric">SocialED.metrics.metric</a>
+</li>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.data">SocialED.utils.data</a>
+</li>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.example">SocialED.utils.example</a>
+</li>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.stat_models">SocialED.utils.stat_models</a>
+</li>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.utility">SocialED.utils.utility</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.MultiHeadGATLayer">MultiHeadGATLayer (class in SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.mutual_extract_embeddings">mutual_extract_embeddings() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.mutual_infer">mutual_infer() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.mutual_train">mutual_train() (in module SocialED.detector.clkd)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.AccumulatedAccuracyMetric.name">name() (SocialED.detector.clkd.AccumulatedAccuracyMetric method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.AverageNonzeroTripletsMetric.name">(SocialED.detector.clkd.AverageNonzeroTripletsMetric method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.Metric.name">(SocialED.detector.clkd.Metric method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.networkx_to_dgl_graph">networkx_to_dgl_graph() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor.nonlinear_transform_features">nonlinear_transform_features() (SocialED.detector.clkd.Preprocessor method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.OnlineTripletLoss">OnlineTripletLoss (class in SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.OnlineTripletLoss">(class in SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.VectorizeData.pad_data">pad_data() (SocialED.detector.bilstm.VectorizeData method)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.stat_models.pairwise_distances_no_broadcast">pairwise_distances_no_broadcast() (in module SocialED.utils.stat_models)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.pdist">pdist() (in module SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.pdist">(in module SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.utils.html#SocialED.utils.stat_models.pearsonr_mat">pearsonr_mat() (in module SocialED.utils.stat_models)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.precision_n_scores">precision_n_scores() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bert.BERT.preprocess">preprocess() (SocialED.detector.bert.BERT method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.preprocess">(SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.CLKD.preprocess">(SocialED.detector.clkd.CLKD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.preprocess">(SocialED.detector.eventx.EventX method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.preprocess">(SocialED.detector.glove.GloVe method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.lda.LDA.preprocess">(SocialED.detector.lda.LDA method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.sbert.SBERT.preprocess">(SocialED.detector.sbert.SBERT method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.wmd.WMD.preprocess">(SocialED.detector.wmd.WMD method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC.preprocess">(SocialED.detector.word2vec.WORD2VEC method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.Preprocessor">Preprocessor (class in SocialED.detector.clkd)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.random_hard_negative">random_hard_negative() (in module SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.random_hard_negative">(in module SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.RandomNegativeTripletSelector">RandomNegativeTripletSelector() (in module SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.RandomNegativeTripletSelector">(in module SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer.reduce_func">reduce_func() (SocialED.detector.clkd.GATLayer method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.SocialDataset.remove_obsolete_nodes">remove_obsolete_nodes() (SocialED.detector.clkd.SocialDataset method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.AccumulatedAccuracyMetric.reset">reset() (SocialED.detector.clkd.AccumulatedAccuracyMetric method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.AverageNonzeroTripletsMetric.reset">(SocialED.detector.clkd.AverageNonzeroTripletsMetric method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.Metric.reset">(SocialED.detector.clkd.Metric method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.GATLayer.reset_parameters">reset_parameters() (SocialED.detector.clkd.GATLayer method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.run_kmeans">run_kmeans() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.run_train">run_train() (SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.save_embeddings">save_embeddings() (in module SocialED.detector.clkd)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.sbert.SBERT">SBERT (class in SocialED.detector.sbert)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.score_to_label">score_to_label() (in module SocialED.utils.utility)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.SocialDataset">SocialDataset (class in SocialED.detector.clkd)</a>
+</li>
+        <li>
+    SocialED.dataset
+
+        <ul>
+          <li><a href="SocialED.dataset.html#module-SocialED.dataset">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.dataset.dataset
+
+        <ul>
+          <li><a href="SocialED.dataset.html#module-SocialED.dataset.dataset">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.bert
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.bert">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.bilstm
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.bilstm">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.clkd
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.clkd">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.eventx
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.eventx">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.glove
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.glove">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.lda
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.lda">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    SocialED.detector.sbert
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.sbert">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.wmd
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.wmd">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.detector.word2vec
+
+        <ul>
+          <li><a href="SocialED.detector.html#module-SocialED.detector.word2vec">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.metrics
+
+        <ul>
+          <li><a href="SocialED.metrics.html#module-SocialED.metrics">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.metrics.metric
+
+        <ul>
+          <li><a href="SocialED.metrics.html#module-SocialED.metrics.metric">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.utils.data
+
+        <ul>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.data">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.utils.example
+
+        <ul>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.example">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.utils.stat_models
+
+        <ul>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.stat_models">module</a>
+</li>
+        </ul></li>
+        <li>
+    SocialED.utils.utility
+
+        <ul>
+          <li><a href="SocialED.utils.html#module-SocialED.utils.utility">module</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.split">split() (SocialED.detector.bilstm.BiLSTM method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.eventx.EventX.split">(SocialED.detector.eventx.EventX method)</a>
+</li>
+        </ul></li>
+        <li><a href="SocialED.utils.html#SocialED.utils.utility.standardizer">standardizer() (in module SocialED.utils.utility)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.glove.GloVe.text_to_glove_vector">text_to_glove_vector() (SocialED.detector.glove.GloVe method)</a>
+</li>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.train">train() (SocialED.detector.bilstm.BiLSTM method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.TripletSelector">TripletSelector (class in SocialED.detector.bilstm)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.TripletSelector">(class in SocialED.detector.clkd)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.clkd.AccumulatedAccuracyMetric.value">value() (SocialED.detector.clkd.AccumulatedAccuracyMetric method)</a>
+
+        <ul>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.AverageNonzeroTripletsMetric.value">(SocialED.detector.clkd.AverageNonzeroTripletsMetric method)</a>
+</li>
+          <li><a href="SocialED.detector.html#SocialED.detector.clkd.Metric.value">(SocialED.detector.clkd.Metric method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.bilstm.VectorizeData">VectorizeData (class in SocialED.detector.bilstm)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.example.visualize">visualize() (in module SocialED.utils.example)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.wmd.WMD">WMD (class in SocialED.detector.wmd)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="SocialED.detector.html#SocialED.detector.word2vec.WORD2VEC">WORD2VEC (class in SocialED.detector.word2vec)</a>
+</li>
+        <li><a href="SocialED.utils.html#SocialED.utils.stat_models.wpearsonr">wpearsonr() (in module SocialED.utils.stat_models)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 beici
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>

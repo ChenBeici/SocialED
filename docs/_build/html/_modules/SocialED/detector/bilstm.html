@@ -1,0 +1,810 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <link rel="shortcut icon" href="../../../_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
+        <title>SocialED.detector.bilstm - SocialED documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=613ab9ff" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">SocialED  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">SocialED  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.tests.html">SocialED.tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../team.html">Core Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference.html">Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for SocialED.detector.bilstm</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torch.nn.utils.rnn</span> <span class="kn">import</span> <span class="n">pack_padded_sequence</span><span class="p">,</span> <span class="n">pad_packed_sequence</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">KeyedVectors</span>
+<span class="kn">import</span> <span class="nn">en_core_web_lg</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<div class="viewcode-block" id="BiLSTM"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM">[docs]</a><span class="k">class</span> <span class="nc">BiLSTM</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> 
+                 <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> 
+                 <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> 
+                 <span class="n">dropout_keep_prob</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> 
+                 <span class="n">embedding_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> 
+                 <span class="n">max_size</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> 
+                 <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                 <span class="n">num_hidden_nodes</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> 
+                 <span class="n">hidden_dim2</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> 
+                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                 <span class="n">bi_directional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                 <span class="n">pad_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                 <span class="n">num_epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> 
+                 <span class="n">margin</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
+                 <span class="n">max_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> 
+                 <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;../model_saved/Bilstm/&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout_keep_prob</span> <span class="o">=</span> <span class="n">dropout_keep_prob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span> <span class="o">=</span> <span class="n">embedding_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="n">max_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_hidden_nodes</span> <span class="o">=</span> <span class="n">num_hidden_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim2</span> <span class="o">=</span> <span class="n">hidden_dim2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bi_directional</span> <span class="o">=</span> <span class="n">bi_directional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_index</span> <span class="o">=</span> <span class="n">pad_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_epochs</span> <span class="o">=</span> <span class="n">num_epochs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx2word</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Add the rest of the class methods here, like preprocess, fit, detection, etc.</span>
+
+<div class="viewcode-block" id="BiLSTM.preprocess"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Data preprocessing: tokenization, stop words removal, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
+
+        <span class="c1"># Tokenize tweets</span>
+        <span class="n">f_batch_text</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracted tweets.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Count unique words (converted to lowercases)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">tweet</span> <span class="ow">in</span> <span class="n">f_batch_text</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tweet</span><span class="p">)</span>
+
+        <span class="c1"># Convert words from counter to list (sorted by frequencies from high to low)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">words</span><span class="o">.</span><span class="n">most_common</span><span class="p">()]</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_PAD&#39;</span><span class="p">,</span> <span class="s1">&#39;_UNK&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">words</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Extracted unique words.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Construct a mapping of words to indices and vice versa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx2word</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">o</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">)}</span>
+        
+        <span class="c1"># Save</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;word2idx.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;idx2word.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx2word</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Constructed and saved word2idx and idx2word maps.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;word2idx.npy&#39;</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="s1">&#39;TRUE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;word2idx map loaded.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Convert tokenized tweets to indices</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;wordsidx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">words</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">tweet</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span><span class="p">[</span><span class="s1">&#39;_UNK&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tweet</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Tokenized tweets in the df to word indices.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="BiLSTM.split"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split the dataset into training, validation, and test sets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">train_ratio</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="n">test_ratio</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="n">val_ratio</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
+
+        <span class="n">train_data</span><span class="p">,</span> <span class="n">temp_data</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">train_ratio</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="n">test_size</span> <span class="o">=</span> <span class="n">test_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="n">test_ratio</span> <span class="o">+</span> <span class="n">val_ratio</span><span class="p">)</span>
+        <span class="n">test_data</span><span class="p">,</span> <span class="n">val_data</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">temp_data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/train_indices_7170.npy&#39;</span><span class="p">,</span> <span class="n">train_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/test_indices_2048.npy&#39;</span><span class="p">,</span> <span class="n">test_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/val_indices_1024.npy&#39;</span><span class="p">,</span> <span class="n">val_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_data/&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">train_data</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_data/train_data_7170.npy&#39;</span><span class="p">)</span>
+        <span class="n">test_data</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_data/test_data_2048.npy&#39;</span><span class="p">)</span>
+        <span class="n">val_data</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_data/val_data_1024.npy&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="n">train_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">test_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_df</span> <span class="o">=</span> <span class="n">val_data</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data split completed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> train, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> test, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> validation samples.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BiLSTM.load_embeddings"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.load_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">load_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load pre-trained word embeddings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize weight matrix with zeros</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="c1"># Load pre-trained word2vec model</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_lg</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Word2vec model took </span><span class="si">{:.2f}</span><span class="s1"> mins to load.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">))</span>
+
+        <span class="c1"># Update word embeddings to weight</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2idx</span><span class="p">)):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx2word</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">has_vector</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">vector</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Word embeddings extracted. Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="c1"># Save and load word embeddings</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;word_embeddings.npy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Word embeddings saved.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;word_embeddings.npy&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Word embeddings loaded. Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BiLSTM.train"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">train_iterator</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_func</span><span class="p">,</span> <span class="n">log_interval</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Train the BiLSTM model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_iterator</span><span class="p">)</span>
+        <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_iterator</span><span class="p">):</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> 
+            <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span><span class="p">)</span>
+            <span class="n">loss</span><span class="p">,</span> <span class="n">num_triplets</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">log_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Batch: [</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_batches</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="mf">100.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">n_batches</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">%)]</span><span class="se">\t</span><span class="s1">Loss: </span><span class="si">{</span><span class="n">epoch_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="se">\t</span><span class="s1">Num_triplets: </span><span class="si">{</span><span class="n">num_triplets</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">epoch_loss</span> <span class="o">/</span> <span class="n">n_batches</span></div>
+
+<div class="viewcode-block" id="BiLSTM.evaluate"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate Normalized Mutual Information (NMI)</span>
+        <span class="n">nmi</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalized Mutual Information (NMI): </span><span class="si">{</span><span class="n">nmi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Calculate Adjusted Mutual Information (AMI)</span>
+        <span class="n">ami</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_mutual_info_score</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Mutual Information (AMI): </span><span class="si">{</span><span class="n">ami</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Calculate Adjusted Rand Index (ARI)</span>
+        <span class="n">ari</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Rand Index (ARI): </span><span class="si">{</span><span class="n">ari</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BiLSTM.run_train"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.run_train">[docs]</a>    <span class="k">def</span> <span class="nf">run_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">train_iterator</span><span class="p">,</span> <span class="n">test_iterator</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the training and evaluation process for the BiLSTM model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_nmi</span><span class="p">,</span> <span class="n">all_ami</span><span class="p">,</span> <span class="n">all_ari</span><span class="p">,</span> <span class="n">all_predictions</span><span class="p">,</span> <span class="n">all_labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="c1"># Train the model</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s1">. Training.&#39;</span><span class="p">)</span>
+            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_iterator</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_func</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Train Loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">This epoch took </span><span class="si">{</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> mins to train.&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Evaluate the model</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s1">. Evaluating.&#39;</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_iterator</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="c1"># cluster all the test tweets at once</span>
+                    <span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+                    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span><span class="p">)</span>
+
+                    <span class="k">assert</span> <span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+                    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+                    <span class="n">predictions</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">labels_</span>
+
+                    <span class="n">validate_nmi</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">predictions</span><span class="p">)</span>
+                    <span class="n">validate_ami</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_mutual_info_score</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">predictions</span><span class="p">)</span>
+                    <span class="n">validate_ari</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">predictions</span><span class="p">)</span>
+
+            <span class="n">all_nmi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_nmi</span><span class="p">)</span>
+            <span class="n">all_ami</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_ami</span><span class="p">)</span>
+            <span class="n">all_ari</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_ari</span><span class="p">)</span>
+            <span class="n">all_predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+            <span class="n">all_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Val. NMI: </span><span class="si">{</span><span class="n">validate_nmi</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Val. AMI: </span><span class="si">{</span><span class="n">validate_ami</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Val. ARI: </span><span class="si">{</span><span class="n">validate_ari</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">This epoch took </span><span class="si">{</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> mins to evaluate.&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">all_nmi</span><span class="p">,</span> <span class="n">all_ami</span><span class="p">,</span> <span class="n">all_ari</span><span class="p">,</span> <span class="n">all_predictions</span><span class="p">,</span> <span class="n">all_labels</span></div>
+
+<div class="viewcode-block" id="BiLSTM.fit"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit the model on the training data and save the best model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_embeddings</span><span class="p">()</span>
+
+        <span class="c1"># Split training and test datasets</span>
+        <span class="n">train_mask</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/train_indices_7170.npy&#39;</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/test_indices_2048.npy&#39;</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">VectorizeData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">)</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">VectorizeData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">test_mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">)</span>
+        
+        <span class="c1"># Construct training and test iterator</span>
+        <span class="n">train_iterator</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">test_iterator</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">),</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Loss function</span>
+        <span class="n">loss_func</span> <span class="o">=</span> <span class="n">OnlineTripletLoss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">RandomNegativeTripletSelector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">))</span>
+
+        <span class="c1"># Model</span>
+        <span class="n">lstm_model</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_hidden_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim2</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bi_directional</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout_keep_prob</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_index</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="c1"># Optimizer</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">lstm_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+
+        <span class="c1"># Train and evaluation</span>
+        <span class="n">all_nmi</span><span class="p">,</span> <span class="n">all_ami</span><span class="p">,</span> <span class="n">all_ari</span><span class="p">,</span> <span class="n">all_predictions</span><span class="p">,</span> <span class="n">all_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_train</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">lstm_model</span><span class="p">,</span> <span class="n">train_iterator</span><span class="p">,</span> <span class="n">test_iterator</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_func</span><span class="p">)</span>
+        
+        <span class="n">best_epoch</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_nmi</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">all_nmi</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all_nmi: &quot;</span><span class="p">,</span> <span class="n">all_nmi</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all_ami: &quot;</span><span class="p">,</span> <span class="n">all_ami</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all_ari: &quot;</span><span class="p">,</span> <span class="n">all_ari</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training completed. Best results at epoch &quot;</span><span class="p">,</span> <span class="n">best_epoch</span><span class="p">)</span>
+        
+        <span class="c1"># Save the best model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;best_model.pth&quot;</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">lstm_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_model_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best model saved at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">best_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_epoch</span> <span class="o">=</span> <span class="n">best_epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_model</span> <span class="o">=</span> <span class="n">lstm_model</span></div>
+
+<div class="viewcode-block" id="BiLSTM.detection"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.BiLSTM.detection">[docs]</a>    <span class="k">def</span> <span class="nf">detection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect events using the best trained model on the test data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the best model</span>
+        <span class="n">lstm_model</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_hidden_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim2</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bi_directional</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout_keep_prob</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_index</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">lstm_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">best_model_path</span><span class="p">))</span>
+        <span class="n">lstm_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="c1"># Load test data</span>
+        <span class="n">test_mask</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;/split_indices/test_indices_2048.npy&#39;</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">VectorizeData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">test_mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">)</span>
+        <span class="n">test_iterator</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">),</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_iterator</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span>  <span class="c1"># Process all test tweets at once</span>
+                <span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+                <span class="n">predictions</span> <span class="o">=</span> <span class="n">lstm_model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span><span class="p">)</span>
+
+                <span class="k">assert</span> <span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+                <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+                <span class="n">predictions</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">labels_</span>
+
+                <span class="n">ground_truths</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span></div></div>
+
+<div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># define all the layers used in model</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">lstm_units</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="p">,</span> <span class="n">lstm_layers</span><span class="p">,</span>
+                 <span class="n">bidirectional</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">pad_index</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1">#self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx = pad_index)</span>
+        <span class="c1"># use pretrained embeddings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">padding_idx</span> <span class="o">=</span> <span class="n">pad_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span>
+                            <span class="n">lstm_units</span><span class="p">,</span>
+                            <span class="n">num_layers</span><span class="o">=</span><span class="n">lstm_layers</span><span class="p">,</span>
+                            <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span>
+                            <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">num_directions</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">bidirectional</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">lstm_units</span> <span class="o">*</span> <span class="n">num_directions</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="c1">#self.fc2 = nn.Linear(hidden_dim, num_classes)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm_layers</span> <span class="o">=</span> <span class="n">lstm_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_directions</span> <span class="o">=</span> <span class="n">num_directions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm_units</span> <span class="o">=</span> <span class="n">lstm_units</span>
+
+
+<div class="viewcode-block" id="LSTM.init_hidden"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.LSTM.init_hidden">[docs]</a>    <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lstm_layers</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_directions</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm_units</span><span class="p">)),</span>
+                <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lstm_layers</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_directions</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm_units</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">c</span></div>
+
+<div class="viewcode-block" id="LSTM.forward"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.LSTM.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text_lengths</span><span class="p">):</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">packed_embedded</span> <span class="o">=</span> <span class="n">pack_padded_sequence</span><span class="p">(</span><span class="n">embedded</span><span class="p">,</span> <span class="n">text_lengths</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># output of shape (batch, seq_len, num_directions * hidden_size): tensor containing the </span>
+        <span class="c1"># output features (h_t) from the last layer of the LSTM, for each t.</span>
+        <span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">c_n</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">packed_embedded</span><span class="p">,</span> <span class="p">(</span><span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span><span class="p">))</span> 
+        <span class="n">output_unpacked</span><span class="p">,</span> <span class="n">output_lengths</span> <span class="o">=</span> <span class="n">pad_packed_sequence</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># get the hidden state of the last time step </span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">output_unpacked</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">dense1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
+        <span class="c1">#drop = self.dropout(dense1)</span>
+        <span class="c1">#preds = self.fc2(drop)</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">dense1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">preds</span></div></div>
+
+<div class="viewcode-block" id="VectorizeData"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.VectorizeData">[docs]</a><span class="k">class</span> <span class="nc">VectorizeData</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span> <span class="o">=</span> <span class="n">max_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;lengths&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">wordsidx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;lengths&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wordsidxpadded&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">wordsidx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_data</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">wordsidxpadded</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="c1"># truncated tweet length</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">event_id</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:(</span><span class="n">x</span><span class="p">,</span><span class="n">lens</span><span class="p">),</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">sample</span>
+    
+<div class="viewcode-block" id="VectorizeData.pad_data"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.VectorizeData.pad_data">[docs]</a>    <span class="k">def</span> <span class="nf">pad_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tweet</span><span class="p">):</span>
+        <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span><span class="p">,),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span><span class="p">:</span>
+            <span class="n">padded</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">maxlen</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">padded</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">tweet</span><span class="p">)]</span> <span class="o">=</span> <span class="n">tweet</span>
+        <span class="k">return</span> <span class="n">padded</span></div></div>
+
+<div class="viewcode-block" id="OnlineTripletLoss"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.OnlineTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">OnlineTripletLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Online Triplets loss</span>
+<span class="sd">    Takes a batch of embeddings and corresponding labels.</span>
+<span class="sd">    Triplets are generated using triplet_selector object that take embeddings and targets and return indices of</span>
+<span class="sd">    triplets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">triplet_selector</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OnlineTripletLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">triplet_selector</span> <span class="o">=</span> <span class="n">triplet_selector</span>
+
+<div class="viewcode-block" id="OnlineTripletLoss.forward"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.OnlineTripletLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+
+        <span class="n">triplets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triplet_selector</span><span class="o">.</span><span class="n">get_triplets</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">:</span>
+            <span class="n">triplets</span> <span class="o">=</span> <span class="n">triplets</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+
+        <span class="n">ap_distances</span> <span class="o">=</span> <span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="n">triplets</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="n">embeddings</span><span class="p">[</span><span class="n">triplets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># .pow(.5)</span>
+        <span class="n">an_distances</span> <span class="o">=</span> <span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="n">triplets</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="n">embeddings</span><span class="p">[</span><span class="n">triplets</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># .pow(.5)</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">ap_distances</span> <span class="o">-</span> <span class="n">an_distances</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">losses</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="pdist"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.pdist">[docs]</a><span class="k">def</span> <span class="nf">pdist</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="n">distance_matrix</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">vectors</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span> <span class="o">+</span> <span class="n">vectors</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">vectors</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">distance_matrix</span></div>
+
+<div class="viewcode-block" id="TripletSelector"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.TripletSelector">[docs]</a><span class="k">class</span> <span class="nc">TripletSelector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation should return indices of anchors, positive and negative samples</span>
+<span class="sd">    return np array of shape [N_triplets x 3]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="TripletSelector.get_triplets"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.TripletSelector.get_triplets">[docs]</a>    <span class="k">def</span> <span class="nf">get_triplets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<div class="viewcode-block" id="FunctionNegativeTripletSelector"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.FunctionNegativeTripletSelector">[docs]</a><span class="k">class</span> <span class="nc">FunctionNegativeTripletSelector</span><span class="p">(</span><span class="n">TripletSelector</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For each positive pair, takes the hardest negative sample (with the greatest triplet loss value) to create a triplet</span>
+<span class="sd">    Margin should match the margin used in triplet loss.</span>
+<span class="sd">    negative_selection_fn should take array of loss_values for a given anchor-positive pair and all negative samples</span>
+<span class="sd">    and return a negative index for that pair</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">negative_selection_fn</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FunctionNegativeTripletSelector</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpu</span> <span class="o">=</span> <span class="n">cpu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">negative_selection_fn</span> <span class="o">=</span> <span class="n">negative_selection_fn</span>
+
+<div class="viewcode-block" id="FunctionNegativeTripletSelector.get_triplets"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.FunctionNegativeTripletSelector.get_triplets">[docs]</a>    <span class="k">def</span> <span class="nf">get_triplets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu</span><span class="p">:</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">pdist</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">triplets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="n">label_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">label</span><span class="p">)</span>
+            <span class="n">label_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">label_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">negative_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">label_mask</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">anchor_positives</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">label_indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># All anchor-positive pairs</span>
+            <span class="n">anchor_positives</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">anchor_positives</span><span class="p">)</span>
+
+            <span class="n">ap_distances</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">anchor_positives</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">anchor_positives</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">anchor_positive</span><span class="p">,</span> <span class="n">ap_distance</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anchor_positives</span><span class="p">,</span> <span class="n">ap_distances</span><span class="p">):</span>
+                <span class="n">loss_values</span> <span class="o">=</span> <span class="n">ap_distance</span> <span class="o">-</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">anchor_positive</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">negative_indices</span><span class="p">)]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span>
+                <span class="n">loss_values</span> <span class="o">=</span> <span class="n">loss_values</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                <span class="n">hard_negative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">negative_selection_fn</span><span class="p">(</span><span class="n">loss_values</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">hard_negative</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hard_negative</span> <span class="o">=</span> <span class="n">negative_indices</span><span class="p">[</span><span class="n">hard_negative</span><span class="p">]</span>
+                    <span class="n">triplets</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">anchor_positive</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">anchor_positive</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hard_negative</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">triplets</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">anchor_positive</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">anchor_positive</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">negative_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="n">triplets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="random_hard_negative"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.random_hard_negative">[docs]</a><span class="k">def</span> <span class="nf">random_hard_negative</span><span class="p">(</span><span class="n">loss_values</span><span class="p">):</span>
+    <span class="n">hard_negatives</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">loss_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">hard_negatives</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hard_negatives</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="hardest_negative"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.hardest_negative">[docs]</a><span class="k">def</span> <span class="nf">hardest_negative</span><span class="p">(</span><span class="n">loss_values</span><span class="p">):</span>
+    <span class="n">hard_negative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">loss_values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hard_negative</span> <span class="k">if</span> <span class="n">loss_values</span><span class="p">[</span><span class="n">hard_negative</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="HardestNegativeTripletSelector"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.HardestNegativeTripletSelector">[docs]</a><span class="k">def</span> <span class="nf">HardestNegativeTripletSelector</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">FunctionNegativeTripletSelector</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="n">margin</span><span class="p">,</span></div>
+                                                                                 <span class="n">negative_selection_fn</span><span class="o">=</span><span class="n">hardest_negative</span><span class="p">,</span>
+                                                                                 <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RandomNegativeTripletSelector"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.bilstm.RandomNegativeTripletSelector">[docs]</a><span class="k">def</span> <span class="nf">RandomNegativeTripletSelector</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">FunctionNegativeTripletSelector</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="n">margin</span><span class="p">,</span></div>
+                                                                                <span class="n">negative_selection_fn</span><span class="o">=</span><span class="n">random_hard_negative</span><span class="p">,</span>
+                                                                                <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">data_sets</span> <span class="kn">import</span> <span class="n">Event2012_Dataset</span><span class="p">,</span> <span class="n">Event2018_Dataset</span><span class="p">,</span> <span class="n">MAVEN_Dataset</span><span class="p">,</span> <span class="n">Arabic_Dataset</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">MAVEN_Dataset</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+
+    <span class="n">bilstm</span> <span class="o">=</span> <span class="n">BiLSTM</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="c1"># Data preprocessing</span>
+    <span class="n">bilstm</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
+
+    <span class="n">bilstm</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="c1"># Detection</span>
+    <span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">bilstm</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>
+
+    <span class="c1"># Evaluate the model</span>
+    <span class="n">bilstm</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truths</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 beici
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>
