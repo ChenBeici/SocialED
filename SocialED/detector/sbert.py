@@ -6,18 +6,24 @@ from sentence_transformers import SentenceTransformer
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import logging
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-
 class SBERT:
-    def __init__(self, dataset, model_name='../model_needed/paraphrase-MiniLM-L6-v2'):
+    def __init__(self,
+                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 model_name='../model/model_needed/paraphrase-MiniLM-L6-v2',
+                 df=None,
+                 train_df=None,
+                 test_df=None, ):
         self.dataset = dataset
         self.model_name = model_name
-        self.df = None
-        self.train_df = None
-        self.test_df = None
+        self.df = df
+        self.train_df = train_df
+        self.test_df = test_df
         self.model = SentenceTransformer(self.model_name)
 
     def preprocess(self):
@@ -25,7 +31,8 @@ class SBERT:
         Data preprocessing: tokenization, stop words removal, etc.
         """
         df = self.dataset
-        df['processed_text'] = df['filtered_words'].apply(lambda x: ' '.join([str(word).lower() for word in x]) if isinstance(x, list) else '')
+        df['processed_text'] = df['filtered_words'].apply(
+            lambda x: ' '.join([str(word).lower() for word in x]) if isinstance(x, list) else '')
         self.df = df
         return df
 
@@ -53,17 +60,15 @@ class SBERT:
 
         train_embeddings = np.stack(self.train_df['sbert_embedding'].values)
         test_embeddings = np.stack(self.test_df['sbert_embedding'].values)
-        
+
         predictions = []
         for test_emb in test_embeddings:
             distances = np.linalg.norm(train_embeddings - test_emb, axis=1)
             closest_idx = np.argmin(distances)
             predictions.append(self.train_df.iloc[closest_idx]['event_id'])
-        
+
         ground_truths = self.test_df['event_id'].tolist()
         return ground_truths, predictions
-        #不用划分
-
 
     def evaluate(self, ground_truths, predictions):
         """
@@ -81,20 +86,16 @@ class SBERT:
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
+
 # Main function
 if __name__ == "__main__":
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    sbert = SBERT()
 
-    dataset = Event2012_Dataset.load_data()
-
-    sbert = SBERT(dataset)
-    
     # Data preprocessing
     sbert.preprocess()
-    
+
     # Detection
     ground_truths, predictions = sbert.detection()
 
     # Evaluation
     sbert.evaluate(ground_truths, predictions)
-

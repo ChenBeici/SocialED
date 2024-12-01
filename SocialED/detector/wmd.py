@@ -7,15 +7,20 @@ from gensim.similarities import WmdSimilarity
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from tqdm import tqdm
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 
+
+# event_id, filtered_words
 class WMD:
-    def __init__(self, 
-                 dataset, 
-                 vector_size=100, 
-                 window=5, 
-                 min_count=1, 
-                 sg=1, 
-                 file_path='../model_saved/WMD/'):
+    def __init__(self,
+                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 vector_size=100,
+                 window=5,
+                 min_count=1,
+                 sg=1,
+                 file_path='../model/model_saved/WMD/'):
         self.dataset = dataset
         self.vector_size = vector_size
         self.window = window
@@ -32,8 +37,9 @@ class WMD:
         """
         Data preprocessing: tokenization, stop words removal, etc.
         """
-        df = self.dataset
-        df['processed_text'] = df['filtered_words'].apply(lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
+        df = self.dataset[['filtered_words', 'event_id']].copy()
+        df['processed_text'] = df['filtered_words'].apply(
+            lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
         self.df = df
         return df
 
@@ -54,11 +60,11 @@ class WMD:
         word2vec_model = Word2Vec(sentences=sentences, vector_size=self.vector_size, window=self.window,
                                   min_count=self.min_count, sg=self.sg)
         print("Word2Vec model trained successfully.")
-        
+
         # Save the trained model to a file
         word2vec_model.save(self.model_path)
         print(f"Word2Vec model saved to {self.model_path}")
-        
+
         self.word2vec_model = word2vec_model.wv  # Use the KeyedVectors part of the Word2Vec model
 
     def detection(self):
@@ -75,7 +81,7 @@ class WMD:
 
         print("Calculating WMD distances...")
         instance = WmdSimilarity(train_corpus, self.word2vec_model, num_best=1)
-        
+
         # Calculate distances and store only the minimum distance for each document
         predictions = []
         for doc in tqdm(test_corpus, desc="Processing documents"):
@@ -83,7 +89,7 @@ class WMD:
             predictions.append(self.train_df.iloc[distances[0][0]]['event_id'])
 
         ground_truths = self.test_df['event_id'].tolist()
-        
+
         return ground_truths, predictions
 
     def evaluate(self, ground_truths, predictions):
@@ -102,22 +108,19 @@ class WMD:
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
+
 # Main function
 if __name__ == "__main__":
-    from data_sets import Event2012_Dataset
+    wmd = WMD()
 
-    dataset = Event2012_Dataset.load_data()
-
-    wmd = WMD(dataset)
-    
     # Data preprocessing
     wmd.preprocess()
-    
+
     # Train the model
     wmd.fit()
-    
+
     # Detection
     ground_truths, predictions = wmd.detection()
-    
+
     # Evaluate
     wmd.evaluate(ground_truths, predictions)

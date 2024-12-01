@@ -22,9 +22,9 @@ import en_core_web_lg
 from datetime import datetime
 import networkx as nx
 from dgl.dataloading import MultiLayerNeighborSampler, NodeDataLoader
-
-
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 
 """
     KPGNN Model
@@ -33,8 +33,66 @@ from dgl.dataloading import MultiLayerNeighborSampler, NodeDataLoader
     github: https://github.com/RingBDStack/KPGNN
 """
 
+class args_define:
+    def __init__(self, **kwargs):
+        # Hyper-parameters
+        self.n_epochs = kwargs.get('n_epochs', 15)
+        self.n_infer_epochs = kwargs.get('n_infer_epochs', 0)
+        self.window_size = kwargs.get('window_size', 3)
+        self.patience = kwargs.get('patience', 5)
+        self.margin = kwargs.get('margin', 3.0)
+        self.lr = kwargs.get('lr', 1e-3)
+        self.batch_size = kwargs.get('batch_size', 200)
+        self.n_neighbors = kwargs.get('n_neighbors', 800)
+        self.hidden_dim = kwargs.get('hidden_dim', 8)
+        self.out_dim = kwargs.get('out_dim', 32)
+        self.num_heads = kwargs.get('num_heads', 4)
+        self.use_residual = kwargs.get('use_residual', True)
+        self.validation_percent = kwargs.get('validation_percent', 0.2)
+        self.use_hardest_neg = kwargs.get('use_hardest_neg', False)
+        self.use_dgi = kwargs.get('use_dgi', False)
+        self.remove_obsolete = kwargs.get('remove_obsolete', 2)
+        self.is_incremental = kwargs.get('is_incremental', False)
+
+        # Other arguments
+        self.use_cuda = kwargs.get('use_cuda', False)
+        self.data_path = kwargs.get('data_path', '../model/model_saved/kpgnn/kpgnn_incremental_test')
+        self.mask_path = kwargs.get('mask_path', None)
+        self.resume_path = kwargs.get('resume_path', None)
+        self.resume_point = kwargs.get('resume_point', 0)
+        self.resume_current = kwargs.get('resume_current', True)
+        self.log_interval = kwargs.get('log_interval', 10)
+
+        # Store all arguments in a single attribute
+        self.args = argparse.Namespace(**{
+            'n_epochs': self.n_epochs,
+            'n_infer_epochs': self.n_infer_epochs,
+            'window_size': self.window_size,
+            'patience': self.patience,
+            'margin': self.margin,
+            'lr': self.lr,
+            'batch_size': self.batch_size,
+            'n_neighbors': self.n_neighbors,
+            'hidden_dim': self.hidden_dim,
+            'out_dim': self.out_dim,
+            'num_heads': self.num_heads,
+            'use_residual': self.use_residual,
+            'validation_percent': self.validation_percent,
+            'use_hardest_neg': self.use_hardest_neg,
+            'use_dgi': self.use_dgi,
+            'remove_obsolete': self.remove_obsolete,
+            'is_incremental': self.is_incremental,
+            'use_cuda': self.use_cuda,
+            'data_path': self.data_path,
+            'mask_path': self.mask_path,
+            'resume_path': self.resume_path,
+            'resume_point': self.resume_point,
+            'resume_current': self.resume_current,
+            'log_interval': self.log_interval,
+        })
+
+'''
 class args_define():
-    
     parser = argparse.ArgumentParser()
     # Hyper-parameters
     parser.add_argument('--n_epochs', default=15, type=int,
@@ -81,7 +139,8 @@ class args_define():
     parser.add_argument('--use_cuda', dest='use_cuda', default=False,
                         action='store_true',
                         help="Use cuda")
-    parser.add_argument('--data_path', default='../model_saved/kpgnn/kpgnn_incremental_test', #default='./incremental_0808/',
+    parser.add_argument('--data_path', default='../model/model_saved/kpgnn/kpgnn_incremental_test',
+                        # default='./incremental_0808/',
                         type=str, help="Path of features, labels and edges")
     # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
     parser.add_argument('--mask_path', default=None,
@@ -100,11 +159,10 @@ class args_define():
                         help="Log interval")
 
     args = parser.parse_args()
-
-
+'''
 
 class KPGNN():
-    def __init__(self, args,dataset):
+    def __init__(self, args, dataset):
         self.args = args
         self.dataset = dataset
         self.model = None
@@ -112,27 +170,27 @@ class KPGNN():
         self.loss_fn_dgi = None
         self.metrics = None
         self.train_indices = None
-        self.indices_to_remove = None 
-        self.embedding_save_path = None 
+        self.indices_to_remove = None
+        self.embedding_save_path = None
         self.data_split = None
 
     def preprocess(self):
         preprocessor = Preprocessor(self.args, self.dataset)
-        #preprocessor.generate_initial_features(self.dataset)
+        # preprocessor.generate_initial_features(self.dataset)
         preprocessor.custom_message_graph(self.dataset)
 
-    def fit(self):        
+    def fit(self):
         use_cuda = self.args.use_cuda and torch.cuda.is_available()
         print("Using CUDA:", use_cuda)
         os.makedirs(self.args.data_path, exist_ok=True)
-        
+
         # make dirs and save args
         if self.args.resume_path is None:  # build a new dir if training from scratch
             self.embedding_save_path = self.args.data_path + '/embeddings_' + strftime("%m%d%H%M%S", localtime())
             os.mkdir(self.embedding_save_path)
 
         # resume training using original dir
-        else:  
+        else:
             self.embedding_save_path = self.args.resume_path
         print("embedding_save_path: ", self.embedding_save_path)
 
@@ -153,17 +211,27 @@ class KPGNN():
         self.metrics = [AverageNonzeroTripletsMetric()]
 
         train_i = 0
-        
 
-        if ((self.args.resume_path is not None) and (self.args.resume_point == 0) and (self.args.resume_current)) or self.args.resume_path is None:
+        if ((self.args.resume_path is not None) and (self.args.resume_point == 0) and (
+                self.args.resume_current)) or self.args.resume_path is None:
             if not self.args.use_dgi:
-                self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, 0, self.data_split, self.metrics, self.embedding_save_path, self.loss_fn, self.model)
+                self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, 0,
+                                                                                                      self.data_split,
+                                                                                                      self.metrics,
+                                                                                                      self.embedding_save_path,
+                                                                                                      self.loss_fn,
+                                                                                                      self.model)
             else:
-                self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, 0, self.data_split, self.metrics, self.embedding_save_path, self.loss_fn, None, self.loss_fn_dgi)
+                self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, 0,
+                                                                                                      self.data_split,
+                                                                                                      self.metrics,
+                                                                                                      self.embedding_save_path,
+                                                                                                      self.loss_fn,
+                                                                                                      None,
+                                                                                                      self.loss_fn_dgi)
 
-        
     def detection(self):
-        
+
         train_i = 0
         if self.args.is_incremental:
 
@@ -177,43 +245,52 @@ class KPGNN():
             for i in range(1, self.data_split.shape[0]):
                 # Inference (prediction)
                 # Resume model from the previous, i.e., (i-1)th block or continue the new experiment. Otherwise (to resume from other blocks) skip this step.
-                if ((self.args.resume_path is not None) and (self.args.resume_point == i - 1) and (not self.args.resume_current)) or self.args.resume_path is None:
+                if ((self.args.resume_path is not None) and (self.args.resume_point == i - 1) and (
+                        not self.args.resume_current)) or self.args.resume_path is None:
                     if not self.args.use_dgi:
-                        self.model = KPGNN_model.infer(train_i, i, self.data_split, self.metrics, self.embedding_save_path, self.loss_fn, self.train_indices, self.model, None,
-                                    self.indices_to_remove)
+                        self.model = KPGNN_model.infer(train_i, i, self.data_split, self.metrics,
+                                                       self.embedding_save_path, self.loss_fn, self.train_indices,
+                                                       self.model, None,
+                                                       self.indices_to_remove)
                     else:
-                        self.model = KPGNN_model.infer(train_i, i, self.data_split, self.metrics, self.embedding_save_path, self.loss_fn, self.train_indices, self.model,
-                                    self.loss_fn_dgi, self.indices_to_remove)
+                        self.model = KPGNN_model.infer(train_i, i, self.data_split, self.metrics,
+                                                       self.embedding_save_path, self.loss_fn, self.train_indices,
+                                                       self.model,
+                                                       self.loss_fn_dgi, self.indices_to_remove)
                 # Maintain
                 # Resume model from the current, i.e., ith block or continue the new experiment. Otherwise (to resume from other blocks) skip this step.
-                if ((self.args.resume_path is not None) and (self.args.resume_point == i) and (self.args.resume_current)) or self.args.resume_path is None:
+                if ((self.args.resume_path is not None) and (self.args.resume_point == i) and (
+                        self.args.resume_current)) or self.args.resume_path is None:
                     if i % self.args.window_size == 0:
                         train_i = i
                         if not self.args.use_dgi:
-                            self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, i, self.data_split, self.metrics,
-                                                                                    self.embedding_save_path, self.loss_fn, self.model)
+                            self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(
+                                train_i, i, self.data_split, self.metrics,
+                                self.embedding_save_path, self.loss_fn, self.model)
                         else:
-                            self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(train_i, i, self.data_split, self.metrics,
-                                                                                    self.embedding_save_path, self.loss_fn, self.model,
-                                                                                    self.loss_fn_dgi)
+                            self.train_indices, self.indices_to_remove, self.model = KPGNN_model.initial_maintain(
+                                train_i, i, self.data_split, self.metrics,
+                                self.embedding_save_path, self.loss_fn, self.model,
+                                self.loss_fn_dgi)
 
         data = SocialDataset(self.args.data_path, 0)
-        g = dgl.DGLGraph(data.matrix) 
+        g = dgl.DGLGraph(data.matrix)
         g.readonly()
         features = torch.FloatTensor(data.features)
         labels = torch.LongTensor(data.labels)
-        
+
         predictions = []
         ground_truths = []
-        self.detection_path = '../model_saved/kpgnn/detection_split/'
+        self.detection_path = '../model/model_saved/kpgnn/detection_split/'
         os.makedirs(self.detection_path, exist_ok=True)
 
-        test_indices = generateMasks(len(labels), self.data_split, 1, 0, 0.2, self.detection_path, num_indices_to_remove=0)
+        test_indices = generateMasks(len(labels), self.data_split, 1, 0, 0.2, self.detection_path,
+                                     num_indices_to_remove=0)
 
         g.ndata['features'] = features
 
         _, extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), labels)
-        
+
         # Extract labels
         test_indices = torch.load(self.detection_path + '/test_indices.pt')
 
@@ -241,7 +318,7 @@ class KPGNN():
 
         # Calculate Normalized Mutual Information (NMI)
         nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-        
+
         print(f"Model Adjusted Rand Index (ARI): {ars}")
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
@@ -249,13 +326,14 @@ class KPGNN():
 
 
 class Preprocessor:
-    def __init__(self,args,dataset):
+    def __init__(self, args, dataset):
         pass
-    #generate_initial_features
+
+    # generate_initial_features
     def generate_initial_features(self, dataset):
         save_path = './data/Event2012/kpgnn/'
         df = dataset
-        
+
         os.makedirs(save_path, exist_ok=True)
         print("Data converted to dataframe.")
         print(df.shape)
@@ -275,7 +353,7 @@ class Preprocessor:
         nlp = en_core_web_lg.load()
         print("df.filtered_words.head(10)", df.filtered_words.head(10))
         features = df.filtered_words.apply(lambda x: nlp(' '.join(x)).vector).values
-        print("features.head(10)", features,"\n", "np.stack(features, axis=0)", np.stack(features, axis=0))
+        print("features.head(10)", features, "\n", "np.stack(features, axis=0)", np.stack(features, axis=0))
         return np.stack(features, axis=0)
 
     def extract_time_feature(self, t_str):
@@ -288,10 +366,10 @@ class Preprocessor:
     def df_to_t_features(self, df):
         t_features = np.asarray([self.extract_time_feature(t_str) for t_str in df['created_at']])
         return t_features
- 
-    #custom_message_graph  
+
+    # custom_message_graph
     def custom_message_graph(self, dataset):
-        save_path = '../model_saved/kpgnn/kpgnn_incremental_test/'
+        save_path = '../model/model_saved/kpgnn/kpgnn_incremental_test/'
         '''
         if os.path.exists(save_path):
             pass
@@ -311,7 +389,7 @@ class Preprocessor:
 
         # load features
         # the dimension of feature is 300 in this dataset
-        f = np.load('./data/Event2012/kpgnn/features_69612_0709_spacy_lg_zero_multiclasses_filtered.npy')
+        f = np.load('../dataset/data/Event2012/kpgnn/features_69612_0709_spacy_lg_zero_multiclasses_filtered.npy')
 
         # generate test graphs, features, and labels
         message, data_split, all_graph_mins = self.construct_incremental_dataset(df, save_path, f, True)
@@ -426,7 +504,7 @@ class Preprocessor:
         print('\tStart constructing tweet-user-tweet commuting matrix ...')
         print('\t\t\tStart constructing tweet-user matrix ...')
         message += '\tStart constructing tweet-user-tweet commuting matrix ...\n\t\t\tStart constructing tweet-user ' \
-                'matrix ...\n '
+                   'matrix ...\n '
         start = time.time()
         w_tid_userid = A[np.ix_(indices_tid, indices_userid)]
         #  return a N(indices_tid)*N(indices_userid) matrix, representing the weight of edges between tid and userid
@@ -487,7 +565,7 @@ class Preprocessor:
         print('\tStart constructing tweet-ent-tweet commuting matrix ...')
         print('\t\t\tStart constructing tweet-ent matrix ...')
         message += '\tStart constructing tweet-ent-tweet commuting matrix ...\n\t\t\tStart constructing tweet-ent matrix ' \
-                '...\n '
+                   '...\n '
         start = time.time()
         w_tid_entity = A[np.ix_(indices_tid, indices_entity)]
         mins = (time.time() - start) / 60
@@ -547,7 +625,7 @@ class Preprocessor:
         print('\tStart constructing tweet-word-tweet commuting matrix ...')
         print('\t\t\tStart constructing tweet-word matrix ...')
         message += '\tStart constructing tweet-word-tweet commuting matrix ...\n\t\t\tStart constructing tweet-word ' \
-                'matrix ...\n '
+                   'matrix ...\n '
         start = time.time()
         w_tid_word = A[np.ix_(indices_tid, indices_word)]
         del A
@@ -722,7 +800,7 @@ class Preprocessor:
             # G = construct_graph_from_df(incr_df, G) 
 
             # Latest Message Strategy: construct graph using only the data of the day
-            G = self.construct_graph_from_df(incr_df)  
+            G = self.construct_graph_from_df(incr_df)
 
             path = save_path + str(i - 6) + '/'
             if os.path.exists(path):
@@ -763,7 +841,7 @@ class KPGNN_model():
 
     # Inference(prediction)
     def infer(train_i, i, data_split, metrics, embedding_save_path, loss_fn, train_indices=None, model=None,
-            loss_fn_dgi=None, indices_to_remove=[]):
+              loss_fn_dgi=None, indices_to_remove=[]):
         args = args_define.args
 
         save_path_i = embedding_save_path + '/block_' + str(i)
@@ -774,16 +852,18 @@ class KPGNN_model():
         features = torch.FloatTensor(data.features)
         labels = torch.LongTensor(data.labels)
         print("labels1:", labels)
-        in_feats = features.shape[1]  
+        in_feats = features.shape[1]
 
-        g = dgl.graph((data.matrix.row, data.matrix.col))  
+        g = dgl.graph((data.matrix.row, data.matrix.col))
         num_isolated_nodes = graph_statistics(g, save_path_i)
 
         if args.remove_obsolete == 1:
-            if ((args.resume_path is not None) and (not args.resume_current) and (i == args.resume_point + 1) and (i > args.window_size)) \
+            if ((args.resume_path is not None) and (not args.resume_current) and (i == args.resume_point + 1) and (
+                    i > args.window_size)) \
                     or (indices_to_remove == [] and i > args.window_size):
                 temp_i = max(((i - 1) // args.window_size) * args.window_size, 0)
-                indices_to_remove = np.load(embedding_save_path + '/block_' + str(temp_i) + '/indices_to_remove.npy').tolist()
+                indices_to_remove = np.load(
+                    embedding_save_path + '/block_' + str(temp_i) + '/indices_to_remove.npy').tolist()
 
             if indices_to_remove != []:
                 data.remove_obsolete_nodes(indices_to_remove)
@@ -797,7 +877,8 @@ class KPGNN_model():
             mask_path = save_path_i + '/masks'
             if not os.path.isdir(mask_path):
                 os.mkdir(mask_path)
-            test_indices = generateMasks(len(labels), data_split, train_i, i, args.validation_percent, mask_path, len(indices_to_remove))
+            test_indices = generateMasks(len(labels), data_split, train_i, i, args.validation_percent, mask_path,
+                                         len(indices_to_remove))
         else:
             test_indices = torch.load(args.mask_path + '/block_' + str(i) + '/masks/test_indices.pt')
 
@@ -829,7 +910,8 @@ class KPGNN_model():
                 train_indices = torch.load(embedding_save_path + '/block_' + str(temp_i) + '/masks/train_indices.pt')
             else:
                 if args.n_infer_epochs != 0:
-                    print("==================================\n'continue training then predict' is unimplemented under remove_obsolete mode 2, will skip infer epochs.\n===================================\n")
+                    print(
+                        "==================================\n'continue training then predict' is unimplemented under remove_obsolete mode 2, will skip infer epochs.\n===================================\n")
                     args.n_infer_epochs = 0
 
         all_test_nmi = []
@@ -842,7 +924,8 @@ class KPGNN_model():
         start = time.time()
 
         extract_nids, extract_features, extract_labels = extract_embeddings(g, model, len(labels), labels)
-        test_nmi = evaluate_model(extract_features, extract_labels, test_indices, -1, num_isolated_nodes, save_path_i, False)
+        test_nmi = evaluate_model(extract_features, extract_labels, test_indices, -1, num_isolated_nodes, save_path_i,
+                                  False)
         seconds_spent = time.time() - start
         message = '\nDirect prediction took {:.2f} seconds'.format(seconds_spent)
         print(message)
@@ -879,7 +962,7 @@ class KPGNN_model():
                 losses_dgi = []
             for metric in metrics:
                 metric.reset()
-            
+
             for batch_id, (input_nodes, output_nodes, blocks) in enumerate(dataloader):
                 start_batch = time.time()
                 batch_features = blocks[0].srcdata['features']
@@ -947,7 +1030,8 @@ class KPGNN_model():
 
             # 验证
             extract_nids, extract_features, extract_labels = extract_embeddings(g, model, len(labels), labels)
-            test_nmi = evaluate_model(extract_features, extract_labels, test_indices, epoch, num_isolated_nodes, save_path_i, False)
+            test_nmi = evaluate_model(extract_features, extract_labels, test_indices, epoch, num_isolated_nodes,
+                                      save_path_i, False)
             all_test_nmi.append(test_nmi)
             # end one epoch
 
@@ -970,10 +1054,9 @@ class KPGNN_model():
 
         return model
 
-
     # Train on initial/maintenance graphs, t == 0 or t % window_size == 0 in this paper
     def initial_maintain(train_i, i, data_split, metrics, embedding_save_path, loss_fn, model=None, loss_fn_dgi=None):
-        args = args_define.args
+        args = args_define().args
         # make dir for graph i
         save_path_i = embedding_save_path + '/block_' + str(i)
         if not os.path.isdir(save_path_i):
@@ -986,14 +1069,14 @@ class KPGNN_model():
         in_feats = features.shape[1]  # feature dimension
 
         # Construct graph that contains message blocks 0, ..., i if remove_obsolete = 0 or 1; graph that only contains message block i if remove_obsolete = 2
-        g = dgl.DGLGraph(data.matrix) 
+        g = dgl.DGLGraph(data.matrix)
         num_isolated_nodes = graph_statistics(g, save_path_i)
 
         # if remove_obsolete is mode 1, resume or generate indices_to_remove, then remove obsolete nodes from the graph
         if args.remove_obsolete == 1:
-            
+
             # Resume indices_to_remove from the current block
-            if (args.resume_path is not None) and args.resume_current and (i == args.resume_point) and (i != 0):  
+            if (args.resume_path is not None) and args.resume_current and (i == args.resume_point) and (i != 0):
                 indices_to_remove = np.load(save_path_i + '/indices_to_remove.npy').tolist()
 
             elif i == 0:  # generate empty indices_to_remove for initial block
@@ -1040,8 +1123,9 @@ class KPGNN_model():
             mask_path = save_path_i + '/masks'
             if not os.path.isdir(mask_path):
                 os.mkdir(mask_path)
-            train_indices, validation_indices = generateMasks(len(labels), data_split, train_i, i, args.validation_percent,
-                                                            mask_path, len(indices_to_remove))
+            train_indices, validation_indices = generateMasks(len(labels), data_split, train_i, i,
+                                                              args.validation_percent,
+                                                              mask_path, len(indices_to_remove))
 
         else:
             train_indices = torch.load(args.mask_path + '/block_' + str(i) + '/masks/train_indices.pt')
@@ -1140,7 +1224,7 @@ class KPGNN_model():
                     pred, ret = model(blocks, batch_features)
                 else:
                     blocks[0].srcdata['h'] = batch_features
-                    #print(blocks[0].srcdata)
+                    # print(blocks[0].srcdata)
 
                     pred = model(blocks, batch_features)
 
@@ -1187,8 +1271,7 @@ class KPGNN_model():
 
                 batch_seconds_spent = time.time() - start_batch
                 seconds_train_batches.append(batch_seconds_spent)
-            
-            
+
             total_loss /= (batch_id + 1)
             message = 'Epoch: {}/{}. Average loss: {:.4f}'.format(epoch + 1, args.n_epochs, total_loss)
             for metric in metrics:
@@ -1208,8 +1291,9 @@ class KPGNN_model():
             # Save the representations of all tweets
             # save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, save_path_i, epoch)
             # Evaluate the model: conduct kMeans clustering on the validation and report NMI
-            validation_nmi = evaluate_model(extract_features, extract_labels, validation_indices, epoch, num_isolated_nodes,
-                                    save_path_i, True)
+            validation_nmi = evaluate_model(extract_features, extract_labels, validation_indices, epoch,
+                                            num_isolated_nodes,
+                                            save_path_i, True)
             all_vali_nmi.append(validation_nmi)
 
             # Early stop
@@ -1233,7 +1317,6 @@ class KPGNN_model():
                 break
             # end one epoch
 
-
         # Save all validation nmi
         np.save(save_path_i + '/all_vali_nmi.npy', np.asarray(all_vali_nmi))
         # Save time spent on epochs
@@ -1251,7 +1334,6 @@ class KPGNN_model():
         if args.remove_obsolete == 2:
             return None, indices_to_remove, model
         return train_indices, indices_to_remove, model
-
 
 
 def graph_statistics(G, save_path):
@@ -1275,6 +1357,7 @@ def graph_statistics(G, save_path):
         f.write(message)
 
     return num_isolated_nodes
+
 
 def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_path=None, num_indices_to_remove=0):
     """
@@ -1303,7 +1386,7 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
 
         :returns train indices, validation indices or test indices
     """
-    args = args_define.args
+    args = args_define().args
     if args.remove_obsolete == 0 or args.remove_obsolete == 1:  # remove_obsolete mode 0 or 1
         # verify total number of nodes
         assert length == (np.sum(data_split[:i + 1]) - num_indices_to_remove)
@@ -1349,7 +1432,7 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
             train_indices = train_indices[n_validation_samples:]
             if save_path is not None:
                 torch.save(validation_indices, save_path +
-                        '/validation_indices.pt')
+                           '/validation_indices.pt')
                 torch.save(train_indices, save_path + '/train_indices.pt')
                 validation_indices = torch.load(
                     save_path + '/validation_indices.pt')
@@ -1364,13 +1447,14 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
                 test_indices = torch.load(save_path + '/test_indices.pt')
             return test_indices
 
+
 # Compute the representations of all the nodes in g using model
 def extract_embeddings(g, model, num_all_samples, labels):
-    args = args_define.args
-    sampler = MultiLayerNeighborSampler([1000, 1000])  
+    args = args_define().args
+    sampler = MultiLayerNeighborSampler([1000, 1000])
     dataloader = NodeDataLoader(
         g, torch.arange(g.num_nodes()), sampler,
-        batch_size=num_all_samples,  
+        batch_size=num_all_samples,
         shuffle=False,
         drop_last=False,
         num_workers=4)  # 设置合适的 num_workers
@@ -1379,12 +1463,12 @@ def extract_embeddings(g, model, num_all_samples, labels):
         model.eval()
         for batch_id, (input_nodes, output_nodes, blocks) in enumerate(dataloader):
             batch_features = blocks[0].srcdata['features']
-            
+
             if args.use_dgi:
                 extract_features, _ = model(blocks, batch_features)
             else:
                 extract_features = model(blocks, batch_features)
-                
+
             extract_nids = output_nodes.to(device=extract_features.device, dtype=torch.long)
             extract_labels = labels[extract_nids]
 
@@ -1398,6 +1482,7 @@ def extract_embeddings(g, model, num_all_samples, labels):
 
     return extract_nids, extract_features, extract_labels
 
+
 def save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, path, counter):
     np.savetxt(path + '/features_' + str(counter) + '.tsv', extract_features, delimiter='\t')
     np.savetxt(path + '/labels_' + str(counter) + '.tsv', extract_labels, fmt='%i', delimiter='\t')
@@ -1408,9 +1493,11 @@ def save_embeddings(extract_nids, extract_features, extract_labels, extract_trai
     print("Embeddings after inference epoch " + str(counter) + " saved.")
     print()
 
-def intersection(lst1, lst2): 
+
+def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
+
 
 def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
     # Extract the features and labels of the test tweets
@@ -1431,7 +1518,7 @@ def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
     n_test_tweets = X.shape[0]
 
     # Get the total number of classes     
-    n_classes = len(set(list(labels_true))) 
+    n_classes = len(set(list(labels_true)))
 
     # k-means clustering
     kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
@@ -1444,6 +1531,7 @@ def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
 
     # Return number of test tweets, number of classes covered by the test tweets, and kMeans cluatering NMI
     return (n_test_tweets, n_classes, nmi)
+
 
 def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolated_nodes, save_path, is_validation=True):
     message = ''
@@ -1467,7 +1555,7 @@ def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolate
         # without isolated nodes
         message += '\n\tWithout isolated nodes:'
         n_tweets, n_classes, nmi = run_kmeans(extract_features, extract_labels, indices,
-                                            save_path + '/isolated_nodes.pt')
+                                              save_path + '/isolated_nodes.pt')
         message += '\tNumber of ' + mode + ' tweets: '
         message += str(n_tweets)
         message += '\n\tNumber of classes covered by ' + mode + ' tweets: '
@@ -1499,6 +1587,7 @@ class Metric:
     def name(self):
         raise NotImplementedError
 
+
 class AccumulatedAccuracyMetric(Metric):
     """
     Works with classification model
@@ -1524,6 +1613,7 @@ class AccumulatedAccuracyMetric(Metric):
     def name(self):
         return 'Accuracy'
 
+
 class AverageNonzeroTripletsMetric(Metric):
     '''
     Counts average number of nonzero triplets found in minibatches
@@ -1545,7 +1635,8 @@ class AverageNonzeroTripletsMetric(Metric):
     def name(self):
         return 'Average nonzero triplets'
 
-#layer
+
+# layer
 class GATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, use_residual=False):
         super(GATLayer, self).__init__()
@@ -1590,6 +1681,7 @@ class GATLayer(nn.Module):
         else:
             return block.dstdata['h']
 
+
 class MultiHeadGATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, num_heads, merge='cat', use_residual=False):
         super(MultiHeadGATLayer, self).__init__()
@@ -1605,6 +1697,7 @@ class MultiHeadGATLayer(nn.Module):
         else:
             return torch.mean(torch.stack(head_outs), dim=0)
 
+
 class GAT(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
         super(GAT, self).__init__()
@@ -1613,14 +1706,15 @@ class GAT(nn.Module):
 
     def forward(self, blocks, features):
         blocks[0].srcdata['h'] = features
-        
+
         h = self.layer1(blocks[0])
         h = F.elu(h)
         blocks[1].srcdata['h'] = h
 
         h = self.layer2(blocks[1])
-        
+
         return h
+
 
 # Applies an average on seq, of shape (nodes, features)
 class AvgReadout(nn.Module):
@@ -1629,6 +1723,7 @@ class AvgReadout(nn.Module):
 
     def forward(self, seq):
         return torch.mean(seq, 0)
+
 
 class Discriminator(nn.Module):
     def __init__(self, n_h):
@@ -1656,6 +1751,7 @@ class Discriminator(nn.Module):
         # print("testing, shape of logits: ", logits.size())
         return logits
 
+
 class DGI(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
         super(DGI, self).__init__()
@@ -1676,6 +1772,7 @@ class DGI(nn.Module):
     def embed(self, nf):
         h_1 = self.gat(nf, False)
         return h_1.detach()
+
 
 class OnlineTripletLoss(nn.Module):
     """
@@ -1702,10 +1799,12 @@ class OnlineTripletLoss(nn.Module):
 
         return losses.mean(), len(triplets)
 
+
 def pdist(vectors):
     distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(
         dim=1).view(-1, 1)
     return distance_matrix
+
 
 class TripletSelector:
     """
@@ -1718,6 +1817,7 @@ class TripletSelector:
 
     def get_triplets(self, embeddings, labels):
         raise NotImplementedError
+
 
 class FunctionNegativeTripletSelector(TripletSelector):
     """
@@ -1768,23 +1868,28 @@ class FunctionNegativeTripletSelector(TripletSelector):
 
         return torch.LongTensor(triplets)
 
+
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
+
 
 def hardest_negative(loss_values):
     hard_negative = np.argmax(loss_values)
     return hard_negative if loss_values[hard_negative] > 0 else None
 
+
 def HardestNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                               negative_selection_fn=hardest_negative,
                                                                                               cpu=cpu)
+
 
 def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
-#utils
+
+# utils
 # Dataset
 class SocialDataset(Dataset):
     def __init__(self, path, index):
@@ -1818,11 +1923,11 @@ class SocialDataset(Dataset):
 
 
 if __name__ == '__main__':
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    # from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
-    args = args_define.args
-    dataset = Event2012_Dataset.load_data()
-    kpgnn = KPGNN(args,dataset)
+    args = args_define().args
+    dataset = DatasetLoader("arabic_twitter").load_data()
+    kpgnn = KPGNN(args, dataset)
 
     kpgnn.preprocess()
     kpgnn.fit()

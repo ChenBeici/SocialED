@@ -7,12 +7,17 @@ from sklearn import metrics
 import logging
 import datetime
 import pickle
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
+# event_id, filtered_words
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+
 class GloVe:
-    def __init__(self, dataset, num_clusters=50, random_state=1, file_path='../model_saved/GloVe/', model='../model_needed/glove.6B.100d.txt'):
+    def __init__(self, dataset, num_clusters=50, random_state=1, file_path='../model/model_saved/GloVe/',
+                 model='../model/model_needed/glove.6B.100d.txt'):
         self.dataset = dataset
         self.num_clusters = num_clusters
         self.random_state = random_state
@@ -40,8 +45,9 @@ class GloVe:
         """
         Data preprocessing: tokenization, stop words removal, etc.
         """
-        df = self.dataset
-        df['processed_text'] = df['filtered_words'].apply(lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
+        df = self.dataset[['filtered_words', 'event_id']].copy()
+        df['processed_text'] = df['filtered_words'].apply(
+            lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
         self.df = df
         return df
 
@@ -76,7 +82,7 @@ class GloVe:
         kmeans_model = KMeans(n_clusters=self.num_clusters, random_state=self.random_state)
         kmeans_model = kmeans_model.fit(self.train_vectors)  # 重新训练模型
         logging.info("KMeans model loaded successfully.")
-        
+
         self.kmeans_model = kmeans_model
         return kmeans_model
 
@@ -92,7 +98,7 @@ class GloVe:
         kmeans_model = KMeans(n_clusters=self.num_clusters, random_state=self.random_state)
         kmeans_model.fit(self.train_vectors)
         logging.info("KMeans model trained successfully.")
-        
+
         # Save the trained model to a file
         with open(self.model_path, 'wb') as f:
             pickle.dump(kmeans_model, f)
@@ -127,20 +133,19 @@ class GloVe:
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
+
 # Main function
 if __name__ == "__main__":
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
-
-    dataset = Event2012_Dataset.load_data()
+    dataset = DatasetLoader("arabic_twitter").load_data()
 
     glove = GloVe(dataset)
 
     # Data preprocessing
     glove.preprocess()
-    
+
     # Train the KMeans model
     glove.fit()
-    
+
     # Detection
     ground_truths, predicted_labels = glove.detection()
 

@@ -17,51 +17,94 @@ import copy
 import datetime
 import torch.nn.functional as F
 from sklearn.cluster import KMeans
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
+
+import argparse
 
 
 class args_define:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--file_path", type=str, default='../model_saved/uclsed/',help="file saved path ",)
-    parser.add_argument("--lang", type=str, default='French',help="file saved path ",)
-    parser.add_argument("--epoch", type=int, help="epoch num", default=2)
-    parser.add_argument("--batch_size", type=int, default=20000)
-    parser.add_argument("--neighbours_num", type=int, default=80)
-    parser.add_argument("--GNN_h_dim", type=int, default=256)
-    parser.add_argument("--GNN_out_dim", type=int, default=256)
-    parser.add_argument("--E_h_dim", type=int, default=128)
-    #parser.add_argument("--use_uncertainty", action="store_true", help="whether or not to user uncertainty")
-    parser.add_argument("--use_uncertainty",  default=True, help="whether or not to user uncertainty")
+    def __init__(self, **kwargs):
+        # Paths
+        self.file_path = kwargs.get('file_path', '../model/model_saved/uclsed/')
+        self.save_path = kwargs.get('save_path', '../model/model_saved/uclsed/Eng_CrisisLexT26/evi1020191139')
 
-    parser.add_argument("--use_cuda", default=True, help="whether or not to user cuda")
-    #parser.add_argument("--use_cuda", action="store_true", help="whether or not to user cuda")
-    parser.add_argument("--gpuid", type=int, default=0)
-    parser.add_argument("--mode",type=int,default=0)
-    uncertainty_type_group = parser.add_mutually_exclusive_group()
-    uncertainty_type_group.add_argument(
-        "--mse",
-        default=False,
-        help="Set this argument when using uncertainty. Sets loss function to Expected Mean Square Error.",
-    )
-    uncertainty_type_group.add_argument(
-        "--digamma",
-        default=True,
-        help="Set this argument when using uncertainty. Sets loss function to Expected Cross Entropy.",
-    )
-    uncertainty_type_group.add_argument(
-        "--log",
-        default=False,
-        help="Set this argument when using uncertainty. Sets loss function to Negative Log of the Expected Likelihood.",
-    )
-    parser.add_argument("--save_path", type=str, default="../model_saved/uclsed/Eng_CrisisLexT26/evi1020191139", help="dataset choosen from [CrisisLexT27]")
-    args = parser.parse_args()
+        # Language
+        self.lang = kwargs.get('lang', 'French')
+        #self.lang = kwargs.get('lang', 'English')
+
+        # Epoch
+        self.epoch = kwargs.get('epoch', 2)
+        #self.epoch = kwargs.get('epoch', 1)
+        # Batch size
+        self.batch_size = kwargs.get('batch_size', 20000)
+
+        # Neighbours number
+        self.neighbours_num = kwargs.get('neighbours_num', 80)
+
+        # GNN dimensions
+        self.GNN_h_dim = kwargs.get('GNN_h_dim', 256)
+        self.GNN_out_dim = kwargs.get('GNN_out_dim', 256)
+
+        # E_h_dim
+        self.E_h_dim = kwargs.get('E_h_dim', 128)
+
+        # Use uncertainty
+        self.use_uncertainty = kwargs.get('use_uncertainty', True)
+
+        # Use CUDA
+        self.use_cuda = kwargs.get('use_cuda', True)
+        
+        # GPU ID
+        self.gpuid = kwargs.get('gpuid', 0)
+
+        # Mode
+        self.mode = kwargs.get('mode', 0)
+
+        # Uncertainty type
+        self.mse = kwargs.get('mse', False)
+        self.digamma = kwargs.get('digamma', True)
+        self.log = kwargs.get('log', False)
+
+        # Store all arguments in a single attribute
+        self.args = argparse.Namespace(**{
+            'file_path': self.file_path,
+            'save_path': self.save_path,
+            'lang': self.lang,
+            'epoch': self.epoch,
+            'batch_size': self.batch_size,
+            'neighbours_num': self.neighbours_num,
+            'GNN_h_dim': self.GNN_h_dim,
+            'GNN_out_dim': self.GNN_out_dim,
+            'E_h_dim': self.E_h_dim,
+            'use_uncertainty': self.use_uncertainty,
+            'use_cuda': self.use_cuda,
+            'gpuid': self.gpuid,
+            'mode': self.mode,
+            'mse': self.mse,
+            'digamma': self.digamma,
+            'log': self.log
+        })
+
+
 
 class UCLSED:
     def __init__(self, args, dataset):
-        pass
+        self.save_path = None
+        self.test_indices = None
+        self.val_indices = None
+        self.train_indices = None
+        self.mask_path = None
+        self.labels = None
+        self.times = None
+        self.g_dict = None
+        self.views = None
+        self.features = None
 
     def preprocess(self):
         preprocessor = Preprocessor(args)
-        #preprocessor.construct_graph(dataset)
+        # preprocessor.construct_graph(dataset)
 
     def fit(self):
         parser = argparse.ArgumentParser()
@@ -69,12 +112,13 @@ class UCLSED:
         if args.use_cuda:
             torch.cuda.set_device(args.gpuid)
 
-        self.views = ['h','e','u']
-        self.g_dict, self.times, self.features, self.labels= get_dgl_data(self.views) 
+        self.views = ['h', 'e', 'u']
+        self.g_dict, self.times, self.features, self.labels = get_dgl_data(self.views)
         self.mask_path = f"{args.file_path}{args.lang}/" + "masks/"
         if not os.path.exists(self.mask_path):
             os.mkdir(self.mask_path)
-        self.train_indices, self.val_indices, self.test_indices = ava_split_data(len(self.labels), self.labels, len(set(self.labels)))
+        self.train_indices, self.val_indices, self.test_indices = ava_split_data(len(self.labels), self.labels,
+                                                                                 len(set(self.labels)))
         torch.save(self.train_indices, self.mask_path + "train_indices.pt")
         torch.save(self.val_indices, self.mask_path + "val_indices.pt")
         torch.save(self.test_indices, self.mask_path + "test_indices.pt")
@@ -102,8 +146,10 @@ class UCLSED:
         else:
             criterion = nn.CrossEntropyLoss()
 
-        self.model = UCLSED_model(self.features.shape[1], args.GNN_h_dim, args.GNN_out_dim, args.E_h_dim, len(set(self.labels)), self.views)
-        self.model = train_model(self.model, self.g_dict, self.views, self.features, self.times, self.labels, args.epoch, criterion, self.mask_path, self.save_path, args)
+        self.model = UCLSED_model(self.features.shape[1], args.GNN_h_dim, args.GNN_out_dim, args.E_h_dim,
+                                  len(set(self.labels)), self.views)
+        self.model = train_model(self.model, self.g_dict, self.views, self.features, self.times, self.labels,
+                                 args.epoch, criterion, self.mask_path, self.save_path, args)
 
     def detection(self):
         self.model.eval()
@@ -124,11 +170,11 @@ class UCLSED:
                 self.g_dict[v].ndata['features'] = self.features
                 self.g_dict[v].ndata['t'] = self.times
 
-
         out, emb, nids = extract_results(self.g_dict, self.views, self.labels, self.model, args)
         ori_labels = self.labels
-        extract_labels = ori_labels[nids]
-
+        # extract_labels = ori_labels[nids]
+        extract_labels = ori_labels[nids].cpu()
+        
         comb_out = None
         if args.use_uncertainty:
             alpha = []
@@ -146,36 +192,37 @@ class UCLSED:
                     comb_out += out_v
 
         _, val_pred = torch.max(comb_out[self.val_indices.cpu().numpy()], 1)
-        val_labels = torch.IntTensor(extract_labels[self.val_indices.cpu().numpy()])
-
+        #val_labels = torch.IntTensor(extract_labels[self.val_indices.cpu().numpy()])
+        val_labels = torch.argmax(extract_labels[self.val_indices.cpu().numpy()], 1)
         predictions = val_pred.cpu().numpy()
         ground_truth = val_labels.cpu().numpy()
 
         return ground_truth, predictions
-       
 
     def evaluate(self, ground_truth, predictions):
         val_f1 = f1_score(ground_truth, predictions, average='macro')
         val_acc = accuracy_score(ground_truth, predictions)
-        
+
         print(f"Validation F1 Score: {val_f1}")
         print(f"Validation Accuracy: {val_acc}")
-        
+
         return val_f1, val_acc
+
 
 class Preprocessor:
     def __init__(self, dataset):
         pass
-    
+
     def str2list(self, str_ele):
         if str_ele == "[]":
             value = []
         else:
-            value = [e.replace('\'','').lstrip().replace(":",'') for e in str(str_ele)[1:-1].split(',') if len(e.replace('\'','').lstrip().replace(":",''))>0]
+            value = [e.replace('\'', '').lstrip().replace(":", '') for e in str(str_ele)[1:-1].split(',') if
+                     len(e.replace('\'', '').lstrip().replace(":", '')) > 0]
         return value
 
     def load_data(self, dataset):
-        ori_df = dataset  
+        ori_df = dataset
 
         ori_df.drop_duplicates(["tweet_id"], keep='first', inplace=True)
         event_id_num_dict = {}
@@ -183,26 +230,30 @@ class Preprocessor:
 
         for id in set(ori_df["event_id"]):
             num = len(ori_df.loc[ori_df["event_id"] == id])
-            if int(num/3)>=25:
-                event_id_num_dict[id] = int(num/3+50)
-                select_index_list += list(ori_df.loc[ori_df["event_id"]==id].index)[0:int(num/3+50)]
+            if int(num / 3) >= 25:
+                event_id_num_dict[id] = int(num / 3 + 50)
+                select_index_list += list(ori_df.loc[ori_df["event_id"] == id].index)[0:int(num / 3 + 50)]
         select_df = ori_df.loc[select_index_list]
         select_df = select_df.reset_index(drop=True)
-        id_num = sorted(event_id_num_dict.items(),key=lambda x:x[1],reverse=True)
-        
-        for (i,j) in id_num[0:100]:
-            print(j,end=",")
-        sorted_id_dict = dict(zip(np.array(id_num)[:,0],range(0,len(set(ori_df["event_id"])))))
+        id_num = sorted(event_id_num_dict.items(), key=lambda x: x[1], reverse=True)
+
+        for (i, j) in id_num[0:100]:
+            print(j, end=",")
+        sorted_id_dict = dict(zip(np.array(id_num)[:, 0], range(0, len(set(ori_df["event_id"])))))
         sorted_df = select_df
-        sorted_df["event_id"] = sorted_df["event_id"].apply(lambda x:sorted_id_dict[x])
+        sorted_df["event_id"] = sorted_df["event_id"].apply(lambda x: sorted_id_dict[x])
 
         print(sorted_df.shape)
-        data_value = sorted_df[["tweet_id","user_mentions","text","hashtags","entities","urls","filtered_words","created_at", "event_id"]].values
-        event_df = pd.DataFrame(data = data_value, columns=["tweet_id", "mention_user", "text", "hashtags", "entities", "urls", "filtered_words", "timestamp", "event_id"])
-        event_df['hashtags'] = event_df['hashtags'].apply(lambda x: ["h_"+ i for i in x])
+        data_value = sorted_df[
+            ["tweet_id", "user_mentions", "text", "hashtags", "entities", "urls", "filtered_words", "created_at",
+             "event_id"]].values
+        event_df = pd.DataFrame(data=data_value,
+                                columns=["tweet_id", "mention_user", "text", "hashtags", "entities", "urls",
+                                         "filtered_words", "timestamp", "event_id"])
+        event_df['hashtags'] = event_df['hashtags'].apply(lambda x: ["h_" + i for i in x])
         event_df['entities'] = event_df['entities'].apply(lambda x: ["e_" + str(i) for i in x])
         event_df['mention_user'] = event_df['mention_user'].apply(lambda x: ["u_" + str(i) for i in x])
-        event_df = event_df.loc[event_df['event_id']<100]
+        event_df = event_df.loc[event_df['event_id'] < 100]
         event_df = event_df.reset_index(drop=True)
 
         print(event_df.shape)
@@ -210,9 +261,11 @@ class Preprocessor:
 
     def get_nlp(self, lang):
         if lang == "English" or lang == "Arabic":
-            nlp = en_core_web_lg.load()
+            # nlp = en_core_web_lg.load()
+            nlp =spacy.load('en_core_web_lg')
         elif lang == "French":
-            nlp = fr_core_news_lg.load()
+            # nlp = fr_core_news_lg.load()
+            nlp=spacy.load('fr_core_news_lg')
         return nlp
 
     def construct_graph_base_eles(self, view_dict, df, path, lang):
@@ -231,14 +284,14 @@ class Preprocessor:
         df["event_id"] = df["event_id"].apply(lambda x: int(x))
         np.save(path + "label.npy", df['event_id'].values)
         print("labels are saved in {}label.npy".format(path))
-        
+
         true_matrix = np.eye(df.shape[0])
         for i in range(df.shape[0]):
             label_i = df["event_id"].values[i]
             indices = df[df["event_id"] == label_i].index
             true_matrix[i, indices] = 1
         # print(true_matrix)
-        
+
         print("construct graph---------------")
         G = nx.Graph()
         for _, row in df.iterrows():
@@ -260,7 +313,7 @@ class Preprocessor:
         all_nodes = list(G.nodes)
         matrix = nx.to_scipy_sparse_array(G)
         tweet_nodes = list(nx.get_node_attributes(G, "tweet_id").keys())
-        #print(tweet_nodes)
+        # print(tweet_nodes)
         print(len(tweet_nodes))
         tweet_index = [all_nodes.index(t_node) for t_node in tweet_nodes]
 
@@ -278,9 +331,10 @@ class Preprocessor:
 
     def construct_graph(self, dataset):
         event_df = self.load_data(dataset)
-        view_dict = {"h":["hashtags","urls"],"u":["mention_user"], "e":["entities"]}
+        view_dict = {"h": ["hashtags", "urls"], "u": ["mention_user"], "e": ["entities"]}
         path = args.file_path + args.lang + '/'
-        self.construct_graph_base_eles(view_dict,event_df, path ,args.lang)
+        self.construct_graph_base_eles(view_dict, event_df, path, args.lang)
+
 
 def extract_results(g_dict, views, labels, model, args, train_indices=None):
     with torch.no_grad():
@@ -317,8 +371,8 @@ def extract_results(g_dict, views, labels, model, args, train_indices=None):
                 blocks_dict[v] = [b.to(device) for b in blocks_dict[v]]
 
             # 将 blocks_dict 中的所有 blocks 移动到相同的设备
-            #blocks_dict = {v: [b.to(device) for b in blocks] for v, blocks in blocks_dict.items()}
-            #extract_indices = extract_indices.to(device)
+            # blocks_dict = {v: [b.to(device) for b in blocks] for v, blocks in blocks_dict.items()}
+            # extract_indices = extract_indices.to(device)
 
             out, emb = model(blocks_dict)
             out_list.append(out)
@@ -346,6 +400,7 @@ def extract_results(g_dict, views, labels, model, args, train_indices=None):
         extract_nids = extract_nids.cpu()
 
     return all_out, all_emb, extract_nids
+
 
 def train_model(model, g_dict, views, features, times, labels, epoch, criterion, mask_path, save_path, args):
     train_indices = torch.load(mask_path + "train_indices.pt")
@@ -389,21 +444,21 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
             print(f"Epoch {e + 1}/{epoch}")
 
             _, GNN_out_fea, extract_nids = extract_results(g_dict, views, labels, model, args)
-            
+
             for v in GNN_out_fea:
                 GNN_out_fea[v] = GNN_out_fea[v].to(device)
-                #print(f'GNN_out_fea[{v}].device: {GNN_out_fea[v].device}')  # 确认设备
-            
+                # print(f'GNN_out_fea[{v}].device: {GNN_out_fea[v].device}')  # 确认设备
+
             extract_labels = ori_labels[extract_nids]
             label_center = {}
             for v in views:
                 label_center[v] = []
             for l in range(classes):
                 l_indices = torch.LongTensor(np.where(extract_labels == l)[0].reshape(-1)).to(device)
-                #print(l_indices.device)
+                # print(l_indices.device)
                 for v in views:
-                    #print(f'GNN_out_fea[{v}].device:{GNN_out_fea[v].device}') 
-                    #print(f'l_indices.device:{l_indices.device}')
+                    # print(f'GNN_out_fea[{v}].device:{GNN_out_fea[v].device}')
+                    # print(f'l_indices.device:{l_indices.device}')
 
                     l_feas = GNN_out_fea[v][l_indices]
                     l_cen = torch.mean(l_feas, dim=0)
@@ -412,7 +467,7 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
             for v in views:
                 label_center[v] = torch.stack(label_center[v], dim=0)
                 label_center[v] = F.normalize(label_center[v], 2, 1)
-    
+
                 if args.use_cuda:
                     label_center[v] = label_center[v].cuda()
                     label_u = label_u.cuda()
@@ -474,7 +529,8 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
                     comb_alpha, comb_u = DS_Combin(alpha=alpha, classes=classes)
 
                     e_loss = EUC_loss(comb_alpha, comb_u, true_labels, e)
-                    loss = e_loss + criterion(comb_alpha, batch_labels, true_labels, e, classes, 100, device) + 2 * view_contra_loss  
+                    loss = e_loss + criterion(comb_alpha, batch_labels, true_labels, e, classes, 100,
+                                              device) + 2 * view_contra_loss
 
                 else:
                     batch_labels = torch.argmax(batch_labels, 1)
@@ -488,7 +544,7 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
                         view_contra_loss += torch.mean(-torch.log(
                             (torch.exp(torch.sum(torch.mul(emb[v], batch_center), dim=1))) / (
                                 torch.sum(torch.exp(torch.mm(emb[v], label_center[v].T)), dim=1))))
-                    loss = criterion(comb_out,batch_labels)  # + view_contra_loss
+                    loss = criterion(comb_out, batch_labels)  # + view_contra_loss
 
                 com_loss = 0
                 for i in range(len(emb) - 1):
@@ -511,7 +567,7 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
                 f.write(message)
                 f.write("\n")
             out, emb, nids = extract_results(g_dict, views, labels, model, args)
-            #nids = torch.cat(nids).cpu().numpy().astype(int)  # 确保 nids 是整数数组
+            # nids = torch.cat(nids).cpu().numpy().astype(int)  # 确保 nids 是整数数组
             extract_labels = ori_labels[nids]
             if args.use_uncertainty:
                 alpha = []
@@ -578,7 +634,7 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
         extract_labels = ori_labels[nids]
         if args.use_uncertainty:
             alpha = []
-            for v in ['h','u','e']:
+            for v in ['h', 'u', 'e']:
                 evi_v = relu_evidence(out[v])
                 alpha_v = evi_v + 1
                 alpha.append(alpha_v)
@@ -607,8 +663,9 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
         t = classification_report(test_labels.cpu().numpy(), test_pred.cpu().numpy())
         message = "test_acc: %.4f test_f1:%.4f" % (test_acc, test_f1)
         print(message)
-    
+
     return model
+
 
 class Tem_Agg_Layer(nn.Module):
     def __init__(self, in_dim, out_dim, use_residual):
@@ -652,6 +709,7 @@ class Tem_Agg_Layer(nn.Module):
             return z_dst + blocks[layer_id].dstdata['h']
         return blocks[layer_id].dstdata['h']
 
+
 class GNN(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, use_residual=False):
         super(GNN, self).__init__()
@@ -677,9 +735,10 @@ class GNN(nn.Module):
         # edge attention的计算逻辑
         pass
 
+
 class EDNN(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, use_dropout=True):
-        super(EDNN,self).__init__()
+        super(EDNN, self).__init__()
         self.use_dropout = use_dropout
         self.fc1 = nn.Linear(in_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, out_dim)
@@ -691,27 +750,28 @@ class EDNN(nn.Module):
         out = self.fc2(hidden)
         return out
 
+
 class UCLSED_model(nn.Module):
     def __init__(self, GNN_in_dim, GNN_h_dim, GNN_out_dim, E_h_dim, E_out_dim, views):
-        super(UCLSED_model,self).__init__()
+        super(UCLSED_model, self).__init__()
         self.views = views
-        self.GNN = GNN(GNN_in_dim, GNN_h_dim,GNN_out_dim)
+        self.GNN = GNN(GNN_in_dim, GNN_h_dim, GNN_out_dim)
         self.EDNNs = nn.ModuleList([EDNN(GNN_out_dim, E_h_dim, E_out_dim) for v in self.views])
 
-    def forward(self, blocks_dict, is_EDNN_input = False, i=None, emb_v = None):
+    def forward(self, blocks_dict, is_EDNN_input=False, i=None, emb_v=None):
         out = dict()
         if not is_EDNN_input:
             emb = dict()
-            for i,v in enumerate(self.views):
+            for i, v in enumerate(self.views):
                 emb[v] = self.GNN(blocks_dict[v])
                 out[v] = self.EDNNs[i](emb[v])
-            return out,emb
+            return out, emb
         else:
             out = self.EDNNs[i](emb_v)
             return out
 
 
-#loss
+# loss
 def common_loss(emb1, emb2):
     emb1 = emb1 - torch.mean(emb1, dim=0, keepdim=True)
     emb2 = emb2 - torch.mean(emb2, dim=0, keepdim=True)
@@ -719,10 +779,11 @@ def common_loss(emb1, emb2):
     emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
     cov1 = torch.matmul(emb1, emb1.t())
     cov2 = torch.matmul(emb2, emb2.t())
-    cost = torch.mean((cov1 - cov2)**2)
+    cost = torch.mean((cov1 - cov2) ** 2)
     return cost
 
-def EUC_loss(alpha,u,true_labels,e):
+
+def EUC_loss(alpha, u, true_labels, e):
     _, pred_label = torch.max(alpha, 1)
     true_indices = torch.where(pred_label == true_labels)
     false_indices = torch.where(pred_label != true_labels)
@@ -731,33 +792,34 @@ def EUC_loss(alpha,u,true_labels,e):
     a = -0.01 * torch.exp(-(e + 1) / 10 * torch.log(torch.FloatTensor([0.01]))).cuda()
     annealing_coef = torch.min(
         torch.tensor(1.0, dtype=torch.float32),
-        torch.tensor((e+1) / 10, dtype=torch.float32),
+        torch.tensor((e + 1) / 10, dtype=torch.float32),
     )
-    EUC_loss = -annealing_coef * torch.sum((p[true_indices]*(torch.log(1.000000001 - u[true_indices]).squeeze(
-        -1)))) # -(1-annealing_coef)*torch.sum(((1-p[false_indices])*(torch.log(u[false_indices]).squeeze(-1))))
-
-
-
+    EUC_loss = -annealing_coef * torch.sum((p[true_indices] * (torch.log(1.000000001 - u[true_indices]).squeeze(
+        -1))))  # -(1-annealing_coef)*torch.sum(((1-p[false_indices])*(torch.log(u[false_indices]).squeeze(-1))))
 
     return EUC_loss
+
 
 def relu_evidence(y):
     return F.relu(y)
 
+
 def exp_evidence(y):
     return torch.exp(torch.clamp(y, -10, 10))
 
+
 def softplus_evidence(y):
     return F.softplus(y)
+
 
 def kl_divergence(alpha, num_classes, device):
     ones = torch.ones([1, num_classes], dtype=torch.float32, device=device)
     sum_alpha = torch.sum(alpha, dim=1, keepdim=True)
     first_term = (
-        torch.lgamma(sum_alpha)
-        - torch.lgamma(alpha).sum(dim=1, keepdim=True)
-        + torch.lgamma(ones).sum(dim=1, keepdim=True)
-        - torch.lgamma(ones.sum(dim=1, keepdim=True))
+            torch.lgamma(sum_alpha)
+            - torch.lgamma(alpha).sum(dim=1, keepdim=True)
+            + torch.lgamma(ones).sum(dim=1, keepdim=True)
+            - torch.lgamma(ones.sum(dim=1, keepdim=True))
     )
     second_term = (
         (alpha - ones)
@@ -767,16 +829,17 @@ def kl_divergence(alpha, num_classes, device):
     kl = first_term + second_term
     return kl
 
+
 def kl_pred_divergence(alpha, y, num_classes, device):
     # max_alpha, _ = torch.max(alpha, 1)
     # ones = alpha*(1-y) + (max_alpha+1) * y
-    ones = y + 0.01*torch.ones([1, num_classes], dtype=torch.float32, device=device)
+    ones = y + 0.01 * torch.ones([1, num_classes], dtype=torch.float32, device=device)
     sum_alpha = torch.sum(alpha, dim=1, keepdim=True)
     first_term = (
-        torch.lgamma(sum_alpha)
-        - torch.lgamma(alpha).sum(dim=1, keepdim=True)
-        + torch.lgamma(ones).sum(dim=1, keepdim=True)
-        - torch.lgamma(ones.sum(dim=1, keepdim=True))
+            torch.lgamma(sum_alpha)
+            - torch.lgamma(alpha).sum(dim=1, keepdim=True)
+            + torch.lgamma(ones).sum(dim=1, keepdim=True)
+            - torch.lgamma(ones.sum(dim=1, keepdim=True))
     )
     second_term = (
         (alpha - ones)
@@ -785,6 +848,7 @@ def kl_pred_divergence(alpha, y, num_classes, device):
     )
     kl = first_term + second_term
     return kl
+
 
 def loglikelihood_loss(y, alpha, device):
     y = y.to(device)
@@ -796,6 +860,7 @@ def loglikelihood_loss(y, alpha, device):
     )
     loglikelihood = loglikelihood_err + loglikelihood_var
     return loglikelihood
+
 
 def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     y = y.to(device)
@@ -811,6 +876,7 @@ def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     kl_div = annealing_coef * kl_divergence(kl_alpha, num_classes, device=device)
     return loglikelihood + kl_div
 
+
 def edl_loss(func, y, true_labels, alpha, epoch_num, num_classes, annealing_step, device):
     y = y.to(device)
     alpha = alpha.to(device)
@@ -820,19 +886,19 @@ def edl_loss(func, y, true_labels, alpha, epoch_num, num_classes, annealing_step
 
     annealing_coef = torch.min(
         torch.tensor(1.0, dtype=torch.float32),
-        torch.tensor((epoch_num+1) / 10, dtype=torch.float32),
+        torch.tensor((epoch_num + 1) / 10, dtype=torch.float32),
     )
-
 
     _, pred_label = torch.max(alpha, 1)
     true_indices = torch.where(pred_label == true_labels)
     false_indices = torch.where(pred_label != true_labels)
     kl_alpha = (alpha - 1) * (1 - y) + 1
     kl_div = annealing_coef * kl_divergence(kl_alpha, num_classes, device=device)
-    print("kl_div:",1*torch.mean(kl_div))
-    print("A:",20*torch.mean(A))
+    print("kl_div:", 1 * torch.mean(kl_div))
+    print("A:", 20 * torch.mean(A))
 
-    return 20*A + 1*kl_div 
+    return 20 * A + 1 * kl_div
+
 
 def edl_mse_loss(alpha, target, true_labels, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
@@ -842,40 +908,47 @@ def edl_mse_loss(alpha, target, true_labels, epoch_num, num_classes, annealing_s
     )
     return loss
 
+
 def edl_log_loss(alpha, target, true_labels, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
     # alpha = evidence + 1
     loss = torch.mean(edl_loss(
-            torch.log, target, alpha, true_labels, epoch_num, num_classes, annealing_step, device
-        )
+        torch.log, target, alpha, true_labels, epoch_num, num_classes, annealing_step, device
+    )
     )
     return loss
+
 
 def edl_digamma_loss(alpha, target, true_labels, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
     # alpha = evidence + 1
 
     loss = torch.mean(edl_loss(
-            torch.digamma, target, true_labels, alpha, epoch_num, num_classes, annealing_step, device
+        torch.digamma, target, true_labels, alpha, epoch_num, num_classes, annealing_step, device
 
     ))
     return loss
 
-#utils
+
+# utils
 def make_onehot(input, classes):
     input = torch.LongTensor(input).unsqueeze(1)
-    result = torch.zeros(len(input),classes).long()
-    result.scatter_(dim=1,index=input.long(),src=torch.ones(len(input),classes).long())
+    result = torch.zeros(len(input), classes).long()
+    result.scatter_(dim=1, index=input.long(), src=torch.ones(len(input), classes).long())
     return result
+
 
 def relu_evidence(y):
     return F.relu(y)
 
+
 def exp_evidence(y):
     return torch.exp(torch.clamp(y, -10, 10))
 
+
 def softplus_evidence(y):
     return F.softplus(y)
+
 
 def DS_Combin(alpha, classes):
     """
@@ -923,16 +996,17 @@ def DS_Combin(alpha, classes):
         alpha_a = e_a + 1
         return alpha_a, u_a
 
-    if len(alpha)==1:
+    if len(alpha) == 1:
         S = torch.sum(alpha[0], dim=1, keepdim=True)
         u = classes / S
-        return alpha[0],u
+        return alpha[0], u
     for v in range(len(alpha) - 1):
         if v == 0:
-            alpha_a,u_a = DS_Combin_two(alpha[0], alpha[1], classes)
+            alpha_a, u_a = DS_Combin_two(alpha[0], alpha[1], classes)
         else:
-            alpha_a,u_a = DS_Combin_two(alpha_a, alpha[v + 1], classes)
-    return alpha_a,u_a
+            alpha_a, u_a = DS_Combin_two(alpha_a, alpha[v + 1], classes)
+    return alpha_a, u_a
+
 
 def graph_statistics(G, save_path):
     message = '\nGraph statistics:\n'
@@ -953,6 +1027,7 @@ def graph_statistics(G, save_path):
         f.write(message)
     return num_isolated_nodes
 
+
 def get_dgl_data(views):
     g_dict = {}
     path = args.file_path + args.lang + '/'
@@ -963,21 +1038,22 @@ def get_dgl_data(views):
     for v in views:
         if v == "h":
             matrix = sparse.load_npz(path + "s_tweet_tweet_matrix_{}.npz".format(v))
-            #matrix = np.load(path + "matrix_{}.npy".format(v+noise))
+            # matrix = np.load(path + "matrix_{}.npy".format(v+noise))
         else:
-            matrix = sparse.load_npz(path+"s_tweet_tweet_matrix_{}.npz".format(v))
+            matrix = sparse.load_npz(path + "s_tweet_tweet_matrix_{}.npz".format(v))
         g = dgl.DGLGraph(matrix, readonly=True)
         save_path_v = path + v
         if not os.path.exists(save_path_v):
             os.mkdir(save_path_v)
         num_isolated_nodes = graph_statistics(g, save_path_v)
         g.set_n_initializer(dgl.init.zero_initializer)
-        #g.readonly(readonly_state=True)
+        # g.readonly(readonly_state=True)
         # g.ndata['features'] = features
         # # g.ndata['labels'] = labels
         # g.ndata['times'] = times
         g_dict[v] = g
     return g_dict, times, features, labels
+
 
 def split_data(length, train_p, val_p, test_p):
     indices = torch.randperm(length)
@@ -988,8 +1064,8 @@ def split_data(length, train_p, val_p, test_p):
     train_indices = indices[test_samples:]
     return train_indices, val_indices, test_indeces
 
+
 def ava_split_data(length, labels, classes):
-    
     indices = torch.randperm(length)
     labels = torch.LongTensor(labels[indices])
 
@@ -999,31 +1075,26 @@ def ava_split_data(length, labels, classes):
 
     for l in range(classes):
         l_indices = torch.LongTensor(np.where(labels.numpy() == l)[0].reshape(-1))
-        val_indices.append(l_indices[:20].reshape(-1,1))
-        test_indices.append(l_indices[20:50].reshape(-1,1))
-        train_indices.append(l_indices[50:].reshape(-1,1))
+        val_indices.append(l_indices[:20].reshape(-1, 1))
+        test_indices.append(l_indices[20:50].reshape(-1, 1))
+        train_indices.append(l_indices[50:].reshape(-1, 1))
 
-    val_indices = indices[torch.cat(val_indices,dim=0).reshape(-1)]
-    test_indices = indices[torch.cat(test_indices,dim=0).reshape(-1)]
-    train_indices = indices[torch.cat(train_indices,dim=0).reshape(-1)]
-    print(train_indices.shape,val_indices.shape,test_indices.shape)
+    val_indices = indices[torch.cat(val_indices, dim=0).reshape(-1)]
+    test_indices = indices[torch.cat(test_indices, dim=0).reshape(-1)]
+    train_indices = indices[torch.cat(train_indices, dim=0).reshape(-1)]
+    print(train_indices.shape, val_indices.shape, test_indices.shape)
     print(train_indices)
     return train_indices, val_indices, test_indices
 
 
 if __name__ == "__main__":
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    args = args_define().args
+    dataset = DatasetLoader("arabic_twitter").load_data()
 
-    args = args_define.args
-    dataset = Event2018_Dataset.load_data()
-
-    uclsed = UCLSED(args,dataset)
+    uclsed = UCLSED(args, dataset)
 
     uclsed.preprocess()
     uclsed.fit()
 
     predictions, ground_truths = uclsed.detection()  # 进行预测
     results = uclsed.evaluate(predictions, ground_truths)  # 评估模型
-
-
-

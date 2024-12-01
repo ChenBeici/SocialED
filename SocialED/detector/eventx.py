@@ -19,35 +19,38 @@ import torch
 import argparse
 from sklearn.model_selection import train_test_split
 import logging
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+
 class EventX:
-    def __init__(self, dataset,
-                 mask_path='../model_saved/eventX/split_indices/test_indices_2048.npy',
-                 file_path='../model_saved/eventX/',
+    def __init__(self,
+                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 mask_path='../model/model_saved/eventX/split_indices/test_indices_2048.npy',
+                 file_path='../model/model_saved/eventX/',
                  num_repeats=5,
                  min_cooccur_time=2,
                  min_prob=0.15,
                  max_kw_num=3):
         self.dataset = dataset
-        self.mask_path = mask_path
         self.file_path = file_path
+        self.mask_path = mask_path
         self.num_repeats = num_repeats
         self.min_cooccur_time = min_cooccur_time
         self.min_prob = min_prob
         self.max_kw_num = max_kw_num
 
-
-    #construct offline df
+    # construct offline df
     def preprocess(self):
 
         self.split()
 
         df = self.dataset
         logging.info("Loaded all_df_words_ents_mid.")
-        
+
         test_mask = np.load(self.mask_path, allow_pickle=True)
         df = df.iloc[test_mask, :]
         logging.info("Test df extracted.")
@@ -55,7 +58,7 @@ class EventX:
         np.save(self.file_path + 'corpus_offline.npy', df.values)
         logging.info("corpus_offline saved.")
 
-        self.df = df 
+        self.df = self.dataset[['event_id','filtered_words','tweet_id','entities']].copy()
         logging.info("Data preprocessed.")
 
     def split(self):
@@ -86,11 +89,13 @@ class EventX:
         self.test_df = test_data
         self.val_df = val_data
 
-        logging.info(f"Data split completed: {len(train_data)} train, {len(test_data)} test, {len(val_data)} validation samples.")
+        logging.info(
+            f"Data split completed: {len(train_data)} train, {len(test_data)} test, {len(val_data)} validation samples.")
 
     def detection(self):
         kw_pair_dict, kw_dict = self.construct_dict(self.df, self.file_path)
-        m_kw_pair_dict, m_kw_dict, map_index_to_kw, map_kw_to_index = self.map_dicts(kw_pair_dict, kw_dict, self.file_path)
+        m_kw_pair_dict, m_kw_dict, map_index_to_kw, map_kw_to_index = self.map_dicts(kw_pair_dict, kw_dict,
+                                                                                     self.file_path)
         G = self.construct_kw_graph(kw_pair_dict, kw_dict, self.min_cooccur_time, self.min_prob)
         communities = []
         self.detect_kw_communities_iter(G, communities, kw_pair_dict, kw_dict, self.max_kw_num)
@@ -119,12 +124,12 @@ class EventX:
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
-    def construct_dict(self, df, dir_path = None):
+    def construct_dict(self, df, dir_path=None):
         kw_pair_dict = {}
         kw_dict = {}
 
         for _, row in df.iterrows():
-            tweet_id = str(row['message_ids'])
+            tweet_id = str(row['tweet_id'])
             entities = row['entities']
             entities = ['_'.join(tup) for tup in entities]
             for each in entities:
@@ -132,12 +137,12 @@ class EventX:
                     kw_dict[each] = []
                 kw_dict[each].append(tweet_id)
 
-            words = row['unique_words']
+            words = row['filtered_words']
             for each in words:
                 if each not in kw_dict.keys():
                     kw_dict[each] = []
                 kw_dict[each].append(tweet_id)
-            
+
             for r in itertools.combinations(entities + words, 2):
                 r = list(r)
                 r.sort()
@@ -147,27 +152,27 @@ class EventX:
                 kw_pair_dict[pair].append(tweet_id)
 
         if dir_path is not None:
-            pickle.dump(kw_dict, open(dir_path + '/kw_dict.pickle','wb'))
-            pickle.dump(kw_pair_dict, open(dir_path + '/kw_pair_dict.pickle','wb'))
+            pickle.dump(kw_dict, open(dir_path + '/kw_dict.pickle', 'wb'))
+            pickle.dump(kw_pair_dict, open(dir_path + '/kw_pair_dict.pickle', 'wb'))
 
         return kw_pair_dict, kw_dict
 
-    def map_dicts(self, kw_pair_dict, kw_dict, dir_path = None):
+    def map_dicts(self, kw_pair_dict, kw_dict, dir_path=None):
         map_index_to_kw = {}
         m_kw_dict = {}
         for i, k in enumerate(kw_dict.keys()):
-            map_index_to_kw['k'+str(i)] = k
-            m_kw_dict['k'+str(i)] = kw_dict[k]
-        map_kw_to_index = {v:k for k,v in map_index_to_kw.items()}
+            map_index_to_kw['k' + str(i)] = k
+            m_kw_dict['k' + str(i)] = kw_dict[k]
+        map_kw_to_index = {v: k for k, v in map_index_to_kw.items()}
         m_kw_pair_dict = {}
         for _, pair in enumerate(kw_pair_dict.keys()):
             m_kw_pair_dict[(map_kw_to_index[pair[0]], map_kw_to_index[pair[1]])] = kw_pair_dict[pair]
 
         if dir_path is not None:
-            pickle.dump(m_kw_pair_dict, open(dir_path + '/m_kw_pair_dict.pickle','wb'))
-            pickle.dump(m_kw_dict, open(dir_path + '/m_kw_dict.pickle','wb'))
-            pickle.dump(map_index_to_kw, open(dir_path + '/map_index_to_kw.pickle','wb'))
-            pickle.dump(map_kw_to_index, open(dir_path + '/map_kw_to_index.pickle','wb'))
+            pickle.dump(m_kw_pair_dict, open(dir_path + '/m_kw_pair_dict.pickle', 'wb'))
+            pickle.dump(m_kw_dict, open(dir_path + '/m_kw_dict.pickle', 'wb'))
+            pickle.dump(map_index_to_kw, open(dir_path + '/map_index_to_kw.pickle', 'wb'))
+            pickle.dump(map_kw_to_index, open(dir_path + '/map_kw_to_index.pickle', 'wb'))
 
         return m_kw_pair_dict, m_kw_dict, map_index_to_kw, map_kw_to_index
 
@@ -176,11 +181,12 @@ class EventX:
         G.add_nodes_from(list(kw_dict.keys()))
         for pair, co_tid_list in kw_pair_dict.items():
             if len(co_tid_list) > min_cooccur_time:
-                if (len(co_tid_list)/len(kw_dict[pair[0]]) > min_prob) and (len(co_tid_list)/len(kw_dict[pair[1]]) > min_prob):
+                if (len(co_tid_list) / len(kw_dict[pair[0]]) > min_prob) and (
+                        len(co_tid_list) / len(kw_dict[pair[1]]) > min_prob):
                     G.add_edge(*pair)
         return G
 
-    def detect_kw_communities_iter(self, G, communities, kw_pair_dict, kw_dict, max_kw_num = 3):
+    def detect_kw_communities_iter(self, G, communities, kw_pair_dict, kw_dict, max_kw_num=3):
         connected_components = [c for c in nx.connected_components(G)]
         while len(connected_components) >= 1:
             c = connected_components[0]
@@ -199,7 +205,7 @@ class EventX:
                         e.sort()
                         pair = (e[0], e[1])
                         co_len = len(kw_pair_dict[pair])
-                        e_prob = (co_len/len(kw_dict[pair[0]]) + co_len/len(kw_dict[pair[1]]))/2
+                        e_prob = (co_len / len(kw_dict[pair[0]]) + co_len / len(kw_dict[pair[1]])) / 2
                         probs.append(e_prob)
                     min_prob = min(probs)
                     min_index = [i for i, j in enumerate(probs) if j == min_prob]
@@ -216,12 +222,12 @@ class EventX:
             m_communities.append(m_cluster)
         return m_communities
 
-    def classify_docs(self, test_tweets, m_communities, map_kw_to_index, dir_path = None):
+    def classify_docs(self, test_tweets, m_communities, map_kw_to_index, dir_path=None):
         m_test_tweets = []
         for doc in test_tweets:
-            m_doc = ' '.join(map_kw_to_index[kw] for kw in doc)
+            m_doc = ' '.join(map_kw_to_index[kw] for kw in doc)     
             m_test_tweets.append(m_doc)
-        
+
         vectorizer = TfidfVectorizer()
         X = vectorizer.fit_transform(m_communities + m_test_tweets)
         train_size = len(m_communities)
@@ -235,33 +241,34 @@ class EventX:
                 classes.append(related_clusters[0])
             else:
                 classes.append(random.choice(related_clusters))
-        
+
         if dir_path is not None:
             np.save(dir_path + '/classes.npy', classes)
-            
+
         return classes
 
-    def map_tweets(self, df, dir_path = None):
+    def map_tweets(self, df, dir_path=None):
         m_tweets = []
         ground_truths = []
         for _, row in df.iterrows():
             entities = row['entities']
             entities = ['_'.join(tup) for tup in entities]
-            words = row['unique_words']
+            words = row['filtered_words']
             m_tweets.append(entities + words)
             ground_truths.append(row['event_id'])
-        
+
         if dir_path is not None:
             with open(os.path.join(dir_path, 'm_tweets.pkl'), 'wb') as f:
                 pickle.dump(m_tweets, f)
             with open(os.path.join(dir_path, 'ground_truths.pkl'), 'wb') as f:
                 pickle.dump(ground_truths, f)
-        
+
         return m_tweets, ground_truths
 
+
 # recursive version, can cause RecursionError when running on large graphs. Changed to iterative version below.
-def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num = 3):
-    connected_components = [ c for c in nx.connected_components(G)]
+def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num=3):
+    connected_components = [c for c in nx.connected_components(G)]
     if len(connected_components) >= 1:
         c = connected_components[0]
         if len(c) < max_kw_num:
@@ -280,7 +287,7 @@ def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num = 3)
                     e.sort()
                     pair = (e[0], e[1])
                     co_len = len(kw_pair_dict[pair])
-                    e_prob = (co_len/len(kw_dict[pair[0]]) + co_len/len(kw_dict[pair[1]]))/2
+                    e_prob = (co_len / len(kw_dict[pair[0]]) + co_len / len(kw_dict[pair[1]])) / 2
                     probs.append(e_prob)
                 min_prob = min(probs)
                 min_index = [i for i, j in enumerate(probs) if j == min_prob]
@@ -294,30 +301,28 @@ def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num = 3)
 
 
 def check_class_sizes(ground_truths, predictions):
-    #distinct_true_labels = list(Counter(ground_truths).keys()) # equals to list(set(ground_truths))
-    count_true_labels = list(Counter(ground_truths).values()) # counts the elements' frequency
+    # distinct_true_labels = list(Counter(ground_truths).keys()) # equals to list(set(ground_truths))
+    count_true_labels = list(Counter(ground_truths).values())  # counts the elements' frequency
     ave_true_size = mean(count_true_labels)
-    
-    distinct_predictions = list(Counter(predictions).keys()) # equals to list(set(ground_truths))
-    count_predictions = list(Counter(predictions).values()) # counts the elements' frequency
 
-    large_classes = [distinct_predictions[i] for i,count in enumerate(count_predictions) if count > ave_true_size]
+    distinct_predictions = list(Counter(predictions).keys())  # equals to list(set(ground_truths))
+    count_predictions = list(Counter(predictions).values())  # counts the elements' frequency
+
+    large_classes = [distinct_predictions[i] for i, count in enumerate(count_predictions) if count > ave_true_size]
 
     return large_classes
 
 
-if __name__=="__main__": 
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+if __name__ == "__main__":
+    #eventx = EventX(dataset)
 
-    dataset = MAVEN_Dataset.load_data()
-    eventx = EventX(dataset)
-    
+    eventx = EventX()
     # Data preprocessing
     eventx.preprocess()
-    
+
     # Detect events
     predictions, ground_truths = eventx.detection()
-    #print(predictions)
+    # print(predictions)
 
     # Evaluate the model
     eventx.evaluate(predictions, ground_truths)

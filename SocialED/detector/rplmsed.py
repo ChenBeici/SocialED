@@ -28,68 +28,136 @@ import datetime
 import itertools
 import scipy as sp
 from sklearn.model_selection import train_test_split
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 
 COLUMNS_12 = ["event_id", "tweet_id", "text", "user_id", "created_at", "user_loc", "place_type",
-                    "place_full_name", "place_country_code", "hashtags", "user_mentions", "image_urls",
-                    "entities", "words", "filtered_words", "sampled_words"]
+              "place_full_name", "place_country_code", "hashtags", "user_mentions", "urls",
+              "entities", "words", "filtered_words", "sampled_words"]
 DataItem = namedtuple('DataItem', COLUMNS_12)
-
 
 logging.basicConfig(level=logging.WARN,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s",
                     datefmt='%Y-%m-%d  %H:%M:%S %a')
 
-class args_define():
-    def list_of_ints(arg):
-        return list(map(int, arg.split(',')))
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='../model_saved/rplmsed/cache/twitter12.npy')
-    parser.add_argument('--plm_path', type=str, default='../model_needed/base_plm_model/roberta-large')
-    parser.add_argument('--file_path', type=str, default='../model_saved/rplmsed/')
-    parser.add_argument('--plm_tuning', action='store_true')
-    parser.add_argument('--use_ctx_att', action='store_true')
-    # parser.add_argument('--offline', action='store_true')
-    parser.add_argument('--offline', type=bool,default=True)
-    parser.add_argument('--ctx_att_head_num', type=int, default=2)
-    parser.add_argument("--pmt_feats", type=list_of_ints, default=(0, 1, 2, 4),
-                        help="(entities, hashtags, user, words, time)")
 
-    parser.add_argument("--batch_size", type=int, default=128, help="Batch size for training")
-    parser.add_argument("--lmda1", type=float, default=0.010)
-    parser.add_argument("--lmda2", type=float, default=0.005)
-    parser.add_argument("--tao", type=float, default=0.90)
+class args_define:
+    def __init__(self, **kwargs):
+        # Hyper parameters
+        self.dataset = kwargs.get('dataset', '../model/model_saved/rplmsed/cache/twitter12.npy')
+        self.plm_path = kwargs.get('plm_path', '../model/model_needed/base_plm_model/roberta-large')
+        self.file_path = kwargs.get('file_path', '../model/model_saved/rplmsed/')
+        self.plm_tuning = kwargs.get('plm_tuning', False)
+        self.use_ctx_att = kwargs.get('use_ctx_att', False)
+        self.offline = kwargs.get('offline', True)
+        self.ctx_att_head_num = kwargs.get('ctx_att_head_num', 2)
+        self.pmt_feats = kwargs.get('pmt_feats', (0, 1, 2, 4))
+        self.batch_size = kwargs.get('batch_size', 128)
+        # self.batch_size = kwargs.get('batch_size', 32)
+        self.lmda1 = kwargs.get('lmda1', 0.010)
+        self.lmda2 = kwargs.get('lmda2', 0.005)
+        self.tao = kwargs.get('tao', 0.90)
+        self.optimizer = kwargs.get('optimizer', 'Adam')
+        self.lr = kwargs.get('lr', 2e-5)
+        self.weight_decay = kwargs.get('weight_decay', 1e-5)
+        self.momentum = kwargs.get('momentum', 0.9)
+        self.step_lr_gamma = kwargs.get('step_lr_gamma', 0.98)
+        self.max_epochs = kwargs.get('max_epochs', 1)
+        self.ckpt_path = kwargs.get('ckpt_path', '../model/model_saved/rplmsed/ckpt/')
+        self.eva_data = kwargs.get('eva_data', "../model/model_saved/rplmsed/Eva_data/")
+        self.early_stop_patience = kwargs.get('early_stop_patience', 2)
+        self.early_stop_monitor = kwargs.get('early_stop_monitor', 'loss')
+        self.SAMPLE_NUM_TWEET = kwargs.get('SAMPLE_NUM_TWEET', 60)
+        self.WINDOW_SIZE = kwargs.get('WINDOW_SIZE', 3)
+        self.device = kwargs.get('device', "cuda:0" if torch.cuda.is_available() else "cpu")
 
-    parser.add_argument("--optimizer", type=str, default='Adam', help="Optimizer, Adam, AdamW or SGD")
-    parser.add_argument("--lr", type=float, default=2e-5, help="Learning rate")
-    parser.add_argument("--weight_decay", type=float, default=1e-5, help="weight decay")
-    parser.add_argument("--momentum", type=float, default=0.9, help="momentum for SGD optimizer")
-    parser.add_argument("--step_lr_gamma", type=float, default=0.98, help="gamma for step learning rate schedule")
+        # Store all arguments in a single attribute
+        self.args = argparse.Namespace(**{
+            'dataset': self.dataset,
+            'plm_path': self.plm_path,
+            'file_path': self.file_path,
+            'plm_tuning': self.plm_tuning,
+            'use_ctx_att': self.use_ctx_att,
+            'offline': self.offline,
+            'ctx_att_head_num': self.ctx_att_head_num,
+            'pmt_feats': self.pmt_feats,
+            'batch_size': self.batch_size,
+            'lmda1': self.lmda1,
+            'lmda2': self.lmda2,
+            'tao': self.tao,
+            'optimizer': self.optimizer,
+            'lr': self.lr,
+            'weight_decay': self.weight_decay,
+            'momentum': self.momentum,
+            'step_lr_gamma': self.step_lr_gamma,
+            'max_epochs': self.max_epochs,
+            'ckpt_path': self.ckpt_path,
+            'eva_data': self.eva_data,
+            'early_stop_patience': self.early_stop_patience,
+            'early_stop_monitor': self.early_stop_monitor,
+            'SAMPLE_NUM_TWEET': self.SAMPLE_NUM_TWEET,
+            'WINDOW_SIZE': self.WINDOW_SIZE,
+            'device': self.device
+        })
 
-    parser.add_argument("--max_epochs", type=int, default=1, help="Number of training epochs")
-    #ablation_ckpt  ablation_Eva_datas
-    parser.add_argument('--ckpt_path', type=str, default='../model_saved/rplmsed/ckpt/', help='path to checkpoint files')
-    parser.add_argument("--eva_data", type=str, default="../model_saved/rplmsed/Eva_data/",help="path to Evaluate_datas")
 
-    parser.add_argument("--early_stop_patience", type=int, default=2)
-    parser.add_argument("--early_stop_monitor", type=str, default='loss', help='loss')
+# class args_define():
+#     def list_of_ints(arg):
+#         return list(map(int, arg.split(',')))
+#
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('--dataset', type=str, default='../model/model_saved/rplmsed/cache/twitter12.npy')
+#     parser.add_argument('--plm_path', type=str, default='../model/model_needed/base_plm_model/roberta-large')
+#     parser.add_argument('--file_path', type=str, default='../model/model_saved/rplmsed/')
+#     parser.add_argument('--plm_tuning', action='store_true')
+#     parser.add_argument('--use_ctx_att', action='store_true')
+#     # parser.add_argument('--offline', action='store_true')
+#     parser.add_argument('--offline', type=bool, default=True)
+#     parser.add_argument('--ctx_att_head_num', type=int, default=2)
+#     parser.add_argument("--pmt_feats", type=list_of_ints, default=(0, 1, 2, 4),
+#                         help="(entities, hashtags, user, words, time)")
+#
+#     parser.add_argument("--batch_size", type=int, default=128, help="Batch size for training")
+#     parser.add_argument("--lmda1", type=float, default=0.010)
+#     parser.add_argument("--lmda2", type=float, default=0.005)
+#     parser.add_argument("--tao", type=float, default=0.90)
+#
+#     parser.add_argument("--optimizer", type=str, default='Adam', help="Optimizer, Adam, AdamW or SGD")
+#     parser.add_argument("--lr", type=float, default=2e-5, help="Learning rate")
+#     parser.add_argument("--weight_decay", type=float, default=1e-5, help="weight decay")
+#     parser.add_argument("--momentum", type=float, default=0.9, help="momentum for SGD optimizer")
+#     parser.add_argument("--step_lr_gamma", type=float, default=0.98, help="gamma for step learning rate schedule")
+#
+#     parser.add_argument("--max_epochs", type=int, default=1, help="Number of training epochs")
+#     # ablation_ckpt  ablation_Eva_datas
+#     parser.add_argument('--ckpt_path', type=str, default='../model/model_saved/rplmsed/ckpt/',
+#                         help='path to checkpoint files')
+#     parser.add_argument("--eva_data", type=str, default="../model/model_saved/rplmsed/Eva_data/",
+#                         help="path to Evaluate_datas")
+#
+#     parser.add_argument("--early_stop_patience", type=int, default=2)
+#     parser.add_argument("--early_stop_monitor", type=str, default='loss', help='loss')
+#
+#     parser.add_argument("--SAMPLE_NUM_TWEET", type=int, default=60)
+#     parser.add_argument("--WINDOW_SIZE", type=int, default=3)
+#
+#     parser.add_argument("--device", type=str,
+#                         default="cuda:0" if torch.cuda.is_available() else "cpu",
+#                         help="Device (cuda or cpu)")
+#
+#     args = parser.parse_args()
 
-    parser.add_argument("--SAMPLE_NUM_TWEET", type=int, default=60)
-    parser.add_argument("--WINDOW_SIZE", type=int, default=3)
-
-    parser.add_argument("--device", type=str,
-                        default="cuda:0" if torch.cuda.is_available() else "cpu",
-                        help="Device (cuda or cpu)")
-
-    args = parser.parse_args()
 
 class Preprocessor:
-    args = args_define.args
+    args = args_define().args
+
     def __init__(self):
         pass
 
     def twitter12_process(self, dataset):
-        os.makedirs('../model_saved/rplmsed/cache', exist_ok=True)
+        os.makedirs('../model/model_saved/rplmsed/cache', exist_ok=True)
         print(f"load data  ... ")
         df = dataset
         np_data = df.to_numpy()
@@ -277,12 +345,12 @@ class Preprocessor:
             pos_pairs = [
                 (
                     int(tw_to_ev[i] == tw_to_ev[j]), tw_to_ev[i], (i, j),
-                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [self.get_time_relation(data[i], data[j])]
+                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [
+                        self.get_time_relation(data[i], data[j])]
                 )
                 for j in pos_idx
             ]
             pairs.extend(pos_pairs)
-
 
             neg_idx, = np.nonzero(1 - ev_tw_vec)
             adj_i_tw_score = np.exp(adj_i_tw - ev_tw_vec * 1e12)
@@ -295,7 +363,8 @@ class Preprocessor:
             neg_pairs = [
                 (
                     int(tw_to_ev[i] == tw_to_ev[j]), tw_to_ev[i], (i, j),
-                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [self.get_time_relation(data[i], data[j])]
+                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [
+                        self.get_time_relation(data[i], data[j])]
                 )
                 for j in neg_idx
             ]
@@ -326,7 +395,8 @@ class Preprocessor:
                 (
                     int(tw_to_ev[i] == tw_to_ev[j]),
                     tw_to_ev[i], (i, j),
-                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [self.get_time_relation(data[i], data[j])]
+                    list(1 if tw_adj[f][i, j] > 0 else 0 for f in range(tw_adj_num)) + [
+                        self.get_time_relation(data[i], data[j])]
                 )
                 for j in ref_idx
             ]
@@ -336,7 +406,7 @@ class Preprocessor:
 
     def process_block(self, block):
         blk = {}
-        
+
         FEAT_COLS = [
             ("entities", self.build_entity_adj),
             ("hashtags", self.build_hashtag_adj),
@@ -389,7 +459,8 @@ class Preprocessor:
                 off_test_size = math.ceil(data_size * 0.2)
                 off_valid_size = math.ceil(data_size * 0.1)
                 off_train, off_test = train_test_split(data[i], test_size=off_test_size, random_state=42, shuffle=True)
-                off_train, off_valid = train_test_split(off_train, test_size=off_valid_size, random_state=42, shuffle=True)
+                off_train, off_valid = train_test_split(off_train, test_size=off_valid_size, random_state=42,
+                                                        shuffle=True)
 
                 print("create offline dataset ...", end="\t")
                 off_dataset.append(self.process_block({"train": off_train, "test": off_test, "valid": off_valid}))
@@ -398,11 +469,11 @@ class Preprocessor:
                 print(f"save data to '{args.file_path}cache/offline.npy' ... ", end='')
                 np.save(args.file_path + 'cache/offline.npy', off_dataset)
                 print("\tDone")
-                
+
             elif i % args.WINDOW_SIZE == 0:
                 sub_data = []
                 for j in range(args.WINDOW_SIZE):
-                    sub_data += data[i-j]
+                    sub_data += data[i - j]
                 sub_data_size = len(sub_data)
                 sub_valid_size = math.ceil(sub_data_size * 0.2)
                 train, valid = train_test_split(sub_data, test_size=sub_valid_size, random_state=42, shuffle=True)
@@ -456,6 +527,7 @@ class Preprocessor:
         print("\tDone")
         return data_blocks
 
+
 class RPLM_SED:
     def __init__(self, args, dataset):
         self.dataset = dataset
@@ -476,23 +548,23 @@ class RPLM_SED:
         tokenizer = AutoTokenizer.from_pretrained(args.plm_path)
         data_blocks = load_data_blocks(args.dataset, args, tokenizer)
         self.model = start_run(args, data_blocks)
- 
+
     def detection(self):
         blk = torch.load(f'{args.file_path}cache/cache_long_tail/roberta-large-twitter12.npy')
         test = blk['test']
 
-        msg_tags = np.array(test['tw_to_ev'], dtype=np.int32)   
+        msg_tags = np.array(test['tw_to_ev'], dtype=np.int32)
         tst_num = msg_tags.shape[0]
         msg_feats = torch.zeros((tst_num, self.model.feat_size()), device='cpu')
-        ref_num = torch.zeros((tst_num,), dtype=torch.long, device='cpu') 
-        
+        ref_num = torch.zeros((tst_num,), dtype=torch.long, device='cpu')
+
         msg_feats = msg_feats / (ref_num + torch.eq(ref_num, 0).float()).unsqueeze(-1)
         msg_feats = msg_feats.numpy()
 
         n_clust = len(test['ev_to_idx'])
         k_means_score = run_kmeans(msg_feats, n_clust, msg_tags)
 
-        k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40,random_state=0)
+        k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40, random_state=0)
         k_means.fit(msg_feats)
 
         predictions = k_means.labels_
@@ -507,16 +579,18 @@ class RPLM_SED:
 
         # Calculate Normalized Mutual Information (NMI)
         nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-        
+
         print(f"Model Adjusted Rand Index (ARI): {ars}")
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
 
+
 def get_model(args):
     return PairPfxTuningEncoder(
         len(args.pmt_feats), args.plm_path, args.plm_tuning,
         use_ctx_att=args.use_ctx_att, ctx_att_head_num=args.ctx_att_head_num)
+
 
 def initialize(model, args, num_train_batch):
     # parameters = model.parameters()  # 优化器的初始化
@@ -558,6 +632,7 @@ def initialize(model, args, num_train_batch):
 
     return optimizer, lr_scheduler
 
+
 def batch_to_tensor(batch, args):
     tags = [tag for tag, evt, a, b, fix, tok, _ in batch]
     events = [evt for tag, evt, a, b, fix, tok, _ in batch]
@@ -576,12 +651,14 @@ def batch_to_tensor(batch, args):
 
     return toks, typs, prefix, tags, events
 
+
 # loss functions
-#cls_loss = torch.nn.BCEWithLogitsLoss()
+# cls_loss = torch.nn.BCEWithLogitsLoss()
 
 def create_trainer(model, optimizer, lr_scheduler, args):
     evt_proto = torch.zeros((args.train_evt_num, model.feat_size()), device=args.device, requires_grad=False)
     cls_loss = torch.nn.BCEWithLogitsLoss()
+
     # update event cluster center prototype by training batch
     def update_evt_proto(feats, events, alpha):
         proto = torch.zeros_like(evt_proto)
@@ -614,7 +691,7 @@ def create_trainer(model, optimizer, lr_scheduler, args):
         loss = cls_loss(logit, tags.float())
         pred = torch.gt(logit, 0.)
 
-        feats =  left_feat
+        feats = left_feat
         evt_feats = update_evt_proto(feats, events, 0.8)
         protos = evt_proto.index_select(0, events)
 
@@ -635,10 +712,11 @@ def create_trainer(model, optimizer, lr_scheduler, args):
         if lr_scheduler is not None:
             lr_scheduler.step()
 
-        del toks, prefix,mask
+        del toks, prefix, mask
         acc = accuracy_score(tags.cpu(), pred.cpu())
 
         return loss, acc, inter_dist_loss, intra_dist_loss
+
     # Define trainer engine
     trainer = Engine(_train_step)
 
@@ -653,8 +731,10 @@ def create_trainer(model, optimizer, lr_scheduler, args):
     ProgressBar(persist=True).attach(trainer, mtcs)
     return trainer
 
+
 def create_evaluator(model, args):
     cls_loss = torch.nn.BCEWithLogitsLoss()
+
     def _validation_step(_, batch):
         model.eval()
         with torch.no_grad():
@@ -663,7 +743,7 @@ def create_evaluator(model, args):
             toks, typs, prefix, tags, events = [x.to(args.device) for x in data]
             mask = torch.not_equal(toks, args.pad_tok_id).to(args.device)
 
-            logit,  left_feat = model(toks, typs, prefix, mask)
+            logit, left_feat = model(toks, typs, prefix, mask)
 
             loss = cls_loss(logit, tags.float())
             pred = torch.gt(logit, 0.)
@@ -679,8 +759,10 @@ def create_evaluator(model, args):
     ProgressBar(persist=True).attach(evaluator)
     return evaluator
 
+
 def create_tester(model, args, msg_feats, ref_num):
     cls_loss = torch.nn.BCEWithLogitsLoss()
+
     def _test_step(_, batch):
         model.eval()
         with torch.no_grad():
@@ -731,6 +813,7 @@ def create_tester(model, args, msg_feats, ref_num):
     ProgressBar(persist=True).attach(tester)
     return tester
 
+
 def test_on_block(model, cfg, blk, b=0):
     test = blk['test']
     print("Length of test['samples']:", len(test['samples']))
@@ -743,7 +826,7 @@ def test_on_block(model, cfg, blk, b=0):
 
     train, valid = blk['train'], blk['valid']
     cfg.train_evt_num = len(train['ev_to_idx'])
-    #print("cfg.train_evt_num:", cfg.train_evt_num)
+    # print("cfg.train_evt_num:", cfg.train_evt_num)
     test_gen, test_batch_num = data_generator(test['samples'], cfg.batch_size)
     tester = create_tester(model, cfg, msg_feats, ref_num)
 
@@ -781,6 +864,7 @@ def test_on_block(model, cfg, blk, b=0):
 
     return k_means_score, dbscan_score
 
+
 def load_ckpt(model, args, ckpt, b):
     print(f"Load best ckpt for block {b} from '{ckpt}'")
 
@@ -796,6 +880,7 @@ def load_ckpt(model, args, ckpt, b):
 
     return model, ckpt_args
 
+
 def start_run(cfg, blocks):
     tokenizer = AutoTokenizer.from_pretrained(args.plm_path)
     cfg.pad_tok_id = tokenizer.pad_token_id
@@ -807,10 +892,11 @@ def start_run(cfg, blocks):
 
     for b, blk in enumerate(blocks):
         print(f"Processing block-{b}...", flush=True)
-        print(f"Block-{b} content keys: {blk.keys()}") 
+        print(f"Block-{b} content keys: {blk.keys()}")
 
         train, valid, test = (blk[n] for n in ('train', 'valid', 'test'))
-        print(f"Train samples: {len(train['samples'])}, Valid samples: {len(valid['samples'])}, Test samples: {len(test['samples'])}")
+        print(
+            f"Train samples: {len(train['samples'])}, Valid samples: {len(valid['samples'])}, Test samples: {len(test['samples'])}")
 
         if b > 0:
             print(f"test model on data block-{b} ...", flush=True)
@@ -823,7 +909,7 @@ def start_run(cfg, blocks):
             print("DBSCAN:")
             print_scores(dbscan_scores)
 
-        if b % 3 ==0  :
+        if b % 3 == 0:
             gc.collect()
             print(f"train on data block-{b} ...", flush=True)
             model, ckpt = train_on_block(model, cfg, blk, b)
@@ -831,7 +917,7 @@ def start_run(cfg, blocks):
 
         if b == 0 and args.offline:
             print(f"close test on data block-{b} ...", flush=True)
-            kms_score, dbs_score = test_on_block(model, args, blk,b)
+            kms_score, dbs_score = test_on_block(model, args, blk, b)
             kmeans_scores.append(kms_score)
             dbscan_scores.append(dbs_score)
 
@@ -851,6 +937,7 @@ def start_run(cfg, blocks):
 
     return model
 
+
 def train_on_block(model, args, blk, blk_id=0):
     # reload plm in tuning mode
     if blk_id > 0 and args.plm_tuning:
@@ -861,7 +948,6 @@ def train_on_block(model, args, blk, blk_id=0):
     ###
     # train['samples'] = train['samples'][:500]
     # valid['samples'] = valid['samples'][:200]
-
 
     args.train_evt_num = len(train['ev_to_idx'])
 
@@ -930,13 +1016,13 @@ def train_on_block(model, args, blk, blk_id=0):
     del ckpt
     return model, best_ckpt
 
-#utils
+
+# utils
 
 def load_data_blocks(path_to_data, args, tokenizer):
     print(f"load data from '{path_to_data}'... ", end='')
     dataset = np.load(path_to_data, allow_pickle=True)
     print("\tDone")
-
 
     path_to_blocks = []
     print(f"encode block samples, ")
@@ -944,9 +1030,10 @@ def load_data_blocks(path_to_data, args, tokenizer):
     for i, blk in enumerate(dataset):
         print(f"Message Block{i}", flush=True)
         train, valid, test = (blk[n] for n in ('train', 'valid', 'test'))
-        print(f"Train samples: {len(train['samples'])}, Valid samples: {len(valid['samples'])}, Test samples: {len(test['samples'])}")
+        print(
+            f"Train samples: {len(train['samples'])}, Valid samples: {len(valid['samples'])}, Test samples: {len(test['samples'])}")
 
-        path=f"{args.file_path}/cache/cache_long_tail/"
+        path = f"{args.file_path}/cache/cache_long_tail/"
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -954,19 +1041,19 @@ def load_data_blocks(path_to_data, args, tokenizer):
             # blk_path = os.path.join(path, f"{args.model_name}-{args.dataset_name}-offline.npy")
             blk_path = os.path.join(path, f"{args.model_name}-{args.dataset_name}.npy")
         else:
-            blk_path = os.path.join(path, f"{args.model_name}-{args.dataset_name}-M{i+1}.npy")
+            blk_path = os.path.join(path, f"{args.model_name}-{args.dataset_name}-M{i + 1}.npy")
 
         if not os.path.exists(blk_path):
-            print("train dateset processing",end=" ")
-            train['samples'] = encode_samples(train['samples'], train['data'], tokenizer,args.pmt_feats)
+            print("train dateset processing", end=" ")
+            train['samples'] = encode_samples(train['samples'], train['data'], tokenizer, args.pmt_feats)
             print("done")
 
-            print("valid dateset processing",end=" ")
-            valid['samples'] = encode_samples(valid['samples'], valid['data'], tokenizer,args.pmt_feats)
+            print("valid dateset processing", end=" ")
+            valid['samples'] = encode_samples(valid['samples'], valid['data'], tokenizer, args.pmt_feats)
             print("done")
 
-            print("test dateset processing",end=" ")
-            test['samples'] = encode_samples(test['samples'], test['data'], tokenizer,args.pmt_feats)
+            print("test dateset processing", end=" ")
+            test['samples'] = encode_samples(test['samples'], test['data'], tokenizer, args.pmt_feats)
             print("done")
 
             torch.save(
@@ -979,7 +1066,7 @@ def load_data_blocks(path_to_data, args, tokenizer):
     del dataset
     print("Done")
 
-    path_to_blocks = ['../model_saved/rplmsed/cache/cache_long_tail/roberta-large-twitter12.npy']
+    path_to_blocks = ['../model/model_saved/rplmsed/cache/cache_long_tail/roberta-large-twitter12.npy']
     for blk_path in path_to_blocks:
         print(f"load block from '{blk_path}'... \n", end='')
         loaded_blk = torch.load(blk_path)
@@ -992,12 +1079,14 @@ def load_data_blocks(path_to_data, args, tokenizer):
             print(f"Error: Loaded block is not a dictionary, but {type(loaded_blk)}")
             yield None
 
+
 class CkptWrapper:
     def __init__(self, state: Any):
         self.state = state
 
     def state_dict(self):
         return self.state
+
 
 def get_model_state(model, params, plm_tuning):
     if plm_tuning:
@@ -1013,8 +1102,10 @@ def get_model_state(model, params, plm_tuning):
 
         return CkptWrapper(state)
 
+
 def width(text):
     return sum([2 if '\u4E00' <= c <= '\u9FA5' else 1 for c in text])
+
 
 def print_table(tab):
     col_width = [max(width(x) for x in col) for col in zip(*tab)]
@@ -1023,9 +1114,11 @@ def print_table(tab):
         print("| " + " | ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " |")
     print("+-" + "-+-".join("{:-^{}}".format('-', col_width[i]) for i, x in enumerate(tab[0])) + "-+")
 
+
 def data_generator(data, batch_size, shuffle=False, repeat=False):
     batch_num = math.ceil(len(data) / batch_size)
     return create_data_generator(data, batch_size, shuffle, repeat, batch_num), batch_num
+
 
 def create_data_generator(data, batch_size, shuffle, repeat, batch_num):
     while True:
@@ -1046,6 +1139,7 @@ def create_data_generator(data, batch_size, shuffle, repeat, batch_num):
         else:
             break
 
+
 def pad_seq(seq, max_len, pad=0, pad_left=False):
     """
     padding or truncate sequence to fixed length
@@ -1065,9 +1159,10 @@ def pad_seq(seq, max_len, pad=0, pad_left=False):
             seq = seq + padding
     return seq
 
+
 def run_kmeans(msg_feats, n_clust, msg_tags):
     # defalut:10
-    k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40,random_state=0)
+    k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40, random_state=0)
     k_means.fit(msg_feats)
 
     msg_pred = k_means.labels_
@@ -1081,8 +1176,9 @@ def run_kmeans(msg_feats, n_clust, msg_tags):
 
     return scores
 
+
 def run_hdbscan(msg_feats, msg_tags):
-    hdb = HDBSCAN(min_cluster_size = 8)
+    hdb = HDBSCAN(min_cluster_size=8)
     hdb.fit(msg_feats)
 
     msg_pred = hdb.labels_
@@ -1095,6 +1191,7 @@ def run_hdbscan(msg_feats, msg_tags):
     scores = {m: fun(msg_tags, msg_pred) for m, fun in score_funcs}
 
     return scores
+
 
 def run_dbscan(msg_feats, msg_tags):
     db = OPTICS(min_cluster_size=8, xi=0.01)
@@ -1111,8 +1208,9 @@ def run_dbscan(msg_feats, msg_tags):
 
     return scores
 
+
 def print_scores(scores):
-    line = [' ' * 4] + [f'   M{i:02d} ' for i in range(1,len(scores)+1)]
+    line = [' ' * 4] + [f'   M{i:02d} ' for i in range(1, len(scores) + 1)]
     print("".join(line))
 
     score_names = ['NMI', 'AMI', 'ARI']
@@ -1121,7 +1219,8 @@ def print_scores(scores):
         print("".join(line))
     print('\n', flush=True)
 
-def encode_samples(samples, raw_data, tokenizer,pmt_idx):
+
+def encode_samples(samples, raw_data, tokenizer, pmt_idx):
     data = []
     for tag, ev_idx, (tw_a, tw_b), pmt_feat in samples:
         tw_a_text = raw_data[tw_a].text
@@ -1151,17 +1250,18 @@ def encode_samples(samples, raw_data, tokenizer,pmt_idx):
     return data
 
 
-
 def count_condition(data, key, threshold):
     return sum(entry[key] > threshold for entry in data), sum(entry[key] <= threshold for entry in data)
 
-def calculate_average_min_score(newscore, min_score,max_score):
+
+def calculate_average_min_score(newscore, min_score, max_score):
     for i, score in enumerate(newscore):
         for key, value in score.items():
             min_score[i][key] = min(min_score[i][key], value)
             max_score[i][key] = max(max_score[i][key], value)
 
-    return  min_score,max_score
+    return min_score, max_score
+
 
 class StructAttention(torch.nn.Module):
     """
@@ -1208,6 +1308,7 @@ class StructAttention(torch.nn.Module):
 
         return outp, att
 
+
 class PairPfxTuningEncoder(nn.Module):
     def __init__(self, pmt_len,
                  plm_path, plm_tuning=False, from_config=False,
@@ -1238,7 +1339,8 @@ class PairPfxTuningEncoder(nn.Module):
 
         self.ctx_att = None
         if use_ctx_att:
-            self.ctx_att = StructAttention( self.plm_oupt_dim // 2, self.plm_oupt_dim // 4, att_head_num=ctx_att_head_num)
+            self.ctx_att = StructAttention(self.plm_oupt_dim // 2, self.plm_oupt_dim // 4,
+                                           att_head_num=ctx_att_head_num)
         self.pair_cls = nn.Linear(2 * (self.plm_oupt_dim // 2), 1)
 
     def feat_size(self):
@@ -1246,7 +1348,8 @@ class PairPfxTuningEncoder(nn.Module):
 
     def reload_plm(self, device):
         self.plm = AutoModel.from_pretrained(self.plm_path).to(device)
-    #0.4
+
+    # 0.4
     def accumulate_reload_plm(self, device, accumulate_rate=0.4):
         origin = AutoModel.from_pretrained(self.plm_path).to('cpu')
         plm_params = self.plm.named_parameters()
@@ -1286,7 +1389,7 @@ class PairPfxTuningEncoder(nn.Module):
 
         left_msk = (1 - types) * mask
         left_feat = tok_feat * left_msk.unsqueeze(-1)
-        left_msk =  torch.cat([pmt_msk.int(), left_msk], dim=1)
+        left_msk = torch.cat([pmt_msk.int(), left_msk], dim=1)
         left_feat = torch.cat([pmt_feat, left_feat], dim=1)
         if self.ctx_att is None:
             left_feat = left_feat.sum(dim=-2) / left_msk.sum(-1, keepdims=True)
@@ -1309,20 +1412,14 @@ class PairPfxTuningEncoder(nn.Module):
         return logit, left_feat
 
 
-
 if __name__ == '__main__':
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
-
-    args = args_define.args
-    dataset = Event2012_Dataset.load_data()
+    args = args_define().args
+    dataset = DatasetLoader("maven").load_data()
     rplmsed = RPLM_SED(args, dataset)
 
-    #rplmsed.preprocess()
+    # rplmsed.preprocess()
     rplmsed.fit()
     predictions, ground_truths = rplmsed.detection()
 
     # Evaluate model
     rplmsed.evaluate(predictions, ground_truths)
-
-
-
