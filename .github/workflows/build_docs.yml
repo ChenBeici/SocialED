@@ -1,0 +1,21 @@
+name: Read the Docs
+
+on:
+  push:
+    branches:
+      - main  # 根据你的仓库设置选择正确的分支
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Trigger Read the Docs build
+      run: |
+        curl -X POST -d "" https://readthedocs.org/api/v3/projects/socialed/builds/ \
+        -H "Authorization: Token ${{ secrets.RTD_TOKEN }}"
+      env:
+        RTD_TOKEN: ${{ secrets.RTD_TOKEN }}
