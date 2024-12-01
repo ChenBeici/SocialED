@@ -13,7 +13,7 @@ import spacy
 import fr_core_news_lg
 import networkx as nx
 import dgl
-from dgl.data.utils import save_graphs,load_graphs
+from dgl.data.utils import save_graphs, load_graphs
 import pickle
 from collections import Counter
 import torch.optim as optim
@@ -22,105 +22,186 @@ from sklearn.cluster import KMeans
 import torch.nn.functional as F
 import torch.nn as nn
 from itertools import combinations
-import re 
+import re
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 
 
 class args_define:
-    
-    parser = argparse.ArgumentParser()
-    # Hyper parameters
-    parser.add_argument('--finetune_epochs', default=1, type=int,
-                        help="Number of initial-training/maintenance-training epochs.")
-    parser.add_argument('--n_epochs', default=5, type=int,
-                        help="Number of initial-training/maintenance-training epochs.")
-    parser.add_argument('--oldnum', default=20, type=int,
-                        help="Number of sampling.")
-    parser.add_argument('--novelnum', default=20, type=int,
-                        help="Number of sampling.")
-    parser.add_argument('--n_infer_epochs', default=0, type=int,
-                        help="Number of inference epochs.")
-    parser.add_argument('--window_size', default=3, type=int,
-                        help="Maintain the model after predicting window_size blocks.")
-    parser.add_argument('--patience', default=5, type=int,
-                        help="Early stop if performance did not improve in the last patience epochs.")
-    parser.add_argument('--margin', default=3., type=float,
-                        help="Margin for computing triplet losses")
-    parser.add_argument('--a', default=8., type=float,
-                        help="Margin for computing pair-wise losses")
-    parser.add_argument('--lr', default=1e-3, type=float,
-                        help="Learning rate")
-    parser.add_argument('--batch_size', default=1000, type=int,
-                        help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-    parser.add_argument('--n_neighbors', default=1200, type=int,
-                        help="Number of neighbors sampled for each node.")
-    parser.add_argument('--word_embedding_dim', type=int, default=300)
-    parser.add_argument('--hidden_dim', default=16, type=int,
-                        help="Hidden dimension")
-    parser.add_argument('--out_dim', default=64, type=int,
-                        help="Output dimension of tweet representations")
-    parser.add_argument('--num_heads', default=4, type=int,
-                        help="Number of heads in each GAT layer")
-    parser.add_argument('--use_residual', dest='use_residual', default=True,
-                        action='store_false',
-                        help="If true, add residual(skip) connections")
+    def __init__(self, **kwargs):
+        # Hyper parameters
+        self.finetune_epochs = kwargs.get('finetune_epochs', 1)
+        self.n_epochs = kwargs.get('n_epochs', 5)
+        self.oldnum = kwargs.get('oldnum', 20)
+        self.novelnum = kwargs.get('novelnum', 20)
+        self.n_infer_epochs = kwargs.get('n_infer_epochs', 0)
+        self.window_size = kwargs.get('window_size', 3)
+        self.patience = kwargs.get('patience', 5)
+        self.margin = kwargs.get('margin', 3.0)
+        self.a = kwargs.get('a', 8.0)
+        self.lr = kwargs.get('lr', 1e-3)
+        self.batch_size = kwargs.get('batch_size', 1000)
+        self.n_neighbors = kwargs.get('n_neighbors', 1200)
+        self.word_embedding_dim = kwargs.get('word_embedding_dim', 300)
+        self.hidden_dim = kwargs.get('hidden_dim', 16)
+        self.out_dim = kwargs.get('out_dim', 64)
+        self.num_heads = kwargs.get('num_heads', 4)
+        self.use_residual = kwargs.get('use_residual', True)
+        self.validation_percent = kwargs.get('validation_percent', 0.1)
+        self.test_percent = kwargs.get('test_percent', 0.2)
+        self.use_hardest_neg = kwargs.get('use_hardest_neg', True)
+        self.metrics = kwargs.get('metrics', 'nmi')
+        self.use_cuda = kwargs.get('use_cuda', True)
+        self.add_ort = kwargs.get('add_ort', True)
+        self.gpuid = kwargs.get('gpuid', 0)
+        self.mask_path = kwargs.get('mask_path', None)
+        self.log_interval = kwargs.get('log_interval', 10)
+        self.is_incremental = kwargs.get('is_incremental', True)
+        self.data_path = kwargs.get('data_path', '../model/model_saved/qsgnn/English')
+        self.file_path = kwargs.get('file_path', '../model/model_saved/qsgnn')
+        self.add_pair = kwargs.get('add_pair', True)
+        self.initial_lang = kwargs.get('initial_lang', 'English') # DatasetLoader 
+        self.is_static = kwargs.get('is_static', False)
+        self.graph_lang = kwargs.get('graph_lang', 'English')
+        self.days = kwargs.get('days', 2)
 
-    parser.add_argument('--validation_percent', default=0.1, type=float,
-                        help="Percentage of validation nodes(tweets)")
-    parser.add_argument('--test_percent', default=0.2, type=float,
-                        help="Percentage of test nodes(tweets)")
-    parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=True,
-                        action='store_true',
-                        help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-    parser.add_argument('--metrics', type=str, default='nmi')
-    parser.add_argument('--use_cuda', dest='use_cuda', default=True,
-                        action='store_true',
-                        help="Use cuda")
-    parser.add_argument('--add_ort', dest='add_ort', type=bool, default=True,
-                        help="Use orthorgonal constraint")
-    parser.add_argument('--gpuid', type=int, default=0)
-    parser.add_argument('--mask_path', default=None,
-                        type=str, help="File path that contains the training, validation and test masks")
-    parser.add_argument('--log_interval', default=10, type=int,
-                        help="Log interval")
-    parser.add_argument('--is_incremental', default=True, action='store_true')
-    parser.add_argument('--data_path', default='../model_saved/qsgnn/English',
-                        type=str, help="Path of features, labels and edges")
-    parser.add_argument('--file_path', default='../model_saved/qsgnn',
-                        type=str, help="default path to save the file")                    
-    parser.add_argument('--add_pair', action='store_true', default=True)
-    parser.add_argument('--initial_lang', type=str, default='English')
+        # Store all arguments in a single attribute
+        self.args = argparse.Namespace(**{
+            'finetune_epochs': self.finetune_epochs,
+            'n_epochs': self.n_epochs,
+            'oldnum': self.oldnum,
+            'novelnum': self.novelnum,
+            'n_infer_epochs': self.n_infer_epochs,
+            'window_size': self.window_size,
+            'patience': self.patience,
+            'margin': self.margin,
+            'a': self.a,
+            'lr': self.lr,
+            'batch_size': self.batch_size,
+            'n_neighbors': self.n_neighbors,
+            'word_embedding_dim': self.word_embedding_dim,
+            'hidden_dim': self.hidden_dim,
+            'out_dim': self.out_dim,
+            'num_heads': self.num_heads,
+            'use_residual': self.use_residual,
+            'validation_percent': self.validation_percent,
+            'test_percent': self.test_percent,
+            'use_hardest_neg': self.use_hardest_neg,
+            'metrics': self.metrics,
+            'use_cuda': self.use_cuda,
+            'add_ort': self.add_ort,
+            'gpuid': self.gpuid,
+            'mask_path': self.mask_path,
+            'log_interval': self.log_interval,
+            'is_incremental': self.is_incremental,
+            'data_path': self.data_path,
+            'file_path': self.file_path,
+            'add_pair': self.add_pair,
+            'initial_lang': self.initial_lang,
+            'is_static': self.is_static,
+            'graph_lang': self.graph_lang,
+            'days': self.days
+        })
 
-    parser.add_argument('--is_static', type=bool, default=False)
-    parser.add_argument('--graph_lang', type=str, default='English')
-    parser.add_argument('--days', type=int, default=2)
 
+# class args_define:
+#     parser = argparse.ArgumentParser()
+#     # Hyper parameters
+#     parser.add_argument('--finetune_epochs', default=1, type=int,
+#                         help="Number of initial-training/maintenance-training epochs.")
+#     parser.add_argument('--n_epochs', default=5, type=int,
+#                         help="Number of initial-training/maintenance-training epochs.")
+#     parser.add_argument('--oldnum', default=20, type=int,
+#                         help="Number of sampling.")
+#     parser.add_argument('--novelnum', default=20, type=int,
+#                         help="Number of sampling.")
+#     parser.add_argument('--n_infer_epochs', default=0, type=int,
+#                         help="Number of inference epochs.")
+#     parser.add_argument('--window_size', default=3, type=int,
+#                         help="Maintain the model after predicting window_size blocks.")
+#     parser.add_argument('--patience', default=5, type=int,
+#                         help="Early stop if performance did not improve in the last patience epochs.")
+#     parser.add_argument('--margin', default=3., type=float,
+#                         help="Margin for computing triplet losses")
+#     parser.add_argument('--a', default=8., type=float,
+#                         help="Margin for computing pair-wise losses")
+#     parser.add_argument('--lr', default=1e-3, type=float,
+#                         help="Learning rate")
+#     parser.add_argument('--batch_size', default=1000, type=int,
+#                         help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
+#     parser.add_argument('--n_neighbors', default=1200, type=int,
+#                         help="Number of neighbors sampled for each node.")
+#     parser.add_argument('--word_embedding_dim', type=int, default=300)
+#     parser.add_argument('--hidden_dim', default=16, type=int,
+#                         help="Hidden dimension")
+#     parser.add_argument('--out_dim', default=64, type=int,
+#                         help="Output dimension of tweet representations")
+#     parser.add_argument('--num_heads', default=4, type=int,
+#                         help="Number of heads in each GAT layer")
+#     parser.add_argument('--use_residual', dest='use_residual', default=True,
+#                         action='store_false',
+#                         help="If true, add residual(skip) connections")
+#
+#     parser.add_argument('--validation_percent', default=0.1, type=float,
+#                         help="Percentage of validation nodes(tweets)")
+#     parser.add_argument('--test_percent', default=0.2, type=float,
+#                         help="Percentage of test nodes(tweets)")
+#     parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=True,
+#                         action='store_true',
+#                         help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
+#     parser.add_argument('--metrics', type=str, default='nmi')
+#     parser.add_argument('--use_cuda', dest='use_cuda', default=True,
+#                         action='store_true',
+#                         help="Use cuda")
+#     parser.add_argument('--add_ort', dest='add_ort', type=bool, default=True,
+#                         help="Use orthorgonal constraint")
+#     parser.add_argument('--gpuid', type=int, default=0)
+#     parser.add_argument('--mask_path', default=None,
+#                         type=str, help="File path that contains the training, validation and test masks")
+#     parser.add_argument('--log_interval', default=10, type=int,
+#                         help="Log interval")
+#     parser.add_argument('--is_incremental', default=True, action='store_true')
+#     parser.add_argument('--data_path', default='../model/model_saved/qsgnn/English',
+#                         type=str, help="Path of features, labels and edges")
+#     parser.add_argument('--file_path', default='../model/model_saved/qsgnn',
+#                         type=str, help="default path to save the file")
+#     parser.add_argument('--add_pair', action='store_true', default=True)
+#     parser.add_argument('--initial_lang', type=str, default='English')
+#
+#     parser.add_argument('--is_static', type=bool, default=False)
+#     parser.add_argument('--graph_lang', type=str, default='English')
+#     parser.add_argument('--days', type=int, default=2)
+#
+#     args = parser.parse_args()
 
-    args = parser.parse_args()
 
 class Arabic_preprocessor:
     def __init__(self, tokenizer, **cfg):
         self.tokenizer = tokenizer
 
     def clean_text(self, text):
-        search = ["أ","إ","آ","ة","_","-","/",".","،"," و "," يا ",'"',"ـ","'","ى","\\",'\n', '\t','&quot;','?','؟','!']
-        replace = ["ا","ا","ا","ه"," "," ","","",""," و"," يا","","","","ي","",' ', ' ',' ',' ? ',' ؟ ',' ! ']
-        
+        search = ["أ", "إ", "آ", "ة", "_", "-", "/", ".", "،", " و ", " يا ", '"', "ـ", "'", "ى", "\\", '\n', '\t',
+                  '&quot;', '?', '؟', '!']
+        replace = ["ا", "ا", "ا", "ه", " ", " ", "", "", "", " و", " يا", "", "", "", "ي", "", ' ', ' ', ' ', ' ? ',
+                   ' ؟ ', ' ! ']
+
         # remove tashkeel
         p_tashkeel = re.compile(r'[\u0617-\u061A\u064B-\u0652]')
         text = re.sub(p_tashkeel, "", text)
-        
+
         # remove longation
         p_longation = re.compile(r'(.)\1+')
         subst = r"\1\1"
         text = re.sub(p_longation, subst, text)
-        
+
         text = text.replace('وو', 'و')
         text = text.replace('يي', 'ي')
         text = text.replace('اا', 'ا')
-        
+
         for i in range(len(search)):
             text = text.replace(search[i], replace[i])
-        
+
         # trim    
         text = text.strip()
 
@@ -130,6 +211,7 @@ class Arabic_preprocessor:
         preprocessed = self.clean_text(text)
         return self.tokenizer(preprocessed)
 
+
 class QSGNN:
     def __init__(self, args, dataset):
         self.args = args
@@ -137,14 +219,13 @@ class QSGNN:
         self.use_cuda = args.use_cuda
         if self.use_cuda:
             torch.cuda.set_device(args.gpuid)
-        
+
         self.data_split = None
 
     def preprocess(self):
         preprocessor = Preprocessor(self.args)
-        #preprocessor.generate_initial_features()
-        #preprocessor.construct_graph()
-
+        # preprocessor.generate_initial_features()
+        # preprocessor.construct_graph()
 
         self.embedding_save_path = self.args.data_path + '/embeddings'
         os.makedirs(self.embedding_save_path, exist_ok=True)
@@ -173,15 +254,17 @@ class QSGNN:
                 for i in range(1, self.data_split.shape[0]):
                     print("incremental setting")
                     print("enter i ", str(i))
-                    _, score = continue_train(i, self.data_split, metrics, self.embedding_save_path, loss_fn, self.model, label_center_emb, args)
+                    _, score = continue_train(i, self.data_split, metrics, self.embedding_save_path, loss_fn,
+                                              self.model, label_center_emb, args)
                     kmeans_scores.append(score)
                     print("KMeans:")
                     print_scores(kmeans_scores)
-                print(self.args.finetune_epochs, self.args.oldnum, self.args.novelnum, self.args.a, self.args.batch_size, end="\n\n")
+                print(self.args.finetune_epochs, self.args.oldnum, self.args.novelnum, self.args.a,
+                      self.args.batch_size, end="\n\n")
         else:
             self.model = initial_train(0, self.args, self.data_split, metrics, self.embedding_save_path, loss_fn, None)
         print("fit:", type(self.model))
-        
+
         torch.save(self.model.state_dict(), self.embedding_save_path + '/final_model.pth')
 
     def detection(self):
@@ -202,15 +285,15 @@ class QSGNN:
         self.model = GAT(in_feats, self.args.hidden_dim, self.args.out_dim, self.args.num_heads, self.args.use_residual)
         best_model_path = self.embedding_save_path + '/block_0/models/best.pt'
         self.model.load_state_dict(torch.load(best_model_path))
-        
-        train_indices, validation_indices, test_indices = generateMasks(len(labels), self.data_split,0,
-                                                                              self.args.validation_percent,
-                                                                              self.args.test_percent,
-                                                                              self.detection_path)
+
+        train_indices, validation_indices, test_indices = generateMasks(len(labels), self.data_split, 0,
+                                                                        self.args.validation_percent,
+                                                                        self.args.test_percent,
+                                                                        self.detection_path)
 
         device = torch.device("cuda:{}".format(args.gpuid) if args.use_cuda else "cpu")
         if args.use_cuda:
-            self.model.cuda()  #转移模型到cuda
+            self.model.cuda()  # 转移模型到cuda
             print("Model moved to CUDA.")
             g = g.to(device)
             features, labels = features.cuda(), labels.cuda()
@@ -227,12 +310,10 @@ class QSGNN:
         print("detection2:", type(self.model))
         '''
 
-
-
         extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), self.args)
 
         test_indices = torch.load(self.detection_path + '/test_indices.pt')
-    
+
         labels_true = extract_labels[test_indices]
         # Extract features
         X = extract_features[test_indices, :]
@@ -248,7 +329,7 @@ class QSGNN:
         ground_truths = labels_true
 
         return predictions, ground_truths
-    
+
     def evaluate(self, predictions, ground_truths):
         ars = metrics.adjusted_rand_score(ground_truths, predictions)
 
@@ -257,11 +338,12 @@ class QSGNN:
 
         # Calculate Normalized Mutual Information (NMI)
         nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-        
+
         print(f"Model Adjusted Rand Index (ARI): {ars}")
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
+
 
 class Preprocessor:
     def __init__(self, args):
@@ -271,14 +353,13 @@ class Preprocessor:
         save_path = args.file_path + '/features/'
         os.makedirs(save_path, exist_ok=True)
 
-
         # load data
         if args.initial_lang == "French":
-            df = Event2018_Dataset.load_data()
+            df = DatasetLoader('maven').load_data()
         if args.initial_lang == "Arabic":
-            df = Arabic_Dataset.load_data()
+            df = DatasetLoader('arabic_twitter').load_data()
         elif args.initial_lang == "English":
-            df = Event2012_Dataset.load_data()
+            df = DatasetLoader('maven').load_data()
         else:
             raise NotImplementedError("not contain that language")
 
@@ -323,18 +404,17 @@ class Preprocessor:
 
     def construct_graph(self):
         if args.is_static:
-            save_path = ".../model_saved/qsgnn/hash_static-{}-{}/".format(str(args.days), args.graph_lang)
+            save_path = ".../model/model_saved/qsgnn/hash_static-{}-{}/".format(str(args.days), args.graph_lang)
         else:
-            save_path = "../model_saved/qsgnn/{}/".format(args.graph_lang)
-
+            save_path = "../model/model_saved/qsgnn/{}/".format(args.graph_lang)
 
         if not os.path.exists(save_path):
             os.mkdir(save_path)
 
-        if args.graph_lang == "French" :
-            df = Event2018_Dataset.load_data()
+        if args.graph_lang == "French":
+             df = DatasetLoader('maven').load_data()
         if args.graph_lang == "Arabic":
-            df = Arabic_Dataset.load_data()
+            df = DatasetLoader('arabic_twitter').load_data()
             name2id = {}
             for id, name in enumerate(df['event_id'].unique()):
                 name2id[name] = id
@@ -343,14 +423,15 @@ class Preprocessor:
             df.drop_duplicates(['tweet_id'], inplace=True, keep='first')
 
         elif args.graph_lang == "English":
-           df = Event2012_Dataset.load_data()
+            df = DatasetLoader('maven').load_data()
 
         print("{} Data converted to dataframe.".format(args.graph_lang))
         df = df.sort_values(by='created_at').reset_index()
 
         df['date'] = [d.date() for d in df['created_at']]
 
-        f = np.load(args.file_path + '/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(args.graph_lang))
+        f = np.load(args.file_path + '/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(
+            args.graph_lang))
 
         message, data_split, all_graph_mins = self.construct_incremental_dataset(args, df, save_path, f, False)
         with open(save_path + "node_edge_statistics.txt", "w") as text_file:
@@ -694,6 +775,7 @@ class Preprocessor:
                 message += "Features saved.\n"
         return message, data_split, all_graph_mins
 
+
 class SocialDataset(Dataset):
     def __init__(self, path, index):
         self.features = np.load(path + '/' + str(index) + '/features.npy')
@@ -723,9 +805,10 @@ class SocialDataset(Dataset):
             self.matrix = self.matrix[indices_to_keep, :]
             self.matrix = self.matrix[:, indices_to_keep]
 
+
 class EDNN(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, use_dropout=False):
-        super(EDNN,self).__init__()
+        super(EDNN, self).__init__()
         self.use_dropout = use_dropout
         self.fc1 = nn.Linear(in_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, out_dim)
@@ -737,6 +820,7 @@ class EDNN(nn.Module):
         out = self.fc2(hidden)
         return out
 
+
 class simNN(nn.Module):
     def __init__(self, in_dim, use_dropout=False):
         super(simNN, self).__init__()
@@ -744,8 +828,9 @@ class simNN(nn.Module):
 
     def forward(self, x):
         hidden = self.fc(x)
-        out = torch.mm(hidden,x.t())
+        out = torch.mm(hidden, x.t())
         return out
+
 
 class GATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, use_residual=False):
@@ -791,8 +876,8 @@ class GATLayer(nn.Module):
         blocks[layer_id].apply_edges(self.edge_attention)
         # equation (3) & (4)
         blocks[layer_id].update_all(  # block_id – The block to run the computation.
-                         self.message_func,  # Message function on the edges.
-                         self.reduce_func)  # Reduce function on the node.
+            self.message_func,  # Message function on the edges.
+            self.reduce_func)  # Reduce function on the node.
 
         # nf.layers[layer_id].data.pop('z')
         # nf.layers[layer_id + 1].data.pop('z')
@@ -800,6 +885,7 @@ class GATLayer(nn.Module):
         if self.use_residual:
             return z_dst + blocks[layer_id].dstdata['h']  # residual connection
         return blocks[layer_id].dstdata['h']
+
 
 class MultiHeadGATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, num_heads, merge='cat', use_residual=False):
@@ -818,6 +904,7 @@ class MultiHeadGATLayer(nn.Module):
             # merge using average
             return torch.mean(torch.stack(head_outs))
 
+
 class GAT(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
         super(GAT, self).__init__()
@@ -833,8 +920,9 @@ class GAT(nn.Module):
         # print(h.shape)
         blocks[1].srcdata['features'] = h
         h = self.layer2(blocks, 1)
-        #h = F.normalize(h, p=2, dim=1)
+        # h = F.normalize(h, p=2, dim=1)
         return h
+
 
 def graph_statistics(G, save_path):
     message = '\nGraph statistics:\n'
@@ -858,11 +946,12 @@ def graph_statistics(G, save_path):
 
     return num_isolated_nodes
 
+
 def generateMasks(length, data_split, i, validation_percent=0.2, test_percent=0.2, save_path=None):
     # verify total number of nodes
-    print(length,data_split[i])
+    print(length, data_split[i])
     assert length == data_split[i]
-    if i==0:
+    if i == 0:
         # randomly suffle the graph indices
         train_indices = torch.randperm(length)
         # get total number of validation indices
@@ -876,12 +965,12 @@ def generateMasks(length, data_split, i, validation_percent=0.2, test_percent=0.
         if save_path is not None:
             torch.save(validation_indices, save_path + '/validation_indices.pt')
             torch.save(train_indices, save_path + '/train_indices.pt')
-            torch.save(test_indices,save_path+'/test_indices.pt')
+            torch.save(test_indices, save_path + '/test_indices.pt')
             validation_indices = torch.load(save_path + '/validation_indices.pt')
             train_indices = torch.load(save_path + '/train_indices.pt')
-            test_indices = torch.load(save_path+'/test_indices.pt')
+            test_indices = torch.load(save_path + '/test_indices.pt')
         return train_indices, validation_indices, test_indices
-    #If is in inference(prediction) epochs, generate test indices
+    # If is in inference(prediction) epochs, generate test indices
     else:
         test_indices = torch.range(0, (data_split[i] - 1), dtype=torch.long)
         if save_path is not None:
@@ -889,7 +978,8 @@ def generateMasks(length, data_split, i, validation_percent=0.2, test_percent=0.
             test_indices = torch.load(save_path + '/test_indices.pt')
         return test_indices
 
-def getdata(embedding_save_path,data_split,i,args):
+
+def getdata(embedding_save_path, data_split, i, args):
     save_path_i = embedding_save_path + '/block_' + str(i)
     if not os.path.isdir(save_path_i):
         os.mkdir(save_path_i)
@@ -910,36 +1000,37 @@ def getdata(embedding_save_path,data_split,i,args):
         os.mkdir(mask_path)
 
     if i == 0:
-        train_indices, validation_indices, test_indices = generateMasks(len(labels), data_split,i,
-                                                                              args.validation_percent,
-                                                                              args.test_percent,
-                                                                              mask_path)
+        train_indices, validation_indices, test_indices = generateMasks(len(labels), data_split, i,
+                                                                        args.validation_percent,
+                                                                        args.test_percent,
+                                                                        mask_path)
     else:
         test_indices = generateMasks(len(labels), data_split, i, args.validation_percent,
-                                                                              args.test_percent,
-                                                                              mask_path)
+                                     args.test_percent,
+                                     mask_path)
     device = torch.device("cuda:{}".format(args.gpuid) if args.use_cuda else "cpu")
     if args.use_cuda:
         g = g.to(device)
         features, labels = features.cuda(), labels.cuda()
         test_indices = test_indices.cuda()
-        if i==0:
+        if i == 0:
             train_indices, validation_indices = train_indices.cuda(), validation_indices.cuda()
 
     g.ndata['features'] = features
     g.ndata['labels'] = labels
 
-
-    if i==0:
+    if i == 0:
         return save_path_i, in_feats, num_isolated_nodes, g, labels, train_indices, validation_indices, test_indices
     else:
         return save_path_i, in_feats, num_isolated_nodes, g, labels, test_indices
+
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
 
-def run_kmeans(extract_features, extract_labels, indices, args,isoPath=None):
+
+def run_kmeans(extract_features, extract_labels, indices, args, isoPath=None):
     # Extract the features and labels of the test tweets
     indices = indices.cpu().detach().numpy()
 
@@ -966,7 +1057,7 @@ def run_kmeans(extract_features, extract_labels, indices, args,isoPath=None):
     nmi = metrics.normalized_mutual_info_score(labels_true, labels)
     ari = metrics.adjusted_rand_score(labels_true, labels)
     ami = metrics.adjusted_mutual_info_score(labels_true, labels, average_method='arithmetic')
-    print("nmi:",nmi,'ami:',ami,'ari:',ari)
+    print("nmi:", nmi, 'ami:', ami, 'ari:', ari)
     value = nmi
     global NMI
     NMI = nmi
@@ -975,19 +1066,20 @@ def run_kmeans(extract_features, extract_labels, indices, args,isoPath=None):
     global ARI
     ARI = ari
 
-    if args.metrics =='ari':
+    if args.metrics == 'ari':
         print('use ari')
         value = ari
-    if args.metrics=='ami':
+    if args.metrics == 'ami':
         print('use ami')
         value = ami
     # Return number  of test tweets, number of classes covered by the test tweets, and kMeans cluatering NMI
     return (n_test_tweets, n_classes, value)
 
+
 def evaluate(extract_features, extract_labels, indices, epoch, num_isolated_nodes, save_path, args, is_validation=True):
     message = ''
     message += '\nEpoch '
-    message += str(epoch+1)
+    message += str(epoch + 1)
     message += '\n'
 
     # with isolated nodes
@@ -1000,14 +1092,14 @@ def evaluate(extract_features, extract_labels, indices, epoch, num_isolated_node
     message += str(n_tweets)
     message += '\n\tNumber of classes covered by ' + mode + ' tweets: '
     message += str(n_classes)
-    message += '\n\t' + mode +' '
-    message += args.metrics +': '
+    message += '\n\t' + mode + ' '
+    message += args.metrics + ': '
     message += str(value)
     if num_isolated_nodes != 0:
         # without isolated nodes
         message += '\n\tWithout isolated nodes:'
-        n_tweets, n_classes, value= run_kmeans(extract_features, extract_labels, indices, args,
-                                              save_path + '/isolated_nodes.pt')
+        n_tweets, n_classes, value = run_kmeans(extract_features, extract_labels, indices, args,
+                                                save_path + '/isolated_nodes.pt')
         message += '\tNumber of ' + mode + ' tweets: '
         message += str(n_tweets)
         message += '\n\tNumber of classes covered by ' + mode + ' tweets: '
@@ -1021,21 +1113,22 @@ def evaluate(extract_features, extract_labels, indices, epoch, num_isolated_node
     with open(save_path + '/evaluate.txt', 'a') as f:
         f.write(message)
         f.write('\n')
-        f.write("NMI "+str(NMI)+" AMI "+str(AMI) + ' ARI '+str(ARI))
+        f.write("NMI " + str(NMI) + " AMI " + str(AMI) + ' ARI ' + str(ARI))
     print(message)
 
     all_value_save_path = "/".join(save_path.split('/')[0:-1])
     print(all_value_save_path)
 
     with open(all_value_save_path + '/evaluate.txt', 'a') as f:
-        f.write("block "+ save_path.split('/')[-1])
+        f.write("block " + save_path.split('/')[-1])
         f.write(message)
         f.write('\n')
-        f.write("NMI "+str(NMI)+" AMI "+str(AMI) + ' ARI '+str(ARI) + '\n')
+        f.write("NMI " + str(NMI) + " AMI " + str(AMI) + ' ARI ' + str(ARI) + '\n')
 
-    return value,NMI,AMI,ARI
+    return value, NMI, AMI, ARI
 
-#调整batch_size之后的函数
+
+# 调整batch_size之后的函数
 def extract_embeddings(g, model, num_all_samples, args):
     with torch.no_grad():
         model.eval()
@@ -1076,13 +1169,14 @@ def extract_embeddings(g, model, num_all_samples, args):
 
     return extract_features, extract_labels
 
+
 def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, model=None):
     print("Starting initial_train function.")
     save_path_i, in_feats, num_isolated_nodes, g, labels, train_indices, validation_indices, test_indices = getdata(
         embedding_save_path, data_split, i, args)
 
     print("Data loaded.")
-    
+
     if model is None:  # Construct the initial model
         model = GAT(in_feats, args.hidden_dim, args.out_dim, args.num_heads, args.use_residual)
         print("Model constructed.")
@@ -1175,7 +1269,8 @@ def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, mo
                 pos_indices = torch.where(pair_labels > 0)
                 neg_indices = torch.where(pair_labels == 0)
                 neg_ind = torch.randint(0, neg_indices[0].shape[0], [5 * pos_indices[0].shape[0]]).to(device)
-                neg_dis = (pred[pairs[neg_indices[0][neg_ind], 0]] - pred[pairs[neg_indices[0][neg_ind], 1]]).pow(2).sum(1).unsqueeze(-1)
+                neg_dis = (pred[pairs[neg_indices[0][neg_ind], 0]] - pred[pairs[neg_indices[0][neg_ind], 1]]).pow(
+                    2).sum(1).unsqueeze(-1)
                 pos_dis = (pred[pairs[pos_indices[0], 0]] - pred[pairs[pos_indices[0], 1]]).pow(2).sum(1).unsqueeze(-1)
                 pos_dis = torch.cat([pos_dis] * 5, 0)
                 pairs_indices = torch.where(torch.clamp(pos_dis + args.a - neg_dis, min=0.0) > 0)
@@ -1217,7 +1312,8 @@ def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, mo
         np.save(save_path_i + '/features_' + str(epoch) + '.npy', extract_features)
         np.save(save_path_i + '/labels_' + str(epoch) + '.npy', extract_labels)
 
-        validation_value, _, _, _ = evaluate(extract_features, extract_labels, validation_indices, epoch, num_isolated_nodes,
+        validation_value, _, _, _ = evaluate(extract_features, extract_labels, validation_indices, epoch,
+                                             num_isolated_nodes,
                                              save_path_i, args, True)
         all_vali_value.append(validation_value)
 
@@ -1274,11 +1370,12 @@ def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, mo
     else:
         return model
 
-def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, label_center_emb,args):
+
+def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, label_center_emb, args):
     save_path_i, in_feats, num_isolated_nodes, g, labels, test_indices = getdata(
         embedding_save_path, data_split, i, args)
 
-    if i%1!=0:
+    if i % 1 != 0:
         extract_features, extract_labels = extract_embeddings(g, model, len(labels), args)
         # save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, save_path_i, epoch)
         test_value = evaluate(extract_features, extract_labels, test_indices, 0, num_isolated_nodes,
@@ -1288,14 +1385,14 @@ def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, 
     else:
         extract_features, extract_labels = extract_embeddings(g, model, len(labels), args)
 
-        _,nmi,ami,ari = evaluate(extract_features, extract_labels, test_indices, -1, num_isolated_nodes,
-                              save_path_i, args, True)
-        score = {"NMI":nmi,"AMI":ami,"ARI":ari}
+        _, nmi, ami, ari = evaluate(extract_features, extract_labels, test_indices, -1, num_isolated_nodes,
+                                    save_path_i, args, True)
+        score = {"NMI": nmi, "AMI": ami, "ARI": ari}
         # Optimizer
         optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-4)
 
         # Start fine tuning
-        if i <21:
+        if i < 21:
             message = "\n------------ Start fine tuning ------------\n"
             print(message)
             with open(save_path_i + '/log.txt', 'a') as f:
@@ -1339,16 +1436,16 @@ def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, 
                     # forward
                     pred = model(blocks)  # Representations of the sampled nodes (in the last layer of the NodeFlow).
                     pred = F.normalize(pred, 2, 1)
-                    rela_center_vec = torch.mm(pred,label_center_emb.t())
-                    rela_center_vec = F.normalize(rela_center_vec,2,1)
+                    rela_center_vec = torch.mm(pred, label_center_emb.t())
+                    rela_center_vec = F.normalize(rela_center_vec, 2, 1)
                     entropy = torch.mul(torch.log(rela_center_vec), rela_center_vec)
-                    entropy = torch.sum(entropy,dim=1)
-                    value,old_indices = torch.topk(entropy.reshape(-1),int(entropy.shape[0]/2),largest=True)
-                    value,novel_indices = torch.topk(entropy.reshape(-1),int(entropy.shape[0]/2),largest = False)
-                    print(old_indices.shape,novel_indices.shape)
-                    pair_matrix = torch.mm(rela_center_vec,rela_center_vec.t())
+                    entropy = torch.sum(entropy, dim=1)
+                    value, old_indices = torch.topk(entropy.reshape(-1), int(entropy.shape[0] / 2), largest=True)
+                    value, novel_indices = torch.topk(entropy.reshape(-1), int(entropy.shape[0] / 2), largest=False)
+                    print(old_indices.shape, novel_indices.shape)
+                    pair_matrix = torch.mm(rela_center_vec, rela_center_vec.t())
 
-                    pairs,pair_labels,_ = pairwise_sample(F.normalize(pred, 2, 1), batch_labels)
+                    pairs, pair_labels, _ = pairwise_sample(F.normalize(pred, 2, 1), batch_labels)
 
                     if args.use_cuda:
                         pairs.cuda()
@@ -1357,23 +1454,32 @@ def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, 
                         # initial_pair_matrix.cuda()
                         model.cuda()
 
-                    neg_values, novel_neg_ind = torch.topk(pair_matrix[novel_indices], min(args.novelnum,pair_matrix[old_indices].size(0)), 1, largest=False)
-                    pos_values, novel_pos_ind = torch.topk(pair_matrix[novel_indices], min(args.novelnum,pair_matrix[old_indices].size(0)), 1, largest=True)
-                    neg_values, old_neg_ind = torch.topk(pair_matrix[old_indices], min(args.oldnum,pair_matrix[old_indices].size(0)), 1, largest=False)
-                    pos_values, old_pos_ind = torch.topk(pair_matrix[old_indices], min(args.oldnum,pair_matrix[old_indices].size(0)), 1, largest=True)
+                    neg_values, novel_neg_ind = torch.topk(pair_matrix[novel_indices],
+                                                           min(args.novelnum, pair_matrix[old_indices].size(0)), 1,
+                                                           largest=False)
+                    pos_values, novel_pos_ind = torch.topk(pair_matrix[novel_indices],
+                                                           min(args.novelnum, pair_matrix[old_indices].size(0)), 1,
+                                                           largest=True)
+                    neg_values, old_neg_ind = torch.topk(pair_matrix[old_indices],
+                                                         min(args.oldnum, pair_matrix[old_indices].size(0)), 1,
+                                                         largest=False)
+                    pos_values, old_pos_ind = torch.topk(pair_matrix[old_indices],
+                                                         min(args.oldnum, pair_matrix[old_indices].size(0)), 1,
+                                                         largest=True)
 
-                    old_row = torch.LongTensor([[i] * min(args.oldnum,pair_matrix[old_indices].size(0)) for i in old_indices])
+                    old_row = torch.LongTensor(
+                        [[i] * min(args.oldnum, pair_matrix[old_indices].size(0)) for i in old_indices])
                     old_row = old_row.reshape(-1).cuda()
-                    novel_row = torch.LongTensor([[i] * min(args.novelnum,pair_matrix[old_indices].size(0)) for i in novel_indices])
+                    novel_row = torch.LongTensor(
+                        [[i] * min(args.novelnum, pair_matrix[old_indices].size(0)) for i in novel_indices])
                     novel_row = novel_row.reshape(-1).cuda()
-                    row = torch.cat([old_row,novel_row])
-                    neg_ind = torch.cat([old_neg_ind.reshape(-1),novel_neg_ind.reshape(-1)])
-                    pos_ind = torch.cat([old_pos_ind.reshape(-1),novel_pos_ind.reshape(-1)])
+                    row = torch.cat([old_row, novel_row])
+                    neg_ind = torch.cat([old_neg_ind.reshape(-1), novel_neg_ind.reshape(-1)])
+                    pos_ind = torch.cat([old_pos_ind.reshape(-1), novel_pos_ind.reshape(-1)])
                     neg_distances = (pred[row] - pred[neg_ind]).pow(2).sum(1).unsqueeze(-1)
                     pos_distances = (pred[row] - pred[pos_ind]).pow(2).sum(1).unsqueeze(-1)
 
                     loss = torch.mean(torch.clamp(pos_distances + args.a - neg_distances, min=0.0))
-
 
                     losses.append(loss.item())
                     total_loss += loss.item()
@@ -1398,10 +1504,9 @@ def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, 
 
                 extract_features, extract_labels = extract_embeddings(g, model, len(labels), args)
                 # save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, save_path_i, epoch)
-                test_value,_,_,_ = evaluate(extract_features, extract_labels, test_indices, epoch, num_isolated_nodes,
-                                      save_path_i, args, True)
-
-
+                test_value, _, _, _ = evaluate(extract_features, extract_labels, test_indices, epoch,
+                                               num_isolated_nodes,
+                                               save_path_i, args, True)
 
             # Save model
             model_path = save_path_i + '/models'
@@ -1418,7 +1523,8 @@ def continue_train(i, data_split, metrics, embedding_save_path, loss_fn, model, 
             np.save(save_path_i + '/seconds_train_batches.npy', np.asarray(seconds_train_batches))
             print('Saved seconds_train_batches.')
 
-        return model,score
+        return model, score
+
 
 class OnlineTripletLoss(nn.Module):
     """
@@ -1445,10 +1551,12 @@ class OnlineTripletLoss(nn.Module):
 
         return losses.mean(), len(triplets)
 
+
 def pdist(vectors):
     distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(
         dim=1).view(-1, 1)
     return distance_matrix
+
 
 class TripletSelector:
     """
@@ -1461,6 +1569,7 @@ class TripletSelector:
 
     def get_triplets(self, embeddings, labels):
         raise NotImplementedError
+
 
 class FunctionNegativeTripletSelector(TripletSelector):
     """
@@ -1511,8 +1620,9 @@ class FunctionNegativeTripletSelector(TripletSelector):
 
         return torch.LongTensor(triplets)
 
+
 def print_scores(scores):
-    line = [' ' * 4] + [f'   M{i:02d} ' for i in range(1,len(scores)+1)]
+    line = [' ' * 4] + [f'   M{i:02d} ' for i in range(1, len(scores) + 1)]
     print("".join(line))
 
     score_names = ['NMI', 'AMI', 'ARI']
@@ -1530,39 +1640,47 @@ def print_scores(scores):
     #     print("".join(line))
     # print('\n', flush=True)
 
+
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
+
 
 def hardest_negative(loss_values):
     hard_negative = np.argmax(loss_values)
     return hard_negative if loss_values[hard_negative] > 0 else None
 
+
 def HardestNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                               negative_selection_fn=hardest_negative,
                                                                                               cpu=cpu)
+
 
 def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
+
 def relu_evidence(y):
     return F.relu(y)
+
 
 def exp_evidence(y):
     return torch.exp(torch.clamp(y, -10, 10))
 
+
 def softplus_evidence(y):
     return F.softplus(y)
+
 
 def kl_divergence(alpha, num_classes, device):
     ones = torch.ones([1, num_classes], dtype=torch.float32, device=device)
     sum_alpha = torch.sum(alpha, dim=1, keepdim=True)
     first_term = (
-        torch.lgamma(sum_alpha)
-        - torch.lgamma(alpha).sum(dim=1, keepdim=True)
-        + torch.lgamma(ones).sum(dim=1, keepdim=True)
-        - torch.lgamma(ones.sum(dim=1, keepdim=True))
+            torch.lgamma(sum_alpha)
+            - torch.lgamma(alpha).sum(dim=1, keepdim=True)
+            + torch.lgamma(ones).sum(dim=1, keepdim=True)
+            - torch.lgamma(ones.sum(dim=1, keepdim=True))
     )
     second_term = (
         (alpha - ones)
@@ -1571,6 +1689,7 @@ def kl_divergence(alpha, num_classes, device):
     )
     kl = first_term + second_term
     return kl
+
 
 def loglikelihood_loss(y, alpha, device):
     y = y.to(device)
@@ -1583,10 +1702,11 @@ def loglikelihood_loss(y, alpha, device):
     loglikelihood = loglikelihood_err + loglikelihood_var
     return loglikelihood
 
+
 def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     y = y.to(device)
     alpha = alpha.to(device)
-    loglikelihood = loglikelihood_loss(y, alpha,device)
+    loglikelihood = loglikelihood_loss(y, alpha, device)
 
     annealing_coef = torch.min(
         torch.tensor(1.0, dtype=torch.float32),
@@ -1596,6 +1716,7 @@ def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     kl_alpha = (alpha - 1) * (1 - y) + 1
     kl_div = annealing_coef * kl_divergence(kl_alpha, num_classes, device=device)
     return loglikelihood + kl_div
+
 
 def edl_loss(func, y, alpha, epoch_num, num_classes, annealing_step, device):
     y = y.to(device)
@@ -1613,6 +1734,7 @@ def edl_loss(func, y, alpha, epoch_num, num_classes, annealing_step, device):
     kl_div = annealing_coef * kl_divergence(kl_alpha, num_classes, device=device)
     return A + kl_div
 
+
 def edl_mse_loss(alpha, target, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
     # alpha = evidence + 1
@@ -1620,6 +1742,7 @@ def edl_mse_loss(alpha, target, epoch_num, num_classes, annealing_step, device):
         mse_loss(target, alpha, epoch_num, num_classes, annealing_step, device)
     )
     return loss
+
 
 def edl_log_loss(alpha, target, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
@@ -1631,8 +1754,9 @@ def edl_log_loss(alpha, target, epoch_num, num_classes, annealing_step, device):
     )
     return loss
 
+
 def edl_digamma_loss(
-    alpha, target, epoch_num, num_classes, annealing_step, device):
+        alpha, target, epoch_num, num_classes, annealing_step, device):
     # evidence = relu_evidence(output)
     # alpha = evidence + 1
     loss = torch.mean(
@@ -1642,20 +1766,20 @@ def edl_digamma_loss(
     )
     return loss
 
+
 def pairwise_sample(embeddings, labels=None, model=None):
-    if model == None:#labels is not None:
+    if model == None:  # labels is not None:
         labels = labels.cpu().data.numpy()
-        indices = np.arange(0,len(labels),1)
+        indices = np.arange(0, len(labels), 1)
         pairs = np.array(list(combinations(indices, 2)))
-        pair_labels = (labels[pairs[:,0]]==labels[pairs[:,1]])
+        pair_labels = (labels[pairs[:, 0]] == labels[pairs[:, 1]])
 
         pair_matrix = np.eye(len(labels))
         ind = np.where(pair_labels)
-        pair_matrix[pairs[ind[0],0],pairs[ind[0],1]] = 1
-        pair_matrix[pairs[ind[0],1], pairs[ind[0],0]] = 1
+        pair_matrix[pairs[ind[0], 0], pairs[ind[0], 1]] = 1
+        pair_matrix[pairs[ind[0], 1], pairs[ind[0], 0]] = 1
 
-
-        return torch.LongTensor(pairs), torch.LongTensor(pair_labels.astype(int)),torch.LongTensor(pair_matrix)
+        return torch.LongTensor(pairs), torch.LongTensor(pair_labels.astype(int)), torch.LongTensor(pair_matrix)
 
     else:
         # indices = np.arange(0,embeddings.shape[0],1)
@@ -1681,7 +1805,8 @@ def pairwise_sample(embeddings, labels=None, model=None):
 
         pair_matrix = model(embeddings)
         return pair_matrix
-    #torch.LongTensor(pair_labels.astype(int))
+    # torch.LongTensor(pair_labels.astype(int))
+
 
 class Metric:
     def __init__(self):
@@ -1698,6 +1823,7 @@ class Metric:
 
     def name(self):
         raise NotImplementedError
+
 
 class AccumulatedAccuracyMetric(Metric):
     """
@@ -1724,6 +1850,7 @@ class AccumulatedAccuracyMetric(Metric):
     def name(self):
         return 'Accuracy'
 
+
 class AverageNonzeroTripletsMetric(Metric):
     '''
     Counts average number of nonzero triplets found in minibatches
@@ -1745,11 +1872,10 @@ class AverageNonzeroTripletsMetric(Metric):
     def name(self):
         return 'Average nonzero triplets'
 
-if __name__ == '__main__':
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
-    args = args_define.args
-    dataset = Event2012_Dataset.load_data()
+if __name__ == '__main__':
+    args = args_define().args
+    dataset = DatasetLoader("arabic_twitter").load_data()
 
     qsgnn = QSGNN(args, dataset)
     qsgnn.preprocess()

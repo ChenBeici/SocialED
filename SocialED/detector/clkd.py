@@ -1,4 +1,3 @@
-
 from time import localtime, strftime, time
 import torch.optim as optim
 import torch.nn as nn
@@ -19,18 +18,232 @@ import pandas as pd
 from datetime import datetime
 import networkx as nx
 from scipy import sparse
-from dgl.data.utils import save_graphs,load_graphs
+from dgl.data.utils import save_graphs, load_graphs
 import pickle
 from collections import Counter
 import en_core_web_lg
 import fr_core_news_lg
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
+
 from torch.utils.data import Dataset
+
+
+class args_define:
+    def __init__(self, **kwargs):
+        # Hyper parameters
+        #self.n_epochs = kwargs.get('n_epochs', 5)
+        self.n_epochs = kwargs.get('n_epochs', 1)
+        self.n_infer_epochs = kwargs.get('n_infer_epochs', 0)
+        self.window_size = kwargs.get('window_size', 3)
+        self.patience = kwargs.get('patience', 5)
+        self.margin = kwargs.get('margin', 3.0)
+        self.lr = kwargs.get('lr', 1e-3)
+        self.batch_size = kwargs.get('batch_size', 2000)
+        self.n_neighbors = kwargs.get('n_neighbors', 800)
+        self.word_embedding_dim = kwargs.get('word_embedding_dim', 300)
+        self.hidden_dim = kwargs.get('hidden_dim', 8)
+        self.out_dim = kwargs.get('out_dim', 32)
+        self.num_heads = kwargs.get('num_heads', 4)
+        self.use_residual = kwargs.get('use_residual', True)
+        self.validation_percent = kwargs.get('validation_percent', 0.1)
+        self.test_percent = kwargs.get('test_percent', 0.2)
+        self.use_hardest_neg = kwargs.get('use_hardest_neg', False)
+        self.metrics = kwargs.get('metrics', 'ami')
+        self.use_cuda = kwargs.get('use_cuda', False)
+        self.gpuid = kwargs.get('gpuid', 0)
+        self.mask_path = kwargs.get('mask_path', None)
+        self.log_interval = kwargs.get('log_interval', 10)
+        self.is_incremental = kwargs.get('is_incremental', False)
+        self.mutual = kwargs.get('mutual', False)
+        self.mode = kwargs.get('mode', 0)
+        self.add_mapping = kwargs.get('add_mapping', False)
+        self.data_path = kwargs.get('data_path', '../model/model_saved/clkd/English')
+        self.file_path = kwargs.get('file_path', '../model/model_saved/clkd')
+        self.Tmodel_path = kwargs.get('Tmodel_path', '../model/model_saved/clkd/English/Tmodel/')
+        self.lang = kwargs.get('lang', 'French')
+        self.Tealang = kwargs.get('Tealang', 'English')
+        self.t = kwargs.get('t', 1)
+        self.data_path1 = kwargs.get('data_path1', '../model/model_saved/clkd/English')
+        self.data_path2 = kwargs.get('data_path2', '../model/model_saved/clkd/French')
+        self.lang1 = kwargs.get('lang1', 'English')
+        self.lang2 = kwargs.get('lang2', 'French')
+        self.e = kwargs.get('e', 0)
+        self.mt = kwargs.get('mt', 0.5)
+        self.rd = kwargs.get('rd', 0.1)
+        self.is_static = kwargs.get('is_static', False)
+        self.graph_lang = kwargs.get('graph_lang', 'French')
+        #self.graph_lang = kwargs.get('graph_lang', 'English')
+        self.tgtlang = kwargs.get('tgtlang', 'French')
+        self.days = kwargs.get('days', 7)
+        #self.initial_lang = kwargs.get('initial_lang', 'French') # DatasetLoader
+        self.initial_lang = kwargs.get('initial_lang', 'English')
+        self.TransLinear = kwargs.get('TransLinear', True)
+        self.TransNonlinear = kwargs.get('TransNonlinear', True)
+        # self.tgt = kwargs.get('tgt', 'maven')
+        self.tgt = kwargs.get('tgt', 'English')
+        self.embpath = kwargs.get('embpath', '../model/model_saved/clkd/dictrans/fr-en-for.npy')
+        self.wordpath = kwargs.get('wordpath', '../model/model_saved/clkd/dictrans/wordsFrench.txt')
+
+        # Store all arguments in a single attribute
+        self.args = argparse.Namespace(**{
+            'n_epochs': self.n_epochs,
+            'n_infer_epochs': self.n_infer_epochs,
+            'window_size': self.window_size,
+            'patience': self.patience,
+            'margin': self.margin,
+            'lr': self.lr,
+            'batch_size': self.batch_size,
+            'n_neighbors': self.n_neighbors,
+            'word_embedding_dim': self.word_embedding_dim,
+            'hidden_dim': self.hidden_dim,
+            'out_dim': self.out_dim,
+            'num_heads': self.num_heads,
+            'use_residual': self.use_residual,
+            'validation_percent': self.validation_percent,
+            'test_percent': self.test_percent,
+            'use_hardest_neg': self.use_hardest_neg,
+            'metrics': self.metrics,
+            'use_cuda': self.use_cuda,
+            'gpuid': self.gpuid,
+            'mask_path': self.mask_path,
+            'log_interval': self.log_interval,
+            'is_incremental': self.is_incremental,
+            'mutual': self.mutual,
+            'mode': self.mode,
+            'add_mapping': self.add_mapping,
+            'data_path': self.data_path,
+            'file_path': self.file_path,
+            'Tmodel_path': self.Tmodel_path,
+            'lang': self.lang,
+            'Tealang': self.Tealang,
+            't': self.t,
+            'data_path1': self.data_path1,
+            'data_path2': self.data_path2,
+            'lang1': self.lang1,
+            'lang2': self.lang2,
+            'e': self.e,
+            'mt': self.mt,
+            'rd': self.rd,
+            'is_static': self.is_static,
+            'graph_lang': self.graph_lang,
+            'tgtlang': self.tgtlang,
+            'days': self.days,
+            'initial_lang': self.initial_lang,
+            'TransLinear': self.TransLinear,
+            'TransNonlinear': self.TransNonlinear,
+            'tgt': self.tgt,
+            'embpath': self.embpath,
+            'wordpath': self.wordpath,
+        })
+
+
+# class args_define:
+#     parser = argparse.ArgumentParser()
+#     # Hyper parameters
+#     parser.add_argument('--n_epochs', default=n_epochs, type=int,
+#                         help="Number of initial-training/maintenance-training epochs.")
+#     parser.add_argument('--n_infer_epochs', default=0, type=int,
+#                         help="Number of inference epochs.")
+#     parser.add_argument('--window_size', default=3, type=int,
+#                         help="Maintain the model after predicting window_size blocks.")
+#     parser.add_argument('--patience', default=5, type=int,
+#                         help="Early stop if performance did not improve in the last patience epochs.")
+#     parser.add_argument('--margin', default=3., type=float,
+#                         help="Margin for computing triplet losses")
+#     parser.add_argument('--lr', default=1e-3, type=float,
+#                         help="Learning rate")
+#     parser.add_argument('--batch_size', default=2000, type=int,
+#                         help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
+#     parser.add_argument('--n_neighbors', default=800, type=int,
+#                         help="Number of neighbors sampled for each node.")
+#     parser.add_argument('--word_embedding_dim', type=int, default=300)
+#     parser.add_argument('--hidden_dim', default=8, type=int,
+#                         help="Hidden dimension")
+#     parser.add_argument('--out_dim', default=32, type=int,
+#                         help="Output dimension of tweet representations")
+#     parser.add_argument('--num_heads', default=4, type=int,
+#                         help="Number of heads in each GAT layer")
+#     parser.add_argument('--use_residual', dest='use_residual', default=True,
+#                         action='store_false',
+#                         help="If true, add residual(skip) connections")
+#     parser.add_argument('--validation_percent', default=0.1, type=float,
+#                         help="Percentage of validation nodes(tweets)")
+#     parser.add_argument('--test_percent', default=0.2, type=float,
+#                         help="Percentage of test nodes(tweets)")
+#     parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False,
+#                         action='store_true',
+#                         help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
+#     parser.add_argument('--metrics', type=str, default='ami')
+#     # Other arguments
+#     parser.add_argument('--use_cuda', dest='use_cuda', default=False,
+#                         action='store_true',
+#                         help="Use cuda")
+#     parser.add_argument('--gpuid', type=int, default=0)
+#     parser.add_argument('--mask_path', default=None,
+#                         type=str, help="File path that contains the training, validation and test masks")
+#     parser.add_argument('--log_interval', default=10, type=int,
+#                         help="Log interval")
+#     # offline or online situation
+#     parser.add_argument('--is_incremental', action='store_true', default=False,
+#                         help="static or incremental")
+#     # Teacher-Student structure or Mutual-Learning structure
+#     parser.add_argument('--mutual', action='store_true', default=False)
+#
+#     parser.add_argument('--mode', type=int, default=0)
+#     # mode==2, add linear cross-lingual knowledge ditillation; mode == 4, add non-linear cross-lingual knowledge transformation
+#     # mode==0, no knowledge distillation
+#     # mode==1,directly input student attribute features to teacher model
+#     parser.add_argument('--add_mapping', action='store_true', default=False)
+#     parser.add_argument('--data_path', default='../model/model_saved/clkd/English',
+#                         type=str, help="Path of features, labels and edges")
+#     parser.add_argument('--file_path', default='../model/model_saved/clkd',
+#                         type=str, help="default path to save the file")
+#     # offline situation Teacher-Student structure
+#     parser.add_argument('--Tmodel_path',
+#                         default='../model/model_saved/clkd/English/Tmodel/',
+#                         # '803_hash_static-8-English/0mode/embeddings_0227165510-0-English-nomap',
+#                         type=str,
+#                         help="File path that contains the pre-trained teacher model.")
+#     parser.add_argument('--lang', type=str, default="French")
+#     parser.add_argument('--Tealang', type=str, default='English')
+#     parser.add_argument('--t', type=int, default=1)
+#
+#     # Mutual-Learning structure
+#     parser.add_argument('--data_path1', default='../model/model_saved/clkd/English',
+#                         type=str, help="Path of features, labels and edges")
+#     parser.add_argument('--data_path2', default='../model/model_saved/clkd/French',
+#                         type=str, help="Path of features, labels and edges")
+#     parser.add_argument('--lang1', type=str, default="English")
+#     parser.add_argument('--lang2', type=str, default="French")
+#     parser.add_argument('--e', type=int, default=0)
+#     parser.add_argument('--mt', type=float, default=0.5)
+#     parser.add_argument('--rd', type=float, default=0.1)
+#
+#     # construct_graph
+#     parser.add_argument('--is_static', type=bool, default=False)
+#     parser.add_argument('--graph_lang', type=str, default='English')
+#     parser.add_argument('--tgtlang', type=str, default='French')
+#     parser.add_argument('--days', type=int, default=7)
+#
+#     # generate_initial_features
+#     parser.add_argument('--initial_lang', type=str, default='English')
+#     parser.add_argument('--TransLinear', type=bool, default=True)
+#     parser.add_argument('--TransNonlinear', type=bool, default=True)
+#     parser.add_argument('--tgt', type=str, default='French')
+#     parser.add_argument('--embpath', type=str, default='../model/model_saved/clkd/dictrans/fr-en-for.npy')
+#     parser.add_argument('--wordpath', type=str, default='../model/model_saved/clkd/dictrans/wordsFrench.txt')
+#
+#     args = parser.parse_args()
 
 
 # Inference(prediction)
 def infer(train_i, i, data_split, metrics, embedding_save_path, loss_fn, model=None):
     save_path_i, in_feats, num_isolated_nodes, g, labels, test_indices = getdata(embedding_save_path, args.data_path,
-                                                                                 data_split, train_i, i, args, args.lang,
+                                                                                 data_split, train_i, i, args,
+                                                                                 args.lang,
                                                                                  args.Tealang)
     # record the time spent in seconds on direct prediction
     time_predict = []
@@ -41,8 +254,10 @@ def infer(train_i, i, data_split, metrics, embedding_save_path, loss_fn, model=N
         f.write(message)
     start = time()
     # Infer the representations of all tweets
-    extract_nids, extract_features, extract_labels = extract_embeddings(g, model, len(labels), labels, args, labels.device)
-    test_nmi = evaluate_model(extract_features, extract_labels, test_indices, -1, num_isolated_nodes, save_path_i, args.metrics, False)
+    extract_nids, extract_features, extract_labels = extract_embeddings(g, model, len(labels), labels, args,
+                                                                        labels.device)
+    test_nmi = evaluate_model(extract_features, extract_labels, test_indices, -1, num_isolated_nodes, save_path_i,
+                              args.metrics, False)
     seconds_spent = time() - start
     message = '\nDirect prediction took {:.2f} seconds'.format(seconds_spent)
     print(message)
@@ -51,6 +266,7 @@ def infer(train_i, i, data_split, metrics, embedding_save_path, loss_fn, model=N
     time_predict.append(seconds_spent)
     np.save(save_path_i + '/time_predict.npy', np.asarray(time_predict))
     return model
+
 
 def mutual_infer(embedding_save_path1, embedding_save_path2, data_split1, data_split2, train_i, i, loss_fn, metrics,
                  model1, model2, device):
@@ -68,7 +284,7 @@ def mutual_infer(embedding_save_path1, embedding_save_path2, data_split1, data_s
                                                                                args.lang2,
                                                                                len(labels1), labels1, args, device)
     test_value = evaluate_model(extract_features, extract_labels, test_indices1, -1, num_isolated_nodes2,
-                          save_path_i1, args.metrics, False)
+                                save_path_i1, args.metrics, False)
 
     # model2
     extract_nids, extract_features, extract_labels = mutual_extract_embeddings(g2, model2, model1, args.lang2,
@@ -76,8 +292,9 @@ def mutual_infer(embedding_save_path1, embedding_save_path2, data_split1, data_s
                                                                                len(labels2), labels2, args, device)
 
     test_value = evaluate_model(extract_features, extract_labels, test_indices2, -1, num_isolated_nodes2,
-                          save_path_i2, args.metrics, False)
+                                save_path_i2, args.metrics, False)
     return model1, model2
+
 
 def mutual_train(embedding_save_path1, embedding_save_path2, data_split1, data_split2, train_i, i, loss_fn, metrics,
                  device):
@@ -131,14 +348,15 @@ def mutual_train(embedding_save_path1, embedding_save_path2, data_split1, data_s
 
                 blocks = [b.to(device) for b in blocks]
                 # forward
-                pred = model_data['model'](blocks,args)
+                pred = model_data['model'](blocks, args)
                 batch_nids = blocks[-1].dstdata[dgl.NID].to(device=device, dtype=torch.long)
                 batch_labels = model_data['labels'].to(device)[batch_nids]
                 peerpred = None
 
                 if args.mode == 2 and epoch >= args.e:
                     if args.add_mapping:
-                        peerpred = model_data['peer'](blocks, args, trans=True, src=model_data['src'], tgt=model_data['tgt'])
+                        peerpred = model_data['peer'](blocks, args, trans=True, src=model_data['src'],
+                                                      tgt=model_data['tgt'])
                     else:
                         peerpred = model_data['peer'](blocks, args)
                     peerpred = peerpred.to(device)
@@ -205,7 +423,8 @@ def mutual_train(embedding_save_path1, embedding_save_path2, data_split1, data_s
                                                                                 args,
                                                                                 device)
             validation_value = evaluate_model(extract_features, extract_labels, model_data['vali_indices'], epoch,
-                                        model_data['num_iso_nodes'], model_data['save_path_i'], args.metrics, True)
+                                              model_data['num_iso_nodes'], model_data['save_path_i'], args.metrics,
+                                              True)
 
             model_data['all_vali_nmi'].append(validation_value)
             if validation_value > model_data['best_value']:
@@ -235,20 +454,20 @@ def mutual_train(embedding_save_path1, embedding_save_path2, data_split1, data_s
     np.save(save_path_i1 + '/seconds_train_batches.npy', np.asarray(model1_data['seconds_train_batches']))
     np.save(save_path_i2 + '/seconds_train_batches.npy', np.asarray(model2_data['seconds_train_batches']))
 
-
     extract_nids, extract_features, extract_labels = mutual_extract_embeddings(g1, model1, model2, args.lang1,
                                                                                args.lang2,
                                                                                len(labels1), labels1, args, device)
     test_value = evaluate_model(extract_features, extract_labels, test_indices1, -1, num_isolated_nodes1,
-                          save_path_i1, args.metrics, False)
+                                save_path_i1, args.metrics, False)
 
     extract_nids, extract_features, extract_labels = mutual_extract_embeddings(g2, model2, model1, args.lang2,
                                                                                args.lang1,
                                                                                len(labels2), labels2, args, device)
     test_value = evaluate_model(extract_features, extract_labels, test_indices2, -1, num_isolated_nodes2,
-                          save_path_i2, args.metrics, False)
+                                save_path_i2, args.metrics, False)
 
     return model1, model2
+
 
 # Train on initial/maintenance graphs
 def initial_maintain(train_i, i, data_split, metrics, embedding_save_path, loss_fn, model=None):
@@ -305,12 +524,12 @@ def initial_maintain(train_i, i, data_split, metrics, embedding_save_path, loss_
             model.train()
             # forward
             blocks = [b.to(train_indices.device) for b in blocks]
-            pred = model(blocks,args)  # Representations of the sampled nodes (in the last layer of the NodeFlow).
+            pred = model(blocks, args)  # Representations of the sampled nodes (in the last layer of the NodeFlow).
             if args.mode == 2:
                 if args.add_mapping:
                     Tpred = Tmodel(blocks, args, trans=True, src=args.lang, tgt=args.Tealang)
                 else:
-                    Tpred = Tmodel(blocks,args)
+                    Tpred = Tmodel(blocks, args)
             if args.mode == 4:
                 Tpred = Tmodel(blocks, args, trans=True)
 
@@ -375,7 +594,7 @@ def initial_maintain(train_i, i, data_split, metrics, embedding_save_path, loss_
                                                                             labels.device)
         # save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, save_path_i, epoch)
         validation_nmi = evaluate_model(extract_features, extract_labels, validation_indices, epoch, num_isolated_nodes,
-                                  save_path_i, args.metrics, True)
+                                        save_path_i, args.metrics, True)
         all_vali_nmi.append(validation_nmi)
 
         # Early stop
@@ -414,8 +633,9 @@ def initial_maintain(train_i, i, data_split, metrics, embedding_save_path, loss_
     print("Best model loaded.")
     return model
 
-#utiles
-#将整个图数据集划分为训练集、验证集和测试集，并将这些集合的索引存储在给定的路径（如果提供了路径）中。
+
+# utiles
+# 将整个图数据集划分为训练集、验证集和测试集，并将这些集合的索引存储在给定的路径（如果提供了路径）中。
 def generateMasks(length, data_split, train_i, i, validation_percent=0.1, test_percent=0.2, save_path=None):
     # verify total number of nodes
     assert length == data_split[i]
@@ -445,6 +665,7 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.1, test_p
             torch.save(test_indices, save_path + '/test_indices.pt')
             test_indices = torch.load(save_path + '/test_indices.pt')
         return test_indices
+
 
 def getdata(embedding_save_path, data_path, data_split, train_i, i, args, src=None, tgt=None):
     save_path_i = embedding_save_path + '/block_' + str(i)
@@ -499,6 +720,7 @@ def getdata(embedding_save_path, data_path, data_split, train_i, i, args, src=No
     else:
         return save_path_i, in_feats, num_isolated_nodes, g, labels, test_indices
 
+
 # Compute the representations of all the nodes in g using model
 def extract_embeddings(g, model, num_all_samples, labels, args, device):
     with torch.no_grad():
@@ -531,6 +753,7 @@ def extract_embeddings(g, model, num_all_samples, labels, args, device):
 
     return (extract_nids, extract_features, extract_labels)
 
+
 def mutual_extract_embeddings(g, model, peer, src, tgt, num_all_samples, labels, args, device):
     with torch.no_grad():
         model.eval()
@@ -549,7 +772,7 @@ def mutual_extract_embeddings(g, model, peer, src, tgt, num_all_samples, labels,
         labels = labels.cpu().detach()
         for batch_id, (input_nodes, output_nodes, blocks) in enumerate(dataloader):
             blocks = [b.to(device) for b in blocks]
-            extract_features1 = model(blocks,args)
+            extract_features1 = model(blocks, args)
             if (args.mode == 2 and args.add_mapping):
                 print("** add linear tran peer feature **", src, tgt)
                 extract_features2 = peer(blocks, args, True, src=src, tgt=tgt)  # representations of all nodes
@@ -589,6 +812,7 @@ def mutual_extract_embeddings(g, model, peer, src, tgt, num_all_samples, labels,
 
     return (extract_nids, extract_features, extract_labels)
 
+
 def save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, path, counter):
     np.savetxt(path + '/features_' + str(counter) + '.tsv', extract_features, delimiter='\t')
     np.savetxt(path + '/labels_' + str(counter) + '.tsv', extract_labels, fmt='%i', delimiter='\t')
@@ -598,9 +822,11 @@ def save_embeddings(extract_nids, extract_features, extract_labels, extract_trai
             f.write("%s\t%s\t%s\n" % (label, mid, train_tag))
     print("Embeddings after inference epoch " + str(counter) + " saved.")
 
+
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
+
 
 def run_kmeans(extract_features, extract_labels, indices, metric, isoPath=None):
     # Extract the features and labels of the test tweets
@@ -647,8 +873,10 @@ def run_kmeans(extract_features, extract_labels, indices, metric, isoPath=None):
     # Return number  of test tweets, number of classes covered by the test tweets, and kMeans cluatering NMI
     return (n_test_tweets, n_classes, value)
 
-def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolated_nodes, save_path, metrics, is_validation=True,
-             file_name='evaluate.txt'):
+
+def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolated_nodes, save_path, metrics,
+                   is_validation=True,
+                   file_name='evaluate.txt'):
     message = ''
     message += '\nEpoch '
     message += str(epoch)
@@ -665,7 +893,7 @@ def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolate
     message += '\n\tNumber of classes covered by ' + split + ' tweets: '
     message += str(n_classes)
     message += '\n\t' + split + ' '
-    message += metrics+ ': '
+    message += metrics + ': '
     message += str(value)
     if num_isolated_nodes != 0:
         # without isolated nodes
@@ -692,8 +920,10 @@ def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolate
     return value
 
 
-#metrics
+# metrics
 import numpy as np
+
+
 class Metric:
     def __init__(self):
         pass
@@ -709,6 +939,7 @@ class Metric:
 
     def name(self):
         raise NotImplementedError
+
 
 class AccumulatedAccuracyMetric(Metric):
     """
@@ -735,6 +966,7 @@ class AccumulatedAccuracyMetric(Metric):
     def name(self):
         return 'Accuracy'
 
+
 class AverageNonzeroTripletsMetric(Metric):
     '''
     Counts average number of nonzero triplets found in minibatches
@@ -755,6 +987,7 @@ class AverageNonzeroTripletsMetric(Metric):
 
     def name(self):
         return 'Average nonzero triplets'
+
 
 class OnlineTripletLoss(nn.Module):
     """
@@ -789,10 +1022,12 @@ class OnlineTripletLoss(nn.Module):
         else:
             return losses.mean(), len(triplets)
 
+
 def pdist(vectors):
     distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(
         dim=1).view(-1, 1)
     return distance_matrix
+
 
 class TripletSelector:
     """
@@ -805,6 +1040,7 @@ class TripletSelector:
 
     def get_triplets(self, embeddings, labels):
         raise NotImplementedError
+
 
 class FunctionNegativeTripletSelector(TripletSelector):
     """
@@ -855,9 +1091,12 @@ class FunctionNegativeTripletSelector(TripletSelector):
 
         return torch.LongTensor(triplets)
 
+
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
+
+
 '''
 def hard_negative_and_positive(loss_values1, loss_values2):
     hard_negatives = np.where(loss_values1 > 0)[0]
@@ -868,15 +1107,19 @@ def hardest_negative(loss_values):
     hard_negative = np.argmax(loss_values)
     return hard_negative if loss_values[hard_negative] > 0 else None
 '''
+
+
 def HardestNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                               negative_selection_fn=hardest_negative,
                                                                                               cpu=cpu)
+
 
 def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
-#model
+
+# model
 class GATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, use_residual=False):
         super(GATLayer, self).__init__()
@@ -920,6 +1163,7 @@ class GATLayer(nn.Module):
             return z_dst + blocks[layer_id].dstdata['h']  # residual connection
         return blocks[layer_id].dstdata['h']
 
+
 class MultiHeadGATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, num_heads, merge='cat', use_residual=False):
         super(MultiHeadGATLayer, self).__init__()
@@ -934,6 +1178,7 @@ class MultiHeadGATLayer(nn.Module):
             return torch.cat(head_outs, dim=1)
         else:
             return torch.mean(torch.stack(head_outs))
+
 
 class GAT(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
@@ -951,11 +1196,13 @@ class GAT(nn.Module):
             if args.mode == 2 and args.add_mapping:
                 features = blocks[0].srcdata['h'].cpu().detach().float()
                 W = torch.from_numpy(
-                    torch.load(args.file_path + '/LinearTranWeight/spacy_{}_{}/best_mapping.pth'.format(src, tgt))).float()
+                    torch.load(
+                        args.file_path + '/LinearTranWeight/spacy_{}_{}/best_mapping.pth'.format(src, tgt))).float()
                 print("This is linear trans!")
                 part1 = torch.index_select(features, 1, torch.tensor(range(0, args.word_embedding_dim)))
                 part1 = torch.matmul(part1, torch.FloatTensor(W))
-                part2 = torch.index_select(features, 1, torch.tensor(range(args.word_embedding_dim, features.size()[1])))
+                part2 = torch.index_select(features, 1,
+                                           torch.tensor(range(args.word_embedding_dim, features.size()[1])))
                 features = torch.cat((part1, part2), 1).cuda()
                 blocks[0].srcdata['h'] = features
 
@@ -971,26 +1218,28 @@ class Arabic_preprocessor:
         self.tokenizer = tokenizer
 
     def clean_text(self, text):
-        search = ["أ","إ","آ","ة","_","-","/",".","،"," و "," يا ",'"',"ـ","'","ى","\\",'\n', '\t','&quot;','?','؟','!']
-        replace = ["ا","ا","ا","ه"," "," ","","",""," و"," يا","","","","ي","",' ', ' ',' ',' ? ',' ؟ ',' ! ']
-        
+        search = ["أ", "إ", "آ", "ة", "_", "-", "/", ".", "،", " و ", " يا ", '"', "ـ", "'", "ى", "\\", '\n', '\t',
+                  '&quot;', '?', '؟', '!']
+        replace = ["ا", "ا", "ا", "ه", " ", " ", "", "", "", " و", " يا", "", "", "", "ي", "", ' ', ' ', ' ', ' ? ',
+                   ' ؟ ', ' ! ']
+
         # remove tashkeel
         p_tashkeel = re.compile(r'[\u0617-\u061A\u064B-\u0652]')
         text = re.sub(p_tashkeel, "", text)
-        
+
         # remove longation
         p_longation = re.compile(r'(.)\1+')
         subst = r"\1\1"
         text = re.sub(p_longation, subst, text)
-        
+
         text = text.replace('وو', 'و')
         text = text.replace('يي', 'ي')
         text = text.replace('اا', 'ا')
-        
+
         for i in range(len(search)):
             text = text.replace(search[i], replace[i])
-        
-        # trim    
+
+        # trim
         text = text.strip()
 
         return text
@@ -998,6 +1247,7 @@ class Arabic_preprocessor:
     def __call__(self, text):
         preprocessed = self.clean_text(text)
         return self.tokenizer(preprocessed)
+
 
 class CLKD:
     def __init__(self, args):
@@ -1029,9 +1279,11 @@ class CLKD:
             os.makedirs(path2, exist_ok=True)
 
             timestamp = strftime("%m%d%H%M%S", localtime())
-            self.embedding_save_path1 = os.path.join(path1, f'embeddings_{timestamp}-{self.args.mode}-{self.args.lang2}')
-            self.embedding_save_path2 = os.path.join(path2, f'embeddings_{timestamp}-{self.args.mode}-{self.args.lang1}')
-            
+            self.embedding_save_path1 = os.path.join(path1,
+                                                     f'embeddings_{timestamp}-{self.args.mode}-{self.args.lang2}')
+            self.embedding_save_path2 = os.path.join(path2,
+                                                     f'embeddings_{timestamp}-{self.args.mode}-{self.args.lang1}')
+
             if not self.args.add_mapping and (self.args.mode in [0, 1, 2]):
                 self.embedding_save_path1 += "-nomap"
                 self.embedding_save_path2 += "-nomap"
@@ -1042,7 +1294,8 @@ class CLKD:
             os.makedirs(self.embedding_save_path1, exist_ok=True)
             os.makedirs(self.embedding_save_path2, exist_ok=True)
 
-            print("embedding_save_path1 and embedding_save_path2: ", self.embedding_save_path1, self.embedding_save_path2)
+            print("embedding_save_path1 and embedding_save_path2: ", self.embedding_save_path1,
+                  self.embedding_save_path2)
             with open(os.path.join(self.embedding_save_path1, 'args.txt'), 'w') as f:
                 json.dump(self.args.__dict__, f, indent=2)
             with open(os.path.join(self.embedding_save_path2, 'args.txt'), 'w') as f:
@@ -1056,8 +1309,9 @@ class CLKD:
             os.makedirs(embedding_dir, exist_ok=True)
 
             timestamp = strftime("%m%d%H%M%S", localtime())
-            self.embedding_save_path = os.path.join(embedding_dir, f'embeddings_{timestamp}-{self.args.mode}-{self.args.Tealang}')
-            
+            self.embedding_save_path = os.path.join(embedding_dir,
+                                                    f'embeddings_{timestamp}-{self.args.mode}-{self.args.Tealang}')
+
             if not self.args.add_mapping and (self.args.mode in [0, 1, 2]):
                 self.embedding_save_path += "-nomap"
             else:
@@ -1068,9 +1322,8 @@ class CLKD:
             print("embedding_save_path: ", self.embedding_save_path)
             with open(os.path.join(self.embedding_save_path, 'args.txt'), 'w') as f:
                 json.dump(self.args.__dict__, f, indent=2)
-            
-            self.data_split = np.load(os.path.join(self.args.data_path, 'data_split.npy'))
 
+            self.data_split = np.load(os.path.join(self.args.data_path, 'data_split.npy'))
 
     def fit(self):
         # 初始化损失函数和度量指标
@@ -1083,10 +1336,12 @@ class CLKD:
         self.train_i = 0
 
         if self.args.mutual:
-            self.model1, self.model2 = mutual_train(self.embedding_save_path1, self.embedding_save_path2, self.data_split1, self.data_split2, self.train_i, 0,
+            self.model1, self.model2 = mutual_train(self.embedding_save_path1, self.embedding_save_path2,
+                                                    self.data_split1, self.data_split2, self.train_i, 0,
                                                     loss_fn, metrics, self.device)
         else:
-            self.model = initial_maintain(self.train_i, 0, self.data_split, metrics, self.embedding_save_path, loss_fn, None)
+            self.model = initial_maintain(self.train_i, 0, self.data_split, metrics, self.embedding_save_path, loss_fn,
+                                          None)
 
     def detection(self):
         if self.args.use_hardest_neg:
@@ -1096,19 +1351,24 @@ class CLKD:
 
         metrics = [AverageNonzeroTripletsMetric()]
 
-
         if self.args.mutual:
-            self.model1, self.model2 = mutual_infer(self.embedding_save_path1, self.embedding_save_path2, self.data_split1, self.data_split2,
-                                                    self.train_i, 0, loss_fn, metrics, self.model1, self.model2, self.device)
+            self.model1, self.model2 = mutual_infer(self.embedding_save_path1, self.embedding_save_path2,
+                                                    self.data_split1, self.data_split2,
+                                                    self.train_i, 0, loss_fn, metrics, self.model1, self.model2,
+                                                    self.device)
             if self.args.is_incremental:
                 for i in range(1, min(self.data_split1.shape[0], self.data_split2.shape[0])):
                     print("enter i ", str(i))
-                    self.model1, self.model2 = mutual_infer(self.embedding_save_path1, self.embedding_save_path2, self.data_split1, self.data_split2,
-                                                            self.train_i, i, loss_fn, metrics, self.model1, self.model2, self.device)
+                    self.model1, self.model2 = mutual_infer(self.embedding_save_path1, self.embedding_save_path2,
+                                                            self.data_split1, self.data_split2,
+                                                            self.train_i, i, loss_fn, metrics, self.model1, self.model2,
+                                                            self.device)
                     if i % self.args.window_size == 0:
                         self.train_i = i
-                        self.model1, self.model2 = mutual_train(self.embedding_save_path1, self.embedding_save_path2, self.data_split1, self.data_split2, self.train_i, i, loss_fn, metrics, self.device)
- 
+                        self.model1, self.model2 = mutual_train(self.embedding_save_path1, self.embedding_save_path2,
+                                                                self.data_split1, self.data_split2, self.train_i, i,
+                                                                loss_fn, metrics, self.device)
+
             # 最终预测并保存预测结果
             data1 = SocialDataset(self.args.data_path1, 0)
             g1 = dgl.DGLGraph(data1.matrix)
@@ -1116,22 +1376,28 @@ class CLKD:
             data2 = SocialDataset(self.args.data_path2, 0)
             g2 = dgl.DGLGraph(data2.matrix)
             labels2 = torch.LongTensor(data2.labels)
-            
+
             self.mutual_detection_path1 = self.args.file_path + '/mutual_detection_split1/'
             os.makedirs(self.mutual_detection_path1, exist_ok=True)
 
-            train_indices1, validation_indices1, test_indices1 = generateMasks(len(labels), self.data_split1, self.train_i, 0,
-                                                                        0.1,0.2, self.mutual_detection_path)
+            train_indices1, validation_indices1, test_indices1 = generateMasks(len(labels), self.data_split1,
+                                                                               self.train_i, 0,
+                                                                               0.1, 0.2, self.mutual_detection_path)
             g1.ndata['h'] = torch.tensor(data1.features)
 
             self.mutual_detection_path2 = self.args.file_path + '/mutual_detection_split2/'
             os.makedirs(self.mutual_detection_path2, exist_ok=True)
-            train_indices2, validation_indices2, test_indices2 = generateMasks(len(labels), self.data_split2, self.train_i, 0,
-                                                                        0.1,0.2, self.mutual_detection_path)
+            train_indices2, validation_indices2, test_indices2 = generateMasks(len(labels), self.data_split2,
+                                                                               self.train_i, 0,
+                                                                               0.1, 0.2, self.mutual_detection_path)
             g2.ndata['h'] = torch.tensor(data2.features)
 
-            _, extract_features1, _ = mutual_extract_embeddings(g1, self.model1, self.model2, self.args.lang1, self.args.lang2, len(labels1), labels1, self.args, self.device)
-            _, extract_features2, _ = mutual_extract_embeddings(g2, self.model2, self.model1, self.args.lang2, self.args.lang1, len(labels2), labels2, self.args, self.device)
+            _, extract_features1, _ = mutual_extract_embeddings(g1, self.model1, self.model2, self.args.lang1,
+                                                                self.args.lang2, len(labels1), labels1, self.args,
+                                                                self.device)
+            _, extract_features2, _ = mutual_extract_embeddings(g2, self.model2, self.model1, self.args.lang2,
+                                                                self.args.lang1, len(labels2), labels2, self.args,
+                                                                self.device)
 
             predictions1 = []
             ground_truths1 = []
@@ -1148,7 +1414,6 @@ class CLKD:
             predictions1 = kmeans1.labels_
             ground_truths1 = labels_true1
 
-
             predictions2 = []
             ground_truths2 = []
             # Extract labels
@@ -1163,37 +1428,40 @@ class CLKD:
             kmeans2 = KMeans(n_clusters=n_classes2, random_state=0).fit(X2)
             predictions2 = kmeans2.labels_
             ground_truths2 = labels_true2
-        
+
             return predictions1, ground_truths1, predictions2, ground_truths2
 
         else:
-            self.model = initial_maintain(self.train_i, 0, self.data_split, metrics, self.embedding_save_path, loss_fn, self.model)
+            self.model = initial_maintain(self.train_i, 0, self.data_split, metrics, self.embedding_save_path, loss_fn,
+                                          self.model)
             if self.args.is_incremental:
                 for i in range(1, self.data_split.shape[0]):
                     print("incremental setting")
                     print("enter i ", str(i))
-                    self.model = infer(self.train_i, i, self.data_split, metrics, self.embedding_save_path, loss_fn, self.model)
+                    self.model = infer(self.train_i, i, self.data_split, metrics, self.embedding_save_path, loss_fn,
+                                       self.model)
                     if i % self.args.window_size == 0:
-                        self.model = initial_maintain(self.train_i, i, self.data_split, metrics, self.embedding_save_path, loss_fn, self.model)
+                        self.model = initial_maintain(self.train_i, i, self.data_split, metrics,
+                                                      self.embedding_save_path, loss_fn, self.model)
 
             # 最终预测并保存预测结果
             data = SocialDataset(self.args.data_path, 0)
             g = dgl.DGLGraph(data.matrix)
             labels = torch.LongTensor(data.labels)
-            
+
             predictions = []
             ground_truths = []
             self.detection_path = self.args.file_path + '/detection_split/'
             os.makedirs(self.detection_path, exist_ok=True)
 
-            train_indices, validation_indices, test_indices = generateMasks(len(labels), self.data_split, self.train_i, 0,
-                                                                        0.1,0.2, self.detection_path)
-
+            train_indices, validation_indices, test_indices = generateMasks(len(labels), self.data_split, self.train_i,
+                                                                            0,
+                                                                            0.1, 0.2, self.detection_path)
 
             g.ndata['h'] = torch.tensor(data.features)  # Assuming data.features contains the feature data
 
-            _, extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), labels, self.args, self.device)
-
+            _, extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), labels, self.args,
+                                                                     self.device)
 
             # Extract labels
             test_indices = torch.load(self.detection_path + '/test_indices.pt')
@@ -1217,7 +1485,7 @@ class CLKD:
     def evaluate(self, predictions, ground_truths, predictions2=None, ground_truths2=None):
 
         if self.args.mutual:
-            
+
             ars1, ami1, nmi1 = self.evaluate2(predictions1, ground_truths1)
             print(f"Model1 Adjusted Rand Index (ARI): {ars1}")
             print(f"Model1 Adjusted Rand Index (AMI): {ami1}")
@@ -1233,9 +1501,9 @@ class CLKD:
             print(f"Model Adjusted Mutual Information (AMI): {ami}")
             print(f"Model Normalized Mutual Information (NMI): {nmi}")
 
-        #logging.info(f"Adjusted Rand Index (ARI): {ars}")
-        #logging.info(f"Adjusted Mutual Information (AMI): {ami}")
-        #logging.info(f"Normalized Mutual Information (NMI): {nmi}")
+        # logging.info(f"Adjusted Rand Index (ARI): {ars}")
+        # logging.info(f"Adjusted Mutual Information (AMI): {ami}")
+        # logging.info(f"Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
 
     def evaluate2(self, predictions, ground_truths):
@@ -1251,60 +1519,68 @@ class CLKD:
 class Preprocessor:
     def __init__(self, args):
         self.device = None
-
+        self.args = args
 
     def generate_initial_features(self):
-        #args = self.args
-        save_path = args.file_path + '/features/'
+        # self.args = self.self.args
+        save_path = self.args.file_path + '/features/'
         os.makedirs(save_path, exist_ok=True)
-
-        if args.initial_lang == "French":
-            df = Event2018_Dataset.load_data()
-        if args.initial_lang == "Arabic":
-            df = Arabic_Dataset.load_data()
-        elif args.initial_lang == "English":
-            df = Event2012_Dataset.load_data()
+        #print(self.args.initial_lang) wasd
+        if self.args.initial_lang == "French":
+            df = DatasetLoader('event2018').load_data()
+        elif self.args.initial_lang == "Arabic":
+            df = DatasetLoader('arabic_twitter').load_data()
+        elif self.args.initial_lang == "English":
+            df = DatasetLoader('event2012').load_data()
+        #elif self.args.initial_lang == "Spanish":
+            #df = DatasetLoader('maven').load_data()
         else:
+            # print(self.args.initial_lang)
             raise NotImplementedError("Language not supported")
 
-        print("Loaded {} data, shape {}".format(args.initial_lang, df.shape))
+        df = df[['event_id', 'words', 'filtered_words', 'created_at']].copy()
+        print("Loaded {} data, shape {}".format(self.args.initial_lang, df.shape))
         print(df.head(10))
 
         t_features = self.df_to_t_features(df)
         print("Time features generated.")
-        d_features = self.documents_to_features(df, args.initial_lang)
+        d_features = self.documents_to_features(df, self.args.initial_lang)
         print("Original document features generated")
 
         combined_features = np.concatenate((d_features, t_features), axis=1)
         print("Concatenated document features and time features.")
-        np.save(os.path.join(save_path, 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(args.initial_lang)),
+        np.save(os.path.join(save_path, 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(
+            self.args.initial_lang)),
                 combined_features)
 
-        if args.TransLinear:
-            dl_features = self.getlinear_transform_features(d_features, args.initial_lang, args.tgt)
+        if self.args.TransLinear:
+            dl_features = self.getlinear_transform_features(d_features, self.args.initial_lang, self.args.tgt)
             lcombined_features = np.concatenate((dl_features, t_features), axis=1)
             print("Linear transformed features generated")
-            np.save(os.path.join(save_path, 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}_{}.npy'.format(args.initial_lang, args.tgt)),
+            np.save(os.path.join(save_path, 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}_{}.npy'.format(
+                self.args.initial_lang, self.args.tgt)),
                     lcombined_features)
 
         ''' 
-        if args.TransNonlinear:
-            dnl_features = nonlinear_transform_features(args.wordpath,args.embpath,df)   
+        if self.args.TransNonlinear:
+            dnl_features = nonlinear_transform_features(self.args.wordpath,self.args.embpath,df)   
             dlcombined_features = np.concatenate((dnl_features, t_features), axis=1)
             print(dlcombined_features)
             print("Nonlinear trans features generated.")
-            np.save(save_path + 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_nonlinear-{}_{}.npy'.format(args.initial_lang, args.tgt),
+            np.save(save_path + 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_nonlinear-{}_{}.npy'.format(self.args.initial_lang, self.args.tgt),
                 dlcombined_features)
         '''
 
     def documents_to_features(self, df, initial_lang):
         if initial_lang == "French":
-            nlp = fr_core_news_lg.load()
+            nlp = spacy.load("fr_core_news_lg")
         elif initial_lang == "Arabic":
             nlp = spacy.load('spacy.arabic.model')
             nlp.tokenizer = Arabic_preprocessor(nlp.tokenizer)
         elif initial_lang == "English":
-            nlp = en_core_web_lg.load()
+            nlp = spacy.load("en_core_web_lg")
+        # elif initial_lang == "Spanish":
+            # nlp = spacy.load("fr_core_news_lg")
         else:
             raise ValueError("Language not supported")
 
@@ -1331,7 +1607,7 @@ class Preprocessor:
         return np.stack(f_list, axis=0)
 
     def getlinear_transform_features(self, features, src, tgt):
-        W = torch.load(args.file_path + "/LinearTranWeight/spacy_{}_{}/best_mapping.pth".format(src, tgt))
+        W = torch.load(self.args.file_path + "/LinearTranWeight/spacy_{}_{}/best_mapping.pth".format(src, tgt))
         return np.matmul(features, W)
 
     def extract_time_feature(self, t_str):
@@ -1342,22 +1618,21 @@ class Preprocessor:
 
     def df_to_t_features(self, df):
         return np.asarray([self.extract_time_feature(t_str) for t_str in df['created_at']])
-    
+
     def construct_graph(self):
         # create save path
-        if args.is_static:
-            save_path = args.file_path + "/hash_static-{}-{}/".format(str(args.days), args.graph_lang)
+        if self.args.is_static:
+            save_path = self.args.file_path + "/hash_static-{}-{}/".format(str(self.args.days), self.args.graph_lang)
         else:
-            save_path = args.file_path + "/{}/".format(args.graph_lang)
-        
+            save_path = self.args.file_path + "/{}/".format(self.args.graph_lang)
+
         os.makedirs(save_path, exist_ok=True)
 
-
         # load df data
-        if args.graph_lang == "French" :
-            df = Event2018_Dataset.load_data()
-        if args.graph_lang == "Arabic":
-            df = Arabic_Dataset.load_data()
+        if self.args.graph_lang == "French":
+            df = DatasetLoader("maven").load_data()
+        elif self.args.graph_lang == "Arabic":
+            df = DatasetLoader("arabic_twitter").load_data()
             name2id = {}
             for id, name in enumerate(df['event_id'].unique()):
                 name2id[name] = id
@@ -1365,10 +1640,11 @@ class Preprocessor:
             df['event_id'] = df['event_id'].apply(lambda x: name2id[x])
             df.drop_duplicates(['tweet_id'], inplace=True, keep='first')
 
-        elif args.graph_lang == "English":
-           df = Event2012_Dataset.load_data()
-        
-        print("{} Data converted to dataframe.".format(args.graph_lang))
+        elif self.args.graph_lang == "English":
+            df = DatasetLoader("event2012").load_data()
+        #elif self.args.graph_lang == "Spanish":
+            #df = DatasetLoader('maven').load_data()
+        print("{} Data converted to dataframe.".format(self.args.graph_lang))
 
         # sort data by time
         df = df.sort_values(by='created_at').reset_index()
@@ -1377,12 +1653,14 @@ class Preprocessor:
 
         nf = None
         # load features
-        f = np.load(args.file_path + '/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(args.graph_lang))
-        nonleafilename = args.file_path + "/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}_{}.npy".format(args.graph_lang,args.tgtlang)
+        f = np.load(self.args.file_path + '/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(
+            self.args.graph_lang))
+        nonleafilename = self.args.file_path + "/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}_{}.npy".format(
+            self.args.graph_lang, self.args.tgtlang)
         nf = np.load(nonleafilename)
-        
+
         # construct graph
-        message, data_split, all_graph_mins = self.construct_incremental_dataset(args, df, save_path, f, nf, False)
+        message, data_split, all_graph_mins = self.construct_incremental_dataset(self.args, df, save_path, f, nf, False)
         with open(save_path + "node_edge_statistics.txt", "w") as text_file:
             text_file.write(message)
         np.save(save_path + 'data_split.npy', np.asarray(data_split))
@@ -1724,20 +2002,20 @@ class Preprocessor:
         print("Start constructing initial graph ...")
         message += "\nStart constructing initial graph ...\n"
 
-        if args.is_static:
-            ini_df = df.loc[df['date'].isin(distinct_dates[:args.days])]
-            days = args.days
+        if self.args.is_static:
+            ini_df = df.loc[df['date'].isin(distinct_dates[:self.args.days])]
+            days = self.args.days
         else:
             ini_df = df.loc[df['date'].isin(distinct_dates[:1])]
             days = 1
 
-        print("Initial graph contains %d days"%(days))
-        message += "Initial graph contains %d days\n"%(days)
+        print("Initial graph contains %d days" % days)
+        message += "Initial graph contains %d days\n" % days
 
         path = save_path + '0/'
         if not os.path.exists(path):
             os.mkdir(path)
-    
+
         y = ini_df['event_id'].values
         y = [int(each) for each in y]
         np.save(path + 'labels.npy', np.asarray(y))
@@ -1769,11 +2047,11 @@ class Preprocessor:
         if nfeatures is not None:
             # save trans nonlinear features
             nx = nfeatures[indices, :]
-            np.save(path + '{}-{}-features.npy'.format(args.graph_lang, args.tgtlang), nx)
+            np.save(path + '{}-{}-features.npy'.format(self.args.graph_lang, self.args.tgtlang), nx)
             print("trans features saved")
             message += "Nonlinear Trans Features saved.\n\n"
 
-        if not args.is_static:
+        if not self.args.is_static:
             inidays = 1
             j = 0
 
@@ -1819,10 +2097,11 @@ class Preprocessor:
                 if nfeatures is not None:
                     # save trans nonlinear features
                     nx = nfeatures[indices, :]
-                    np.save(path + '{}-{}-features.npy'.format(args.graph_lang, args.tgtlang), nx)
+                    np.save(path + '{}-{}-features.npy'.format(self.args.graph_lang, self.args.tgtlang), nx)
                     print("trans features saved")
                     message += "trans features saved.\n"
         return message, data_split, all_graph_mins
+
 
 
 # load Dataset
@@ -1854,6 +2133,7 @@ class SocialDataset(Dataset):
             self.matrix = self.matrix[indices_to_keep, :]
             self.matrix = self.matrix[:, indices_to_keep]
 
+
 # save graph statistics to save path
 def graph_statistics(G, save_path):
     message = '\nGraph statistics:\n'
@@ -1876,108 +2156,12 @@ def graph_statistics(G, save_path):
 
     return num_isolated_nodes
 
+
 if __name__ == '__main__':
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    # from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
 
-    class args_define():
-        parser = argparse.ArgumentParser()
-        # Hyper parameters
-        parser.add_argument('--n_epochs', default=1, type=int,
-                            help="Number of initial-training/maintenance-training epochs.")
-        parser.add_argument('--n_infer_epochs', default=0, type=int,
-                            help="Number of inference epochs.")
-        parser.add_argument('--window_size', default=3, type=int,
-                            help="Maintain the model after predicting window_size blocks.")
-        parser.add_argument('--patience', default=5, type=int,
-                            help="Early stop if performance did not improve in the last patience epochs.")
-        parser.add_argument('--margin', default=3., type=float,
-                            help="Margin for computing triplet losses")
-        parser.add_argument('--lr', default=1e-3, type=float,
-                            help="Learning rate")
-        parser.add_argument('--batch_size', default=2000, type=int,
-                            help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-        parser.add_argument('--n_neighbors', default=800, type=int,
-                            help="Number of neighbors sampled for each node.")
-        parser.add_argument('--word_embedding_dim', type=int, default=300)
-        parser.add_argument('--hidden_dim', default=8, type=int,
-                            help="Hidden dimension")
-        parser.add_argument('--out_dim', default=32, type=int,
-                            help="Output dimension of tweet representations")
-        parser.add_argument('--num_heads', default=4, type=int,
-                            help="Number of heads in each GAT layer")
-        parser.add_argument('--use_residual', dest='use_residual', default=True,
-                            action='store_false',
-                            help="If true, add residual(skip) connections")
-        parser.add_argument('--validation_percent', default=0.1, type=float,
-                            help="Percentage of validation nodes(tweets)")
-        parser.add_argument('--test_percent', default=0.2, type=float,
-                            help="Percentage of test nodes(tweets)")
-        parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False,
-                            action='store_true',
-                            help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-        parser.add_argument('--metrics', type=str, default='ami')
-        # Other arguments
-        parser.add_argument('--use_cuda', dest='use_cuda', default=False,
-                            action='store_true',
-                            help="Use cuda")
-        parser.add_argument('--gpuid', type=int, default=0)
-        parser.add_argument('--mask_path', default=None,
-                            type=str, help="File path that contains the training, validation and test masks")
-        parser.add_argument('--log_interval', default=10, type=int,
-                            help="Log interval")
-        # offline or online situation
-        parser.add_argument('--is_incremental', action='store_true', default=False,
-                            help="static or incremental")
-        # Teacher-Student structure or Mutual-Learning structure
-        parser.add_argument('--mutual', action='store_true', default=False)
-
-        parser.add_argument('--mode', type=int, default=0)
-        # mode==2, add linear cross-lingual knowledge ditillation; mode == 4, add non-linear cross-lingual knowledge transformation
-        # mode==0, no knowledge distillation
-        # mode==1,directly input student attribute features to teacher model
-        parser.add_argument('--add_mapping', action='store_true', default=False)
-        parser.add_argument('--data_path', default='../model_saved/clkd/English',
-                            type=str, help="Path of features, labels and edges")
-        parser.add_argument('--file_path', default='../model_saved/clkd',
-                            type=str, help="default path to save the file")    
-        # offline situation Teacher-Student structure
-        parser.add_argument('--Tmodel_path',
-                            default='../model_saved/clkd/English/Tmodel/',#'803_hash_static-8-English/0mode/embeddings_0227165510-0-English-nomap',
-                            type=str,
-                            help="File path that contains the pre-trained teacher model.")
-        parser.add_argument('--lang', type=str, default="French")
-        parser.add_argument('--Tealang', type=str, default='English')
-        parser.add_argument('--t', type=int, default=1)
-
-        # Mutual-Learning structure
-        parser.add_argument('--data_path1', default='../model_saved/clkd/English',
-                            type=str, help="Path of features, labels and edges")
-        parser.add_argument('--data_path2', default='../model_saved/clkd/French',
-                            type=str, help="Path of features, labels and edges")
-        parser.add_argument('--lang1', type=str, default="English")
-        parser.add_argument('--lang2', type=str, default="French")
-        parser.add_argument('--e', type=int, default=0)
-        parser.add_argument('--mt', type=float, default=0.5)
-        parser.add_argument('--rd', type=float, default=0.1)
-
-        #construct_graph
-        parser.add_argument('--is_static', type=bool, default=False)
-        parser.add_argument('--graph_lang', type=str, default='English')
-        parser.add_argument('--tgtlang', type=str, default='French')
-        parser.add_argument('--days', type=int, default=7)
-
-        #generate_initial_features
-        parser.add_argument('--initial_lang', type=str, default='English')
-        parser.add_argument('--TransLinear',type=bool,default=True)
-        parser.add_argument('--TransNonlinear',type=bool,default=True)
-        parser.add_argument('--tgt',type=str,default='French')
-        parser.add_argument('--embpath',type=str,default='../model_saved/clkd/dictrans/fr-en-for.npy')    
-        parser.add_argument('--wordpath',type=str,default='../model_saved/clkd/dictrans/wordsFrench.txt')
-
-        args = parser.parse_args()
-
-
-    args = args_define.args
+    args = args_define().args
+    
     clkd = CLKD(args)
 
     clkd.preprocess()
@@ -1985,8 +2169,3 @@ if __name__ == '__main__':
     clkd.fit()  # 训练模型
     predictions, ground_truths = clkd.detection()  # 进行预测
     results = clkd.evaluate(predictions, ground_truths)  # 评估模型
-
-
-
-
-

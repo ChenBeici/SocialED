@@ -6,18 +6,27 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import torch
 import logging
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dataset.dataloader import DatasetLoader
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 class BERT:
-    def __init__(self, dataset, model_name='../model_needed/bert-base-uncased', max_length=128):
+    def __init__(self,
+                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 model_name='../model/model_needed/bert-base-uncased',
+                 max_length=128,
+                 df=None,
+                 train_df=None,
+                 test_df=None, ):
         self.dataset = dataset
         self.model_name = model_name
         self.max_length = max_length
-        self.df = None
-        self.train_df = None
-        self.test_df = None
+        self.df = df
+        self.train_df = train_df
+        self.test_df = test_df
+        # self.device = torch.device("cpu")
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
         self.model = BertModel.from_pretrained(self.model_name).to(self.device)
@@ -27,7 +36,8 @@ class BERT:
         Data preprocessing: tokenization, stop words removal, etc.
         """
         df = self.dataset
-        df['processed_text'] = df['filtered_words'].apply(lambda x: ' '.join([str(word).lower() for word in x]) if isinstance(x, list) else '')
+        df['processed_text'] = df['filtered_words'].apply(
+            lambda x: ' '.join([str(word).lower() for word in x]) if isinstance(x, list) else '')
         self.df = df
         return df
 
@@ -35,7 +45,8 @@ class BERT:
         """
         Get BERT embeddings for a given text.
         """
-        inputs = self.tokenizer(text, return_tensors='pt', max_length=self.max_length, truncation=True, padding='max_length')
+        inputs = self.tokenizer(text, return_tensors='pt', max_length=self.max_length, truncation=True,
+                                padding='max_length')
         inputs = {key: val.to(self.device) for key, val in inputs.items()}
         with torch.no_grad():
             outputs = self.model(**inputs)
@@ -61,14 +72,14 @@ class BERT:
 
         train_embeddings = np.stack(self.train_df['bert_embedding'].values)
         test_embeddings = np.stack(self.test_df['bert_embedding'].values)
-        
+
         predictions = []
         for test_emb in test_embeddings:
             distances = np.linalg.norm(train_embeddings - test_emb, axis=1)
             closest_idx = np.argmin(distances)
             predictions.append(self.train_df.iloc[closest_idx]['event_id'])
 
-        ground_truths = self.test_df['event_id'].tolist()    
+        ground_truths = self.test_df['event_id'].tolist()
         return ground_truths, predictions
 
     def evaluate(self, ground_truths, predictions):
@@ -90,19 +101,21 @@ class BERT:
 
         return ari, ami, nmi
 
+
 # Main function
 if __name__ == "__main__":
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    print(torch.version.cuda)
 
-    dataset = Event2012_Dataset.load_data()
+    bert = BERT()
 
-    bert = BERT(dataset)
-    
     # Data preprocessing
     bert.preprocess()
-    
+
     # Detection
-    ground_truths, predictions = bert.detection()
+    ground_truths, predictions = bert.detection()   
 
     # Evaluation
     bert.evaluate(ground_truths, predictions)
+
+
+

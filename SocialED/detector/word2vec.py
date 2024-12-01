@@ -7,7 +7,6 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import logging
 from sklearn.cluster import KMeans
-<<<<<<< HEAD
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
@@ -25,14 +24,6 @@ class WORD2VEC:
                  file_path='../model/model_saved/Word2vec/word2vec_model.model'):
         # print("ASDASd")
         # exit()
-=======
-
-# Setup logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
-class WORD2VEC:
-    def __init__(self, dataset, vector_size=100, window=5, min_count=1, sg=1, file_path='../model_saved/Word2vec/word2vec_model.model'):
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         self.dataset = dataset
         self.vector_size = vector_size
         self.window = window
@@ -48,14 +39,9 @@ class WORD2VEC:
         """
         Data preprocessing: tokenization, stop words removal, etc.
         """
-<<<<<<< HEAD
         df = self.dataset[['filtered_words', 'event_id']].copy()
         df['processed_text'] = df['filtered_words'].apply(
             lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
-=======
-        df = self.dataset
-        df['processed_text'] = df['filtered_words'].apply(lambda x: [str(word).lower() for word in x] if isinstance(x, list) else [])
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         self.df = df
         return df
 
@@ -76,19 +62,11 @@ class WORD2VEC:
         word2vec_model = Word2Vec(sentences=sentences, vector_size=self.vector_size, window=self.window,
                                   min_count=self.min_count, sg=self.sg)
         logging.info("Word2Vec model trained successfully.")
-<<<<<<< HEAD
 
         # Save the trained model to a file
         word2vec_model.save(self.file_path)
         logging.info(f"Word2Vec model saved to {self.file_path}")
 
-=======
-        
-        # Save the trained model to a file
-        word2vec_model.save(self.file_path)
-        logging.info(f"Word2Vec model saved to {self.file_path}")
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         self.word2vec_model = word2vec_model
         return word2vec_model
 
@@ -99,11 +77,7 @@ class WORD2VEC:
         logging.info(f"Loading Word2Vec model from {self.file_path}...")
         word2vec_model = Word2Vec.load(self.file_path)
         logging.info("Word2Vec model loaded successfully.")
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         self.word2vec_model = word2vec_model
         return word2vec_model
 
@@ -129,11 +103,7 @@ class WORD2VEC:
         ground_truths = self.test_df['event_id'].tolist()
         kmeans = KMeans(n_clusters=len(set(ground_truths)), random_state=42)
         predictions = kmeans.fit_predict(predictions)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         return ground_truths, predictions
 
     def evaluate(self, ground_truths, predictions):
@@ -155,7 +125,6 @@ class WORD2VEC:
 
         return ari, ami, nmi
 
-<<<<<<< HEAD
 
 # Main function
 if __name__ == "__main__":
@@ -170,22 +139,6 @@ if __name__ == "__main__":
     # Train the model
     word2vec.fit()
 
-=======
-# Main function
-if __name__ == "__main__":
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
-
-    dataset = Event2012_Dataset.load_data()
-
-    word2vec = WORD2VEC(dataset)
-    
-    # Data preprocessing
-    word2vec.preprocess()
-    
-    # Train the model
-    word2vec.fit()
-    
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     # detection
     ground_truths, predictions = word2vec.detection()
 

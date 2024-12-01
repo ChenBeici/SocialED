@@ -29,7 +29,6 @@ from time import localtime, strftime, time
 import networkx as nx
 import json
 import torch.optim as optim
-<<<<<<< HEAD
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
@@ -163,18 +162,12 @@ class args_define:
 #     parser.add_argument('--log_interval', default=10, type=int,
 #                         help="Log interval")
 #     args = parser.parse_args()
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
 
 class Preprocessor:
     def __init__(self):
         pass
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     def documents_to_features(self, df):
         self.nlp = en_core_web_lg.load()
         features = df.filtered_words.apply(lambda x: self.nlp(' '.join(x)).vector).values
@@ -190,11 +183,7 @@ class Preprocessor:
         t_features = np.asarray([self.extract_time_feature(t_str) for t_str in df['created_at']])
         return t_features
 
-<<<<<<< HEAD
     def generate_initial_features(self, df, save_path='../model/model_saved/finevent/'):
-=======
-    def generate_initial_features(self, df, save_path='../model_saved/finevent/'):
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         os.makedirs(save_path, exist_ok=True)
         print(df.shape)
         print(df.head(10))
@@ -280,11 +269,7 @@ class Preprocessor:
         np.save(path + 'features.npy', x)
         print("Features saved.")
         message += "Features saved.\n\n"
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         for i in range(7, len(distinct_dates) - 1):
             print("Start constructing graph ", str(i - 6), " ...")
             message += "\nStart constructing graph "
@@ -293,11 +278,7 @@ class Preprocessor:
             incr_df = df.loc[df['date'] == distinct_dates[i]]
             if test:
                 incr_df = incr_df[:test_incr_size]
-<<<<<<< HEAD
             G = self.construct_graph_from_df(incr_df)
-=======
-            G = self.construct_graph_from_df(incr_df)  
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             path = save_path + str(i - 6) + '/'
             os.makedirs(path, exist_ok=True)
             grap_mins, graph_message = self.networkx_to_dgl_graph(G, save_path=path)
@@ -319,20 +300,12 @@ class Preprocessor:
 
         return message, data_split, all_graph_mins
 
-<<<<<<< HEAD
     def construct_graph(self, df, save_path='../model/model_saved/finevent/incremental_test/'):
-=======
-    def construct_graph(self, df, save_path='../model_saved/finevent/incremental_test/'):
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         os.makedirs(save_path, exist_ok=True)
 
         df = df.sort_values(by='created_at').reset_index()
         df['date'] = [d.date() for d in df['created_at']]
-<<<<<<< HEAD
         f = np.load('../model/model_saved/finevent/features_69612_0709_spacy_lg_zero_multiclasses_filtered.npy')
-=======
-        f = np.load('../model_saved/finevent/features_69612_0709_spacy_lg_zero_multiclasses_filtered.npy')
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         message, data_split, all_graph_mins = self.construct_incremental_dataset(df, save_path, f, True)
         with open(save_path + "node_edge_statistics.txt", "w") as text_file:
             text_file.write(message)
@@ -359,11 +332,7 @@ class Preprocessor:
         print('\tGetting adjacency matrix ...')
         message += '\tGetting adjacency matrix ...\n'
         start = time()
-<<<<<<< HEAD
         A = nx.to_numpy_array(G)  # 使用稀疏矩阵
-=======
-        A = nx.to_numpy_array(G)   # 使用稀疏矩阵
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         mins = (time() - start) / 60
         print('\tDone. Time elapsed: ', mins, ' mins\n')
         message += '\tDone. Time elapsed: '
@@ -628,21 +597,14 @@ class Preprocessor:
 
         return all_mins, message
 
-<<<<<<< HEAD
     def save_edge_index(self, data_path='.../model/model_saved/finevent/incremental_test'):
-=======
-    def save_edge_index(self, data_path='../model_saved/finevent/incremental_test'):
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         relation_ids = ['entity', 'userid', 'word']
         for i in range(22):
             save_multi_relational_graph(data_path, relation_ids, [0, i])
             print('edge index saved')
         print('all edge index saved')
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class FinEvent:
     def __init__(self, args, dataset):
         self.dataset = dataset
@@ -650,20 +612,12 @@ class FinEvent:
 
     def preprocess(self):
         preprocessor = Preprocessor()
-<<<<<<< HEAD
         # preprocessor.generate_initial_features(self.dataset)
-=======
-        #preprocessor.generate_initial_features(self.dataset)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         preprocessor.construct_graph(self.dataset)
         preprocessor.save_edge_index()
 
     def fit(self):
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         # check CUDA
         print('Using CUDA:', torch.cuda.is_available())
 
@@ -675,11 +629,7 @@ class FinEvent:
         # record hyper-parameters
         with open(embedding_save_path + '/args.txt', 'w') as f:
             json.dump(args.__dict__, f, indent=2)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         print('Batch Size:', args.batch_size)
         print('Intra Agg Mode:', args.is_shared)
         print('Inter Agg Mode:', args.inter_opt)
@@ -705,25 +655,16 @@ class FinEvent:
         # pre-train stage: train on initial graph
         train_i = 0
         self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
-<<<<<<< HEAD
                                                                     i=0,
                                                                     metrics=BCL_metrics,
                                                                     embedding_save_path=embedding_save_path,
                                                                     loss_fn=loss_fn,
                                                                     model=None)
-=======
-                                                        i=0,
-                                                        metrics=BCL_metrics,
-                                                        embedding_save_path=embedding_save_path,
-                                                        loss_fn=loss_fn,
-                                                        model=None)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
         # detection-maintenance stage: incremental training and detection
         for i in range(1, data_split.shape[0]):
             # infer every block
             self.model = Streaming.inference(train_i=train_i,
-<<<<<<< HEAD
                                              i=i,
                                              metrics=BCL_metrics,
                                              embedding_save_path=embedding_save_path,
@@ -731,32 +672,15 @@ class FinEvent:
                                              model=self.model,
                                              RL_thresholds=self.RL_thresholds)
 
-=======
-                                        i=i,
-                                        metrics=BCL_metrics,
-                                        embedding_save_path=embedding_save_path,
-                                        loss_fn=loss_fn,
-                                        model=self.model,
-                                        RL_thresholds=self.RL_thresholds)
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             # maintenance in window size and desert the last block
             if i % args.window_size == 0 and i != data_split.shape[0] - 1:
                 train_i = i
                 self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
-<<<<<<< HEAD
                                                                             i=i,
                                                                             metrics=BCL_metrics,
                                                                             embedding_save_path=embedding_save_path,
                                                                             loss_fn=loss_fn,
                                                                             model=None)
-=======
-                                                                i=i,
-                                                                metrics=BCL_metrics,
-                                                                embedding_save_path=embedding_save_path,
-                                                                loss_fn=loss_fn,
-                                                                model=None)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
     def detection(self):
         """
@@ -773,15 +697,9 @@ class FinEvent:
         # Load detection data
         print("Loading detection data...")
         relation_ids = ['entity', 'userid', 'word']
-<<<<<<< HEAD
         # homo_data = create_homodataset(args.data_path, [0, 0], args.validation_percent)
         homo_data = create_offline_homodataset(args.data_path, [0, 0])
         multi_r_data = create_multi_relational_graph(args.data_path, relation_ids, [0, 0])
-=======
-        #homo_data = create_homodataset(args.data_path, [0, 0], args.validation_percent)
-        homo_data = create_offline_homodataset(args.data_path, [0, 0])
-        multi_r_data = create_multi_relational_graph(args.data_path, relation_ids, [0,0])
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         print("detection data loaded. Time elapsed: {:.2f} seconds".format(time() - start_time))
 
         device = torch.device('cuda' if torch.cuda.is_available() and args.use_cuda else 'cpu')
@@ -791,13 +709,8 @@ class FinEvent:
         best_model_path = args.data_path + 'embeddings/block_0/models/best.pt'
         feat_dim = homo_data.x.size(1)
         num_relations = len(multi_r_data)
-<<<<<<< HEAD
 
         self.model = MarGNN((feat_dim, args.hidden_dim, args.out_dim, args.heads),
-=======
-        
-        self.model = MarGNN((feat_dim, args.hidden_dim, args.out_dim, args.heads), 
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                             num_relations=num_relations, inter_opt=args.inter_opt, is_shared=args.is_shared)
 
         state_dict = torch.load(best_model_path)
@@ -809,35 +722,22 @@ class FinEvent:
         print("Best model loaded and set to eval mode. Time elapsed: {:.2f} seconds".format(time() - start_time))
 
         RL_thresholds = torch.FloatTensor(args.threshold_start0)
-<<<<<<< HEAD
         filtered_multi_r_data = torch.load('../model/model_saved/finevent/multi_remain_data.pt')
-=======
-        filtered_multi_r_data = torch.load('../model_saved/finevent/multi_remain_data.pt')
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
         # Sampling nodes
         print("Sampling nodes...")
         sampler = MySampler(args.sampler)
         test_num_samples = homo_data.test_mask.size(0)
         num_batches = int(test_num_samples / args.batch_size) + 1
-<<<<<<< HEAD
 
         extract_features = []
 
         for batch in range(num_batches):
             print(f"Processing batch {batch + 1}/{num_batches}...")
-=======
-        
-        extract_features = []
-
-        for batch in range(num_batches):
-            print(f"Processing batch {batch+1}/{num_batches}...")
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             i_start = args.batch_size * batch
             i_end = min((batch + 1) * args.batch_size, test_num_samples)
             batch_nodes = homo_data.test_mask[i_start:i_end]
             batch_labels = homo_data.y[batch_nodes]
-<<<<<<< HEAD
             adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
                                          batch_size=args.batch_size)
 
@@ -848,17 +748,6 @@ class FinEvent:
             extract_features.append(pred.cpu().detach())
             print(f"Batch {batch + 1} processed.")
 
-=======
-            adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1], batch_size=args.batch_size)
-        
-            # Perform prediction
-            with torch.no_grad():
-                pred = self.model(homo_data.x, adjs, n_ids, device, RL_thresholds)
-            
-            extract_features.append(pred.cpu().detach())
-            print(f"Batch {batch+1} processed.")
-            
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         extract_features = torch.cat(extract_features, dim=0)
 
         all_nodes = homo_data.test_mask
@@ -887,20 +776,13 @@ class FinEvent:
 
         # Calculate Normalized Mutual Information (NMI)
         nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         print(f"Model Adjusted Rand Index (ARI): {ars}")
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class FinEvent_model():
     def __init__(self, args) -> None:
         # register args
@@ -927,10 +809,6 @@ class FinEvent_model():
         homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
         multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         print('embedding save path: ', embedding_save_path)
         num_relations = len(multi_r_data)
 
@@ -1004,7 +882,6 @@ class FinEvent_model():
         print(f"save Evaluate_datas{i} to {PPpath}", end='')
         Evaluate_datas = {'msg_feats': extract_features, 'msg_tags': labels_true, 'n_clust': n_classes}
         if not os.path.exists(PPpath):
-<<<<<<< HEAD
             os.makedirs(PPpath, exist_ok=True)
         np.save(PPpath + f'evaluate_data_M{i}.npy', Evaluate_datas)
         print('done')
@@ -1018,21 +895,6 @@ class FinEvent_model():
                                         is_validation=False,
                                         cluster_type=self.args.cluster_type,
                                         )
-=======
-            os.makedirs(PPpath,exist_ok=True)
-        np.save(PPpath +f'evaluate_data_M{i}.npy', Evaluate_datas)
-        print('done')
-
-        nmi, ami, ari,  = evaluate_model(extract_features,
-                                                      labels,
-                                                      indices=test_indices,
-                                                      epoch=-1,  # just for test
-                                                      num_isolated_nodes=0,
-                                                      save_path=save_path_i,
-                                                      is_validation=False,
-                                                      cluster_type=self.args.cluster_type,
-                                                      )
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
         k_score = {"NMI": nmi, "AMI": ami, "ARI": ari}
         del homo_data, multi_r_data, features, filtered_multi_r_data
@@ -1071,11 +933,7 @@ class FinEvent_model():
         homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
         multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
         num_relations = len(multi_r_data)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         device = torch.device('cuda' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
 
         # input dimension (300 in our paper)
@@ -1085,36 +943,21 @@ class FinEvent_model():
         # prepare graph configs for node filtering
         if self.args.is_initial:
             print('prepare node configures...')
-<<<<<<< HEAD
             # pre_node_dist(multi_r_data, homo_data.x, save_path_i)
-=======
-            #pre_node_dist(multi_r_data, homo_data.x, save_path_i)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             filter_path = save_path_i
         else:
             filter_path = self.args.data_path + str(i)
 
-<<<<<<< HEAD
         if model is None:  # pre-training stage in our paper
             # print('Pre-Train Stage...')
             model = MarGNN((feat_dim, self.args.hidden_dim, self.args.out_dim, self.args.heads),
                            num_relations=num_relations, inter_opt=self.args.inter_opt, is_shared=self.args.is_shared)
-=======
-        if model is None: # pre-training stage in our paper
-            # print('Pre-Train Stage...')
-            model = MarGNN((feat_dim, self.args.hidden_dim, self.args.out_dim, self.args.heads), 
-                            num_relations=num_relations, inter_opt=self.args.inter_opt, is_shared=self.args.is_shared)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
         # define sampler
         sampler = MySampler(self.args.sampler)
         # load model to device
         model.to(device)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         # initialize RL thresholds
         # RL_threshold: [[.5], [.5], [.5]]
         RL_thresholds = torch.FloatTensor(self.args.threshold_start0)
@@ -1144,16 +987,11 @@ class FinEvent_model():
             start_epoch = time()
             losses = []
             total_loss = 0.0
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             for metric in metrics:
                 metric.reset()
 
             # Multi-Agent
-<<<<<<< HEAD
 
             # filter neighbor in advance to fit with neighbor sampling
             # filtered_multi_r_data = RL_neighbor_filter(multi_r_data, RL_thresholds, filter_path) if epoch >= self.args.RL_start0 and self.args.sampler == 'RL_sampler' else multi_r_data
@@ -1165,18 +1003,6 @@ class FinEvent_model():
 
             train_num_samples, valid_num_samples = homo_data.train_mask.size(0), homo_data.val_mask.size(0)
             #train_num_samples, valid_num_samples = homo_data.train_mask.size(0) // 100, homo_data.val_mask.size(0)
-=======
-            
-            # filter neighbor in advance to fit with neighbor sampling
-            #filtered_multi_r_data = RL_neighbor_filter(multi_r_data, RL_thresholds, filter_path) if epoch >= self.args.RL_start0 and self.args.sampler == 'RL_sampler' else multi_r_data
-
-            filtered_multi_r_data = torch.load(self.args.file_path +'multi_remain_data.pt')
-
-            print(f"Epoch {epoch+1}/{self.args.n_epochs} - Starting training...")
-            model.train()
-
-            train_num_samples, valid_num_samples = homo_data.train_mask.size(0), homo_data.val_mask.size(0)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             all_num_samples = train_num_samples + valid_num_samples
 
             # batch training
@@ -1190,19 +1016,12 @@ class FinEvent_model():
                 batch_nodes = homo_data.train_mask[i_start:i_end]
                 batch_labels = homo_data.y[batch_nodes]
 
-<<<<<<< HEAD
                 print(
                     f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Processing nodes {i_start} to {i_end}...")
 
                 # sampling neighbors of batch nodes
                 adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
                                              batch_size=self.args.batch_size)
-=======
-                print(f"Epoch {epoch+1}/{self.args.n_epochs} - Batch {batch+1}/{num_batches}: Processing nodes {i_start} to {i_end}...")
-
-                # sampling neighbors of batch nodes
-                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1], batch_size=self.args.batch_size)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                 optimizer.zero_grad()
 
                 pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
@@ -1216,16 +1035,11 @@ class FinEvent_model():
                     metric(pred, batch_labels, loss_outputs)
 
                 if batch % self.args.log_interval == 0:
-<<<<<<< HEAD
                     message = 'Train: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(batch * self.args.batch_size,
                                                                               train_num_samples, 100. * batch / ((
                                                                                                                          train_num_samples // self.args.batch_size) + 1),
                                                                               np.mean(losses))
 
-=======
-                    message = 'Train: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(batch * self.args.batch_size, train_num_samples, 100. * batch / ((train_num_samples // self.args.batch_size) + 1), np.mean(losses))
-                    
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                     for metric in metrics:
                         message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
 
@@ -1237,12 +1051,8 @@ class FinEvent_model():
                 del pred, loss_outputs
                 gc.collect()
 
-<<<<<<< HEAD
                 print(
                     f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Performing backward pass...")
-=======
-                print(f"Epoch {epoch+1}/{self.args.n_epochs} - Batch {batch+1}/{num_batches}: Performing backward pass...")
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                 loss.backward()
                 optimizer.step()
 
@@ -1251,18 +1061,10 @@ class FinEvent_model():
 
                 del loss
                 gc.collect()
-<<<<<<< HEAD
 
             # step14: print loss
             total_loss /= (batch + 1)
             message = 'Epoch: {}/{}. Average loss: {:.4f}'.format(epoch + 1, self.args.n_epochs, total_loss)
-=======
-            
-
-            # step14: print loss
-            total_loss /= (batch + 1)
-            message = 'Epoch: {}/{}. Average loss: {:.4f}'.format(epoch+1, self.args.n_epochs, total_loss)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             for metric in metrics:
                 message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
             mins_spent = (time() - start_epoch) / 60
@@ -1281,11 +1083,7 @@ class FinEvent_model():
             extract_features = torch.FloatTensor([])
 
             num_batches = int(all_num_samples / self.args.batch_size) + 1
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             # all mask are then splited into mini-batch in order
             all_mask = torch.arange(0, num_dim, dtype=torch.long)
 
@@ -1299,12 +1097,8 @@ class FinEvent_model():
                 batch_labels = homo_data.y[batch_nodes]
 
                 # sampling neighbors of batch nodes
-<<<<<<< HEAD
                 adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
                                              batch_size=self.args.batch_size)
-=======
-                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1], batch_size=self.args.batch_size)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
                 pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
 
@@ -1316,7 +1110,6 @@ class FinEvent_model():
             # save_embeddings(extract_features, save_path_i)
             epoch = epoch + 1
             # evaluate the model: conduct kMeans clustering on the validation and report NMI
-<<<<<<< HEAD
             validation_nmi = evaluate_model(extract_features[homo_data.val_mask],
                                             homo_data.y,
                                             indices=homo_data.val_mask,
@@ -1325,16 +1118,6 @@ class FinEvent_model():
                                             save_path=save_path_i,
                                             is_validation=True,
                                             cluster_type=self.args.cluster_type)
-=======
-            validation_nmi = evaluate_model(extract_features[homo_data.val_mask], 
-                                      homo_data.y,
-                                      indices=homo_data.val_mask, 
-                                      epoch=epoch,
-                                      num_isolated_nodes=0, 
-                                      save_path=save_path_i, 
-                                      is_validation=True, 
-                                      cluster_type=self.args.cluster_type)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             all_vali_nmi.append(validation_nmi)
 
             # step16: early stop
@@ -1374,18 +1157,11 @@ class FinEvent_model():
 
         del homo_data, multi_r_data
         torch.cuda.empty_cache()
-<<<<<<< HEAD
 
         return model, RL_thresholds
 
 
 # gen_dataset
-=======
-        
-        return model, RL_thresholds
-
-#gen_dataset
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def sparse_trans(datapath='incremental_test/0/s_m_tid_userid_tid.npz'):
     relation = sparse.load_npz(datapath)
     all_edge_index = torch.tensor([], dtype=int)
@@ -1398,16 +1174,11 @@ def sparse_trans(datapath='incremental_test/0/s_m_tid_userid_tid.npz'):
         loop = torch.tensor(node).repeat(neighbor_sum, 1)
         edge_index_i_j = torch.cat((loop, neighbor_idx), dim=1).t()
         # edge_index_j_i = torch.cat((neighbor_idx, loop), dim=1).t()
-<<<<<<< HEAD
         self_loop = torch.tensor([[node], [node]])
-=======
-        self_loop = torch.tensor([[node],[node]])
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         all_edge_index = torch.cat((all_edge_index, edge_index_i_j, self_loop), dim=1)
         del neighbor, neighbor_idx, loop, self_loop, edge_index_i_j
     return all_edge_index
 
-<<<<<<< HEAD
 
 def coo_trans(datapath='incremental_test/0/s_m_tid_userid_tid.npz'):
     relation: csr_matrix = sparse.load_npz(datapath)
@@ -1416,14 +1187,6 @@ def coo_trans(datapath='incremental_test/0/s_m_tid_userid_tid.npz'):
     return sparse_edge_index
 
 
-=======
-def coo_trans(datapath = 'incremental_test/0/s_m_tid_userid_tid.npz'):
-    relation:csr_matrix = sparse.load_npz(datapath)
-    relation:coo_matrix = relation.tocoo()
-    sparse_edge_index = torch.LongTensor([relation.row, relation.col])
-    return sparse_edge_index
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def create_dataset(loadpath, relation, mode):
     features = np.load(os.path.join(loadpath, str(mode[1]), 'features.npy'))
     features = torch.FloatTensor(features)
@@ -1443,10 +1206,7 @@ def create_dataset(loadpath, relation, mode):
 
     return data
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def create_homodataset(loadpath, mode, valid_percent=0.2):
     features = np.load(os.path.join(loadpath, str(mode[1]), 'features.npy'))
     features = torch.FloatTensor(features)
@@ -1464,10 +1224,7 @@ def create_homodataset(loadpath, mode, valid_percent=0.2):
 
     return data
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def create_offline_homodataset(loadpath, mode):
     features = np.load(os.path.join(loadpath, str(mode[1]), 'features.npy'))
     features = torch.FloatTensor(features)
@@ -1482,57 +1239,33 @@ def create_offline_homodataset(loadpath, mode):
 
     return data
 
-<<<<<<< HEAD
 
 def create_multi_relational_graph(loadpath, relations, mode):
     # multi_relation_edge_index = [sparse_trans(os.path.join(loadpath, str(mode[1]), 's_m_tid_%s_tid.npz' % relation)) for relation in relations]
     multi_relation_edge_index = [torch.load(loadpath + '/' + str(mode[1]) + '/edge_index_%s.pt' % relation) for relation
                                  in relations]
-=======
-def create_multi_relational_graph(loadpath, relations, mode):
-
-    # multi_relation_edge_index = [sparse_trans(os.path.join(loadpath, str(mode[1]), 's_m_tid_%s_tid.npz' % relation)) for relation in relations]
-    multi_relation_edge_index = [torch.load(loadpath + '/' + str(mode[1]) + '/edge_index_%s.pt' % relation) for relation in relations]
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     print('sparse trans...')
     print('edge index loaded')
 
     return multi_relation_edge_index
-<<<<<<< HEAD
 
 
 def save_multi_relational_graph(loadpath, relations, mode):
-=======
-    
-def save_multi_relational_graph(loadpath, relations, mode):
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     for relation in relations:
         relation_edge_index = sparse_trans(os.path.join(loadpath, str(mode[1]), 's_m_tid_%s_tid.npz' % relation))
         print('%s have saved' % (os.path.join(loadpath, str(mode[1]), 's_m_tid_%s_tid.npz' % relation)))
         torch.save(relation_edge_index, loadpath + '/' + str(mode[1]) + '/edge_index_%s.pt' % relation)
 
-<<<<<<< HEAD
 
 # utils
-=======
-#utils
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
 
-<<<<<<< HEAD
 
 def run_hdbscan(extract_features, extract_labels, indices, is_validation, isoPath=None, ):
     # 2018:min_cluster_size = 5, copy = True, alpha = 0.8
     # 2012:min_cluster_size = 8
-=======
-def run_hdbscan(extract_features, extract_labels, indices,is_validation, isoPath=None,):
-
-    #2018:min_cluster_size = 5, copy = True, alpha = 0.8
-    #2012:min_cluster_size = 8
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
     indices = indices.cpu().detach().numpy()
 
@@ -1551,15 +1284,9 @@ def run_hdbscan(extract_features, extract_labels, indices,is_validation, isoPath
     # X = extract_features[indices, :]
     X = extract_features.cpu().detach().numpy()
     assert labels_true.shape[0] == X.shape[0]
-<<<<<<< HEAD
     nmi, ami, ari = 0, 0, 0
     for eps in [0.2, 0.3, 0.5, 0.7, 1, 1.2, 1.5, 1.7, 2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5]:
         hdb = DBSCAN(eps=eps, min_samples=8)
-=======
-    nmi,ami,ari = 0,0,0
-    for eps in [0.2,0.3,0.5,0.7,1,1.2,1.5,1.7,2,2.2,2.5,2.7,3,3.2,3.5,3.7,4,4.2,4.5,4.7,5]:
-        hdb = DBSCAN(eps=eps,min_samples=8)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         hdb.fit(X)
 
         labels = hdb.labels_
@@ -1568,21 +1295,12 @@ def run_hdbscan(extract_features, extract_labels, indices,is_validation, isoPath
         _ari = metrics.adjusted_rand_score(labels_true, labels)
         print(f"_nmi:{_nmi}\t _ami:{_ami}\t _ari:{_ari}\n")
         if _nmi > nmi:
-<<<<<<< HEAD
             nmi = _nmi
             ami = _ami
             ari = _ari
 
     return nmi, ami, ari
 
-=======
-            nmi=_nmi
-            ami = _ami
-            ari = _ari
-
-
-    return nmi,ami,ari
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
 def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
     # Extract the features and labels of the test tweets
@@ -1619,17 +1337,10 @@ def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
     # Return number of test tweets, number of classes covered by the test tweets, and kMeans cluatering NMI
     return n_test_tweets, n_classes, nmi, ami, ari
 
-<<<<<<< HEAD
 
 def evaluate_model(extract_features, extract_labels, indices,
                    epoch, num_isolated_nodes, save_path, is_validation=True,
                    cluster_type='kmeans'):
-=======
-def evaluate_model(extract_features, extract_labels, indices,
-             epoch, num_isolated_nodes, save_path, is_validation=True, 
-             cluster_type='kmeans'):
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     message = ''
     message += '\nEpoch '
     message += str(epoch)
@@ -1686,10 +1397,7 @@ def evaluate_model(extract_features, extract_labels, indices,
 
     return nmi
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_path=None, remove_obsolete=2):
     """
     Intro:
@@ -1722,11 +1430,7 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
     # step1: verify total number of nodes
     assert length == data_split[i]  # 500
 
-<<<<<<< HEAD
     # step2.0: if is in initial/maintenance epochs, generate train and validation indices
-=======
-       # step2.0: if is in initial/maintenance epochs, generate train and validation indices
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     if train_i == i:
         # step3: randomly shuffle the graph indices
         train_indices = torch.randperm(length)
@@ -1743,11 +1447,7 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
         if save_path is not None:
             torch.save(train_indices, save_path + '/train_indices.pt')
             torch.save(validation_indices, save_path + '/validation_indices.pt')
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         return train_indices, validation_indices
         # step2.1: if is in inference(prediction) epochs, generate test indices
     else:
@@ -1757,13 +1457,8 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
 
         return test_indices
 
-<<<<<<< HEAD
 
 def gen_offline_masks(length, validation_percent=0.2, test_percent=0.1):
-=======
-def gen_offline_masks(length, validation_percent=0.2, test_percent=0.1):
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     test_length = int(length * test_percent)
     valid_length = int(length * validation_percent)
     train_length = length - valid_length - test_length
@@ -1773,7 +1468,6 @@ def gen_offline_masks(length, validation_percent=0.2, test_percent=0.1):
     valid_indices = samples[train_length:train_length + valid_length]
     test_indices = samples[train_length + valid_length:]
 
-<<<<<<< HEAD
     return train_indices, valid_indices, test_indices
 
 
@@ -1783,17 +1477,6 @@ def save_embeddings(extracted_features, save_path):
 
 
 # Mysampler
-=======
-
-    return train_indices, valid_indices, test_indices
-
-def save_embeddings(extracted_features, save_path):
-    
-    torch.save(extracted_features, save_path + '/final_embeddings.pt')
-    print('extracted features saved.')
-
-#Mysampler
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class MySampler(object):
 
     def __init__(self, sampler) -> None:
@@ -1802,11 +1485,7 @@ class MySampler(object):
         self.sampler = sampler
 
     def sample(self, multi_relational_edge_index: List[Tensor], node_idx, sizes, batch_size):
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         if self.sampler == 'RL_sampler':
             return self._RL_sample(multi_relational_edge_index, node_idx, sizes, batch_size)
         elif self.sampler == 'random_sampler':
@@ -1819,13 +1498,8 @@ class MySampler(object):
         outs = []
         all_n_ids = []
         for id, edge_index in enumerate(multi_relational_edge_index):
-<<<<<<< HEAD
             loader = NeighborSampler(edge_index=edge_index,
                                      sizes=sizes,
-=======
-            loader = NeighborSampler(edge_index=edge_index, 
-                                     sizes=sizes, 
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                                      node_idx=node_idx,
                                      return_e_id=False,
                                      batch_size=batch_size,
@@ -1835,11 +1509,7 @@ class MySampler(object):
                 outs.append(adjs)
                 all_n_ids.append(n_ids)
 
-<<<<<<< HEAD
             # print(id)
-=======
-            #print(id)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             assert id == 0
 
         return outs, all_n_ids
@@ -1851,21 +1521,12 @@ class MySampler(object):
 
         sizes = [random.randint(10, 100), random.randint(10, 50)]
         for edge_index in multi_relational_edge_index:
-<<<<<<< HEAD
             loader = NeighborSampler(edge_index=edge_index,
                                      sizes=sizes,
                                      node_idx=node_idx,
                                      return_e_id=False,
                                      batch_size=batch_size,
                                      num_workers=0)
-=======
-            loader = NeighborSampler(edge_index=edge_index, 
-                                    sizes=sizes, 
-                                    node_idx=node_idx,
-                                    return_e_id=False,
-                                    batch_size=batch_size,
-                                    num_workers=0)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             for id, (_, n_ids, adjs) in enumerate(loader):
                 # print(adjs)
                 outs.append(adjs)
@@ -1883,21 +1544,12 @@ class MySampler(object):
         sizes = [25, 15]
         for edge_index in multi_relational_edge_index:
 
-<<<<<<< HEAD
             loader = NeighborSampler(edge_index=edge_index,
                                      sizes=sizes,
                                      node_idx=node_idx,
                                      return_e_id=False,
                                      batch_size=batch_size,
                                      num_workers=0)
-=======
-            loader = NeighborSampler(edge_index=edge_index, 
-                                    sizes=sizes, 
-                                    node_idx=node_idx,
-                                    return_e_id=False,
-                                    batch_size=batch_size,
-                                    num_workers=0)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             for id, (_, n_ids, adjs) in enumerate(loader):
                 # print(adjs)
                 outs.append(adjs)
@@ -1908,12 +1560,8 @@ class MySampler(object):
 
         return outs, all_n_ids
 
-<<<<<<< HEAD
 
 # Metrics
-=======
-#Metrics
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class Metric:
     def __init__(self):
         pass
@@ -1930,10 +1578,7 @@ class Metric:
     def name(self):
         raise NotImplementedError
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class AccumulatedAccuracyMetric(Metric):
     """
     Works with classification model
@@ -1959,10 +1604,7 @@ class AccumulatedAccuracyMetric(Metric):
     def name(self):
         return 'Accuracy'
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class AverageNonzeroTripletsMetric(Metric):
     '''
     Counts average number of nonzero triplets found in minibatches
@@ -1984,12 +1626,8 @@ class AverageNonzeroTripletsMetric(Metric):
     def name(self):
         return 'Average nonzero triplets'
 
-<<<<<<< HEAD
 
 # model
-=======
-#model
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class MarGNN(nn.Module):
     def __init__(self, GNN_args, num_relations, inter_opt, is_shared=False):
         super(MarGNN, self).__init__()
@@ -2000,13 +1638,8 @@ class MarGNN(nn.Module):
         if not self.is_shared:
             self.intra_aggs = torch.nn.ModuleList([Intra_AGG(GNN_args) for _ in range(self.num_relations)])
         else:
-<<<<<<< HEAD
             self.intra_aggs = Intra_AGG(GNN_args)  # shared parameters
 
-=======
-            self.intra_aggs = Intra_AGG(GNN_args) # shared parameters
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         if self.inter_opt == 'cat_w_avg_mlp' or 'cat_wo_avg_mlp':
             in_dim, hid_dim, out_dim, heads = GNN_args
             mlp_args = self.num_relations * out_dim, out_dim
@@ -2035,7 +1668,6 @@ class MarGNN(nn.Module):
                 features.append(self.intra_aggs(x[n_ids[i]], adjs[i], device))
 
         features = torch.stack(features, dim=0)
-<<<<<<< HEAD
 
         features = self.inter_agg(features, RL_thresholds, self.inter_opt)
 
@@ -2044,16 +1676,6 @@ class MarGNN(nn.Module):
 
 # env
 def RL_neighbor_filter_full(multi_r_data, RL_thresholds, features, save_path=None):
-=======
-        
-        features = self.inter_agg(features, RL_thresholds, self.inter_opt) 
-
-        return features
-
-#env
-def RL_neighbor_filter_full(multi_r_data, RL_thresholds, features, save_path=None):
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     multi_remain_data = []
     multi_r_score = []
 
@@ -2065,11 +1687,7 @@ def RL_neighbor_filter_full(multi_r_data, RL_thresholds, features, save_path=Non
         node_scores = []
         for node in range(num_nodes):
             # get neighbors' index
-<<<<<<< HEAD
             neighbors_idx = torch.where(r_data[1] == node)[0]
-=======
-            neighbors_idx = torch.where(r_data[1]==node)[0]
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             # get neighbors
             neighbors = r_data[0, neighbors_idx]
             num_neighbors = neighbors.size(0)
@@ -2081,17 +1699,10 @@ def RL_neighbor_filter_full(multi_r_data, RL_thresholds, features, save_path=Non
             # => (threshold * num_neighbors)
             # see RL_neighbor_filter for details
             sorted_neighbors, sorted_index = dist.sort(descending=False)
-<<<<<<< HEAD
 
             if num_neighbors <= 5:
                 remain_node_index = torch.cat((remain_node_index, neighbors_idx))
                 continue  # add limitations
-=======
-            
-            if num_neighbors <= 5: 
-                remain_node_index = torch.cat((remain_node_index, neighbors_idx))
-                continue # add limitations
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
             threshold = float(RL_thresholds[i])
 
@@ -2106,42 +1717,24 @@ def RL_neighbor_filter_full(multi_r_data, RL_thresholds, features, save_path=Non
         edge_index = r_data[:, remain_node_index]
         multi_remain_data.append(edge_index)
 
-<<<<<<< HEAD
         node_scores = torch.FloatTensor(node_scores)  # from list
-=======
-        node_scores = torch.FloatTensor(node_scores) # from list
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         avg_node_scores = node_scores.sum(dim=1) / num_nodes
         multi_r_score.append(avg_node_scores)
 
     return multi_remain_data, multi_r_score
 
-<<<<<<< HEAD
 
 def multi_forward_agg(args, foward_args, iter_epoch):
-=======
-def multi_forward_agg(args, foward_args, iter_epoch):
-
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     # args prepare
     model, homo_data, all_num_samples, num_dim, sampler, multi_r_data, filtered_multi_r_data, device, RL_thresholds = foward_args
 
     if filtered_multi_r_data is None:
         filtered_multi_r_data = multi_r_data
-<<<<<<< HEAD
 
     extract_features = torch.FloatTensor([])
 
     num_batches = int(all_num_samples / args.batch_size) + 1
 
-=======
-    
-    extract_features = torch.FloatTensor([])
-
-    num_batches = int(all_num_samples / args.batch_size) + 1
-    
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     # all mask are then splited into mini-batch in order
     all_mask = torch.arange(0, num_dim, dtype=torch.long)
 
@@ -2159,12 +1752,8 @@ def multi_forward_agg(args, foward_args, iter_epoch):
             batch_labels = homo_data.y[batch_nodes]
 
             # sampling neighbors of batch nodes
-<<<<<<< HEAD
             adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
                                          batch_size=args.batch_size)
-=======
-            adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1], batch_size=args.batch_size)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
             pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
 
@@ -2173,30 +1762,19 @@ def multi_forward_agg(args, foward_args, iter_epoch):
             del pred
 
         # RL trainig
-<<<<<<< HEAD
         filtered_multi_r_data, multi_r_scores = RL_neighbor_filter_full(filtered_multi_r_data, RL_thresholds,
                                                                         extract_features)
-=======
-        filtered_multi_r_data, multi_r_scores = RL_neighbor_filter_full(filtered_multi_r_data, RL_thresholds, extract_features)
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         # return new RL thresholds
 
     return RL_thresholds
 
-<<<<<<< HEAD
 
 # layer
-=======
-#layer
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class GAT(nn.Module):
     '''
         adopt this module when using mini-batch
     '''
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     def __init__(self, in_dim, hid_dim, out_dim, heads) -> None:
         super(GAT, self).__init__()
         self.GAT1 = GATConv(in_channels=in_dim, out_channels=hid_dim, heads=heads, add_self_loops=False)
@@ -2210,10 +1788,6 @@ class GAT(nn.Module):
         # self.layers = torch.nn.ModuleList([self.GAT1, self.GAT2])
         # see Intra_AGG.forward()
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     def forward(self, x, adjs, device):
         for i, (edge_index, _, size) in enumerate(adjs):
             # x: Tensor, edge_index: Tensor
@@ -2225,16 +1799,10 @@ class GAT(nn.Module):
                 x = F.elu(x)
                 x = F.dropout(x, training=self.training)
             del edge_index
-<<<<<<< HEAD
 
         return x
 
 
-=======
-            
-        return x
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class Intra_AGG(nn.Module):
 
     def __init__(self, GAT_args):
@@ -2245,19 +1813,11 @@ class Intra_AGG(nn.Module):
         self.gnn = GAT(in_dim, hid_dim, out_dim, heads)
 
     def forward(self, x, adjs, device):
-<<<<<<< HEAD
         x = self.gnn(x, adjs, device)
 
         return x
 
 
-=======
-        
-        x = self.gnn(x, adjs, device)
-        
-        return x
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class Inter_AGG(nn.Module):
 
     def __init__(self, mlp_args=None):
@@ -2274,11 +1834,7 @@ class Inter_AGG(nn.Module):
             )
 
     def forward(self, features, thresholds, inter_opt):
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         batch_size = features[0].size(0)
         features = torch.transpose(features, dim0=0, dim1=1)
         if inter_opt == 'cat_wo_avg':
@@ -2297,7 +1853,6 @@ class Inter_AGG(nn.Module):
         elif inter_opt == 'add_w_avg':
             features = torch.mul(features, thresholds).sum(dim=1)
         # elif inter_opt == 'multi_avg':
-<<<<<<< HEAD
         # use thresholds as the attention and remain multi-heads in last layer
         # of GAT will improve the performance
         # features = torch.mul(features, thresholds).sum(dim=1)
@@ -2306,15 +1861,6 @@ class Inter_AGG(nn.Module):
 
 
 # neighborRL
-=======
-            # use thresholds as the attention and remain multi-heads in last layer 
-            # of GAT will improve the performance
-            # features = torch.mul(features, thresholds).sum(dim=1)
-        
-        return features
-
-#neighborRL
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def pre_node_dist(multi_r_data, features, save_path=None):
     """This is used to culculate the similarity between node and 
     its neighbors in advance in order to avoid the repetitive computation.
@@ -2333,11 +1879,7 @@ def pre_node_dist(multi_r_data, features, save_path=None):
         num_nodes = unique_nodes.size(0)
         for node in range(num_nodes):
             # get neighbors' index
-<<<<<<< HEAD
             neighbors_idx = torch.where(r_data[1] == node)[0]
-=======
-            neighbors_idx = torch.where(r_data[1]==node)[0]
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
             # get neighbors
             neighbors = r_data[0, neighbors_idx]
             num_neighbors = neighbors.size(0)
@@ -2348,15 +1890,9 @@ def pre_node_dist(multi_r_data, features, save_path=None):
             # smaller is better and we use 'top p' in our paper 
             # (threshold * num_neighbors) see RL_neighbor_filter for details
             sorted_neighbors, sorted_index = dist.sort(descending=False)
-<<<<<<< HEAD
             node_config[node] = {'neighbors_idx': neighbors_idx,
                                  'sorted_neighbors': sorted_neighbors,
                                  'sorted_index': sorted_index,
-=======
-            node_config[node] = {'neighbors_idx': neighbors_idx, 
-                                 'sorted_neighbors': sorted_neighbors, 
-                                 'sorted_index': sorted_index, 
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
                                  'num_neighbors': num_neighbors}
         relation_config['relation_%d' % relation_id] = node_config
 
@@ -2365,10 +1901,7 @@ def pre_node_dist(multi_r_data, features, save_path=None):
         # print(save_path)
         np.save(save_path, relation_config)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def RL_neighbor_filter(multi_r_data, RL_thresholds, load_path):
     args = args_define.args
 
@@ -2379,11 +1912,7 @@ def RL_neighbor_filter(multi_r_data, RL_thresholds, load_path):
     multi_remain_data = []
 
     for i in range(len(relations)):
-<<<<<<< HEAD
         print(f"Processing relation {i + 1}/{len(relations)}: {relations[i]}")
-=======
-        print(f"Processing relation {i+1}/{len(relations)}: {relations[i]}")
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         edge_index: Tensor = multi_r_data[i]
         unique_nodes = edge_index[1].unique()
         num_nodes = unique_nodes.size(0)
@@ -2399,15 +1928,9 @@ def RL_neighbor_filter(multi_r_data, RL_thresholds, load_path):
             sorted_neighbors = relation_config[relations[i]][node]['sorted_neighbors']
             sorted_index = relation_config[relations[i]][node]['sorted_index']
 
-<<<<<<< HEAD
             if num_neighbors <= 5:
                 remain_node_index = torch.cat((remain_node_index, neighbors_idx))
                 continue  # add limitations
-=======
-            if num_neighbors <= 5: 
-                remain_node_index = torch.cat((remain_node_index, neighbors_idx))
-                continue # add limitations
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 
             threshold = float(RL_thresholds[i])
 
@@ -2434,27 +1957,16 @@ def RL_neighbor_filter(multi_r_data, RL_thresholds, load_path):
         edge_index = edge_index[:, remain_node_index]
         multi_remain_data.append(edge_index)
         print(f"Finished processing relation {relations[i]}")
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     # 保存 multi_remain_data
     save_path = os.path.join(args.file_path, 'multi_remain_data.pt')
     torch.save(multi_remain_data, save_path)
     print(f"Filtered multi_r_data saved successfully at {save_path}")
 
-<<<<<<< HEAD
     return multi_remain_data
 
 
 # TripletLoss
-=======
-
-    return multi_remain_data
-    
-#TripletLoss
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class AvgReadout(nn.Module):
     def __init__(self):
         super(AvgReadout, self).__init__()
@@ -2462,10 +1974,7 @@ class AvgReadout(nn.Module):
     def forward(self, seq):
         return torch.mean(seq, 0)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class Discriminator(nn.Module):
     def __init__(self, n_h):
         super(Discriminator, self).__init__()
@@ -2492,10 +2001,7 @@ class Discriminator(nn.Module):
         # print("testing, shape of logits: ", logits.size())
         return logits
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class OnlineTripletLoss(nn.Module):
     """
     Online Triplets loss
@@ -2534,7 +2040,6 @@ class OnlineTripletLoss(nn.Module):
 
         return losses.mean(), len(triplets)
 
-<<<<<<< HEAD
 
 def pdist(vectors):
     distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(
@@ -2542,12 +2047,6 @@ def pdist(vectors):
     return distance_matrix
 
 
-=======
-def pdist(vectors):
-    distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(dim=1).view(-1, 1)
-    return distance_matrix
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class TripletSelector:
     """
     Implementation should return indices of anchors, positive and negative samples
@@ -2560,10 +2059,7 @@ class TripletSelector:
     def get_triplets(self, embeddings, labels):
         raise NotImplementedError
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 class FunctionNegativeTripletSelector(TripletSelector):
     """
     For each positive pair, takes the hardest negative sample (with the greatest triplet loss value) to create a triplet
@@ -2606,133 +2102,43 @@ class FunctionNegativeTripletSelector(TripletSelector):
                     hard_negative = negative_indices[hard_negative]
                     triplets.append([anchor_positive[0], anchor_positive[1], hard_negative])
 
-<<<<<<< HEAD
         # if len(triplets) == 0:
-=======
-        #if len(triplets) == 0:
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
         #    triplets.append([anchor_positive[0], anchor_positive[1], negative_indices[0]])
 
         triplets = np.array(triplets)
 
         return torch.LongTensor(triplets)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def hardest_negative(loss_values):
     hard_negative = np.argmax(loss_values)
     return hard_negative if loss_values[hard_negative] > 0 else None
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def HardestNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                               negative_selection_fn=hardest_negative,
                                                                                               cpu=cpu)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
 def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     args = args_define().args
     #dataset = DatasetLoader("arabic_twitter").load_data()
     dataset = DatasetLoader("maven").load_data()
     finevent = FinEvent(args, dataset)
 
     # finevent.preprocess()
-=======
-    from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
-
-    class args_define():
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--n_epochs', default=5, type=int, help="Number of initial-training/maintenance-training epochs.")
-        parser.add_argument('--window_size', default=3, type=int, help="Maintain the model after predicting window_size blocks.")
-        parser.add_argument('--patience', default=5, type=int, 
-                            help="Early stop if performance did not improve in the last patience epochs.")
-        parser.add_argument('--margin', default=3., type=float, help="Margin for computing triplet losses")
-        parser.add_argument('--lr', default=1e-3, type=float, help="Learning rate")
-        parser.add_argument('--batch_size', default=50, type=int,
-                            help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-        parser.add_argument('--hidden_dim', default=128, type=int, help="Hidden dimension")
-        parser.add_argument('--out_dim', default=64, type=int, help="Output dimension of tweet representations")
-        parser.add_argument('--heads', default=4, type=int, help="Number of heads used in GAT")
-        parser.add_argument('--validation_percent', default=0.2, type=float, help="Percentage of validation nodes(tweets)")
-        parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False, action='store_true',
-                            help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-        parser.add_argument('--is_shared', default=False)
-        parser.add_argument('--inter_opt', default='cat_w_avg')
-        parser.add_argument('--is_initial', default=True)
-        parser.add_argument('--sampler', default='RL_sampler')
-        parser.add_argument('--cluster_type', default='kmeans', help="Types of clustering algorithms")  # dbscan
-
-        # RL-0
-        parser.add_argument('--threshold_start0', default=[[0.2],[0.2],[0.2]], type=float,
-                            help="The initial value of the filter threshold for state1 or state3")
-        parser.add_argument('--RL_step0', default=0.02, type=float,
-                            help="The step size of RL for state1 or state3")
-        parser.add_argument('--RL_start0', default=0, type=int,
-                            help="The starting epoch of RL for state1 or state3")
-
-        # RL-1
-        parser.add_argument('--eps_start', default=0.001, type=float,
-                            help="The initial value of the eps for state2")
-        parser.add_argument('--eps_step', default=0.02, type=float,
-                            help="The step size of eps for state2")
-        parser.add_argument('--min_Pts_start', default=2, type=int,
-                            help="The initial value of the min_Pts for state2")
-        parser.add_argument('--min_Pts_step', default=1, type=int,
-                            help="The step size of min_Pts for state2")
-
-        # other arguments
-        parser.add_argument('--use_cuda', dest='use_cuda', default=True, 
-                            action='store_true', help="Use cuda")
-        parser.add_argument('--data_path', default='../model_saved/finevent/incremental_test/', type=str,
-                            help="Path of features, labels and edges")
-        parser.add_argument('--file_path', default='../model_saved/finevent/', type=str,
-                            help="Path of files to save")
-        # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-        parser.add_argument('--mask_path', default=None, type=str,
-                            help="File path that contains the training, validation and test masks")
-        # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-        parser.add_argument('--log_interval', default=10, type=int,
-                            help="Log interval")
-        args = parser.parse_args()
-
-    args = args_define.args
-    dataset = Event2012_Dataset.load_data()
-    finevent = FinEvent(args,dataset)
-
-    #finevent.preprocess()
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
     finevent.fit()
     predictions, ground_truths = finevent.detection()
 
     # Evaluate model
     finevent.evaluate(predictions, ground_truths)
-<<<<<<< HEAD
-=======
-
- 
-
-
-
-
->>>>>>> 52773300149e147b47eace9803e3651c4f43f810
