@@ -1,5 +1,5 @@
-.. image:: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
-   :target: https://github.com/ChenBeici/SocialED/blob/main/docs/SocialED.png?raw=true
+.. image:: https://github.com/RingBDStack/SocialED/blob/main/docs/SocialED.png?raw=true
+   :target: https://github.com/RingBDStack/SocialED/blob/main/docs/SocialED.png?raw=true
    :width: 1050
    :alt: SocialED Logo
    :align: center
@@ -8,12 +8,12 @@
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
-.. image:: https://img.shields.io/github/stars/ChenBeici/SocialED.svg
-   :target: https://github.com/ChenBeici/SocialED/stargazers
+.. image:: https://img.shields.io/github/stars/RingBDStack/SocialED.svg
+   :target: https://github.com/RingBDStack/SocialED/stargazers
    :alt: GitHub stars
 
-.. image:: https://img.shields.io/github/forks/ChenBeici/SocialED.svg?color=blue
-   :target: https://github.com/ChenBeici/SocialED/network
+.. image:: https://img.shields.io/github/forks/RingBDStack/SocialED.svg?color=blue
+   :target: https://github.com/RingBDStack/SocialED/network
    :alt: GitHub forks
 
 .. image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
@@ -21,8 +21,8 @@
    :alt: testing
 
 
-.. image:: https://img.shields.io/github/license/ChenBeici/SocialED.svg
-   :target: https://github.com/ChenBeici/SocialED/blob/master/LICENSE
+.. image:: https://img.shields.io/github/license/RingBDStack/SocialED.svg
+   :target: https://github.com/RingBDStack/SocialED/blob/master/LICENSE
    :alt: License
 
 
@@ -105,7 +105,7 @@ Alternatively, you could clone and run setup.py file:
     conda activate SocialED
 
     # Installation
-    git clone https://github.com/ChenBeici/SocialED.git
+    git clone https://github.com/RingBDStack/SocialED.git
     cd SocialED
     pip install -r requirements.txt
     pip install .

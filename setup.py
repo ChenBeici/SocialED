@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='SocialED',
-    version='0.1.0',
+    version='1.0.1',
     packages=find_packages(),
     author='beici',
     author_email='SY2339225@buaa.edu.cn',
