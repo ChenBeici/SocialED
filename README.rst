@@ -7,7 +7,7 @@
 |badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
 
 .. |badge_version| image:: https://img.shields.io/pypi/v/socialed.svg?color=blue
-   :target: https://pypi.org/project/SocialED/
+   :target: https://pypi.org/project/socialed/
    :alt: PyPI version
 
 
