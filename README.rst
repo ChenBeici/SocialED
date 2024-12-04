@@ -6,10 +6,9 @@
 
 |badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
 
-.. |badge_version| image:: https://img.shields.io/pypi/v/socialed.svg?color=blue
+.. |badge_version| image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
    :target: https://pypi.org/project/socialed/
    :alt: PyPI version
-
 
 .. |badge_docs| image:: https://readthedocs.org/projects/socialed/badge/?version=latest
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
