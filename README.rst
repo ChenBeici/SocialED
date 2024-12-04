@@ -4,24 +4,38 @@
    :alt: SocialED Logo
    :align: center
 
-.. image:: https://readthedocs.org/projects/socialed/badge/?version=latest
+|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
+
+.. |badge_version| image:: https://img.shields.io/pypi/v/SocialED.svg?color=blue
+   :target: https://pypi.org/project/SocialED/
+   :alt: PyPI version
+
+
+.. |badge_docs| image:: https://readthedocs.org/projects/socialed/badge/?version=latest
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
-.. image:: https://img.shields.io/github/stars/RingBDStack/SocialED.svg
+.. |badge_stars| image:: https://img.shields.io/github/stars/RingBDStack/SocialED.svg
    :target: https://github.com/RingBDStack/SocialED/stargazers
    :alt: GitHub stars
 
-.. image:: https://img.shields.io/github/forks/RingBDStack/SocialED.svg?color=blue
+.. |badge_forks| image:: https://img.shields.io/github/forks/RingBDStack/SocialED.svg?color=blue
    :target: https://github.com/RingBDStack/SocialED/network
    :alt: GitHub forks
 
-.. image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
+.. |badge_downloads| image:: https://static.pepy.tech/personalized-badge/SocialED?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads
+   :target: https://pepy.tech/project/SocialED
+   :alt: PyPI downloads
+   
+.. |badge_testing| image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
    :target: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml
    :alt: testing
 
+.. |badge_coverage| image:: https://coveralls.io/repos/github/pygod-team/pygod/badge.svg?branch=main
+   :target: https://coveralls.io/github/pygod-team/pygod?branch=main
+   :alt: Coverage Status
 
-.. image:: https://img.shields.io/github/license/RingBDStack/SocialED.svg
+.. |badge_license| image:: https://img.shields.io/github/license/RingBDStack/SocialED.svg
    :target: https://github.com/RingBDStack/SocialED/blob/master/LICENSE
    :alt: License
 
