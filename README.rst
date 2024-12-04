@@ -6,7 +6,7 @@
 
 |badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
 
-.. |badge_version| image:: https://img.shields.io/pypi/v/SocialED.svg?color=blue
+.. |badge_version| image:: https://img.shields.io/pypi/v/socialed.svg?color=blue
    :target: https://pypi.org/project/SocialED/
    :alt: PyPI version
 
@@ -15,11 +15,11 @@
    :target: https://socialed.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
-.. |badge_stars| image:: https://img.shields.io/github/stars/RingBDStack/SocialED.svg
+.. |badge_stars| image:: https://img.shields.io/github/stars/RingBDStack/SocialED?style=flat
    :target: https://github.com/RingBDStack/SocialED/stargazers
    :alt: GitHub stars
 
-.. |badge_forks| image:: https://img.shields.io/github/forks/RingBDStack/SocialED.svg?color=blue
+.. |badge_forks| image:: https://img.shields.io/github/forks/RingBDStack/SocialED?style=flat
    :target: https://github.com/RingBDStack/SocialED/network
    :alt: GitHub forks
 
