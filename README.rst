@@ -199,27 +199,29 @@ Algorithm Descriptions
 
 We provide their statistics as follows.
 
-==================  =====  ==========  ============  ==============  =========================
-Algorithm           Year   Category    Environment   Supervision     Ref
-==================  =====  ==========  ============  ==============  =========================
-LDA                 2003   Others      Offline       Supervised      [#Blei2003lda]_
-BiLSTM              2005   Others      Offline       Supervised      [#Graves2005bilstm]_
-Word2Vec            2013   Others      Offline       Supervised      [#Mikolov2013word2vec]_
-GloVe               2014   Others      Offline       Supervised      [#Pennington2014glove]_
-WMD                 2015   Others      Offline       Supervised      [#Kusner2015wmd]_
-BERT                2018   PLM         Offline       Supervised      [#Devlin2018bert]_
-SBERT               2019   PLM         Offline       Supervised      [#Reimers2019sbert]_
-EventX              2020   Others      Online        Supervised      [#Liu2020eventx]_
-CLKD                2021   GNN         Online        Supervised      [#Ren2021clkd]_
-KPGNN               2021   GNN         Online        Supervised      [#Cao2021kpgnn]_
-FinEvent            2022   GNN         Online        Supervised      [#Peng2022finevent]_
-QSGNN               2022   GNN         Online        Supervised      [#Ren2022qsgnn]_
-ETGNN               2023   GNN         Offline       Supervised      [#Ren2023etgnn]_
-HCRC                2023   GNN         Online        Unsupervised    [#Guo2023hcrc]_
-UCLSED              2023   GNN         Offline       Supervised      [#Ren2023uclsad]_
-RPLMSED             2024   PLM         Online        Supervised      [#Li2024rplmsed]_
-HISEvent            2024   Others      Online        Unsupervised    [#Cao2024hisevent]_
-==================  =====  ==========  ============  ==============  =========================
+==================  ===============  ================    ============  ==============  =========================
+     Algorithm      |      Year      |    Category       |  Environment  |  Supervision   |            Ref
+==================  ===============  ================    ============  ==============  =========================
+        LDA         |      2003      |       Topic       |    Offline    |   Supervised    |  [#Blei2003lda]_
+      BiLSTM        |      2005      |  Deep learning    |    Offline    |   Supervised    |  [#Graves2005bilstm]_
+     Word2Vec       |      2013      | Word embeddings   |    Offline    |   Supervised    |  [#Mikolov2013word2vec]_
+       GloVe        |      2014      | Word embeddings   |    Offline    |   Supervised    |  [#Pennington2014glove]_
+        WMD         |      2015      |    Similarity     |    Offline    |   Supervised    |  [#Kusner2015wmd]_
+       BERT         |      2018      |       PLMs        |    Offline    |   Supervised    |  [#Devlin2018bert]_
+      SBERT         |      2019      |       PLMs        |    Offline    |   Supervised    |  [#Reimers2019sbert]_
+      EventX        |      2020      | Community detection |  Online    |   Supervised    |  [#Liu2020eventx]_
+       CLKD         |      2021      |       GNNs        |    Online     |   Supervised    |  [#Ren2021clkd]_
+      KPGNN         |      2021      |       GNNs        |    Online     |   Supervised    |  [#Cao2021kpgnn]_
+     FinEvent       |      2022      |       GNNs        |    Online     |   Supervised    |  [#Peng2022finevent]_
+      QSGNN         |      2022      |       GNNs        |    Online     |   Supervised    |  [#Ren2022qsgnn]_
+      ETGNN         |      2023      |       GNNs        |    Offline    | Unsupervised    |  [#Ren2023etgnn]_
+       HCRC         |      2023      |       GNNs        |    Online     | Unsupervised    |  [#Guo2023hcrc]_
+      UCLSED        |      2023      |       GNNs        |    Offline    |   Supervised    |  [#Ren2023uclsad]_
+     RPLMSED        |      2024      |       PLMs        |    Online     |   Supervised    |  [#Li2024rplmsed]_
+     HISEvent       |      2024      | Community detection |  Online    | Unsupervised    |  [#Cao2024hisevent]_
+   ADPSEMEvent      |      2024      | Community detection |  Online    | Unsupervised    |  [#Yang2024adpsemevent]_
+==================  ===============  ================  ============  ==============  =========================
+
 
 
 
@@ -319,3 +321,5 @@ References
 .. [#mcminn2013event2012] McMinn, A.J., Moshfeghi, Y., and Jose, J.M., 2013. Building a large-scale corpus for evaluating event detection on Twitter. In Proceedings of the 22nd ACM International Conference on Information & Knowledge Management, pp. 409-418.
 
 .. [#mazoyer2020event2018] Mazoyer, B., Cagé, J., Hervé, N., and Hudelot, C., 2020. A French corpus for event detection on Twitter. European Language Resources Association (ELRA).
+
+
