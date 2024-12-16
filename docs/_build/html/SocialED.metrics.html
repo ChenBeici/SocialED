@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Utility Functions" href="SocialED.utils.html" /><link rel="prev" title="SocialED.detector" href="SocialED.detector.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.utils" href="SocialED.utils.html" /><link rel="prev" title="SocialED.detector" href="SocialED.detector.html" />
 
     <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
         <title>SocialED.metrics - SocialED documentation</title>
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SocialED.tests.html">SocialED.tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
@@ -264,230 +264,11 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="module-SocialED.metrics.metric">
-<span id="socialed-metrics-metric"></span><h2>SocialED.metrics.metric<a class="headerlink" href="#module-SocialED.metrics.metric" title="Permalink to this heading">¶</a></h2>
-<p>Metrics used to evaluate the outlier detection performance</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_average_precision">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_average_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_average_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_average_precision" title="Permalink to this definition">¶</a></dt>
-<dd><p>Average precision score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ap</strong> – Average precision score.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_f1">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_f1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_f1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_f1" title="Permalink to this definition">¶</a></dt>
-<dd><p>F1 score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>pred</strong> (<em>torch.Tensor</em>) – Outlier prediction in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>f1</strong> – F1 score.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_precision_at_k">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_precision_at_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_precision_at_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_precision_at_k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Precision score for top k instances with the highest outlier scores.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of instances to evaluate. <code class="docutils literal notranslate"><span class="pre">None</span></code> for
-precision. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>precision_at_k</strong> – Precision for top k instances with the highest outlier scores.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_recall_at_k">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_recall_at_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_recall_at_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_recall_at_k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recall score for top k instances with the highest outlier scores.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of instances to evaluate. <code class="docutils literal notranslate"><span class="pre">None</span></code> for
-recall. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>recall_at_k</strong> – Recall for top k instances with the highest outlier scores.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_roc_auc">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_roc_auc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_roc_auc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_roc_auc" title="Permalink to this definition">¶</a></dt>
-<dd><p>ROC-AUC score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>roc_auc</strong> – Average ROC-AUC score across different labels.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="socialed-metrics-metric">
+<h2>SocialED.metrics.metric<a class="headerlink" href="#socialed-metrics-metric" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="module-SocialED.metrics">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-SocialED.metrics" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.eval_average_precision">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.</span></span><span class="sig-name descname"><span class="pre">eval_average_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_average_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.eval_average_precision" title="Permalink to this definition">¶</a></dt>
-<dd><p>Average precision score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ap</strong> – Average precision score.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.eval_f1">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.</span></span><span class="sig-name descname"><span class="pre">eval_f1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_f1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.eval_f1" title="Permalink to this definition">¶</a></dt>
-<dd><p>F1 score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>pred</strong> (<em>torch.Tensor</em>) – Outlier prediction in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>f1</strong> – F1 score.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.eval_precision_at_k">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.</span></span><span class="sig-name descname"><span class="pre">eval_precision_at_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_precision_at_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.eval_precision_at_k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Precision score for top k instances with the highest outlier scores.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of instances to evaluate. <code class="docutils literal notranslate"><span class="pre">None</span></code> for
-precision. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>precision_at_k</strong> – Precision for top k instances with the highest outlier scores.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.eval_recall_at_k">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.</span></span><span class="sig-name descname"><span class="pre">eval_recall_at_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_recall_at_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.eval_recall_at_k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recall score for top k instances with the highest outlier scores.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of instances to evaluate. <code class="docutils literal notranslate"><span class="pre">None</span></code> for
-recall. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>recall_at_k</strong> – Recall for top k instances with the highest outlier scores.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.eval_roc_auc">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.</span></span><span class="sig-name descname"><span class="pre">eval_roc_auc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_roc_auc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.eval_roc_auc" title="Permalink to this definition">¶</a></dt>
-<dd><p>ROC-AUC score for binary classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>label</strong> (<em>torch.Tensor</em>) – Labels in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>, where 1 represents outliers,
-0 represents normal instances.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em>) – Outlier scores in shape of <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>roc_auc</strong> – Average ROC-AUC score across different labels.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
 </section>
 </section>
 
@@ -501,7 +282,7 @@ recall. Default: <code class="docutils literal notranslate"><span class="pre">No
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Utility Functions</div>
+                <div class="title">SocialED.utils</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -548,22 +329,8 @@ recall. Default: <code class="docutils literal notranslate"><span class="pre">No
             <ul>
 <li><a class="reference internal" href="#">SocialED.metrics</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-SocialED.metrics.metric">SocialED.metrics.metric</a><ul>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_average_precision"><code class="docutils literal notranslate"><span class="pre">eval_average_precision()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_f1"><code class="docutils literal notranslate"><span class="pre">eval_f1()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_precision_at_k"><code class="docutils literal notranslate"><span class="pre">eval_precision_at_k()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_recall_at_k"><code class="docutils literal notranslate"><span class="pre">eval_recall_at_k()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_roc_auc"><code class="docutils literal notranslate"><span class="pre">eval_roc_auc()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-SocialED.metrics">Module contents</a><ul>
-<li><a class="reference internal" href="#SocialED.metrics.eval_average_precision"><code class="docutils literal notranslate"><span class="pre">eval_average_precision()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.eval_f1"><code class="docutils literal notranslate"><span class="pre">eval_f1()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.eval_precision_at_k"><code class="docutils literal notranslate"><span class="pre">eval_precision_at_k()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.eval_recall_at_k"><code class="docutils literal notranslate"><span class="pre">eval_recall_at_k()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.eval_roc_auc"><code class="docutils literal notranslate"><span class="pre">eval_roc_auc()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#socialed-metrics-metric">SocialED.metrics.metric</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
