@@ -287,7 +287,6 @@ Inspired by the API designs of established frameworks, we developed a unified AP
 
 ### 💻 Example Usage
 
-.. code-block:: python
 
     from SocialED.dataset import MAVEN                 # Load the dataset
     dataset = MAVEN().load_data()   # Load "arabic_twitter" dataset
@@ -356,28 +355,28 @@ The library provides several utility functions including:
 ### Core Team
 
 🎓 **Kun Zhang**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 zhangkun@ustc.edu.cn
+*Beihang University*  
+📧 zhangkun23@buaa.edu.cn
 
 🎓 **Xiaoyan Yu**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 yuxiaoyan@mail.ustc.edu.cn
+*Beijing Institute of Technology*  
+📧 xiaoyan.yu@bit.edu.cn
 
 🎓 **Pu Li**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 lipu@mail.ustc.edu.cn
+*Kunming University of Science and Technology*  
+📧 lip@stu.kust.edu.cn
 
 🎓 **Ye Tian**  
 *Laboratory for Advanced Computing and Intelligence Engineering*  
 📧 sweetwild@mail.ustc.edu.cn
 
-🎓 **Hao Peng**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 haopeng@mail.ustc.edu.cn
+🎓 **Hao Peng** *(Corresponding author)*  
+*Beihang University*  
+📧 penghao@buaa.edu.cn
 
 🎓 **Philip S. Yu**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 philip@mail.ustc.edu.cn
+*University of Illinois at Chicago*  
+📧 psyu@uic.edu
 
 
 ## 📊 Citation
