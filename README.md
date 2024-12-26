@@ -9,6 +9,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/ChenBeici/SocialED/badge.svg?branch=main)](https://coveralls.io/github/ChenBeici/SocialED?branch=main)
 [![License](https://img.shields.io/github/license/RingBDStack/SocialED.svg)](https://github.com/RingBDStack/SocialED/blob/master/LICENSE)
 [![CodeQL](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg)](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml)
+[![arXiv](https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2412.13472)
+
 
 ---
 
@@ -23,6 +25,7 @@ Social Event Detection (SED) is a cutting-edge research area in AI and NLP that 
 - 🔍 Automatically identifying and analyzing events from social media platforms (Twitter, Facebook, etc.)
 - 🌎 Covering diverse event types from natural disasters to viral phenomena
 - 🤖 Leveraging AI to understand real-world events through social data
+
 
 ## 📚 About SocialED
 
@@ -344,6 +347,33 @@ The library provides several utility functions including:
    * Trend analysis capabilities
    * Support for streaming data
 
+## 👥 Contributors
+
+### Core Team
+
+🎓 **Kun Zhang**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 zhangkun@ustc.edu.cn
+
+🎓 **Xiaoyan Yu**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 yuxiaoyan@mail.ustc.edu.cn
+
+🎓 **Pu Li**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 lipu@mail.ustc.edu.cn
+
+🎓 **Ye Tian**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 sweetwild@mail.ustc.edu.cn
+
+🎓 **Hao Peng**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 haopeng@mail.ustc.edu.cn
+
+🎓 **Philip S. Yu**  
+*Laboratory for Advanced Computing and Intelligence Engineering*  
+📧 philip@mail.ustc.edu.cn
 
 
 ## 📊 Citation

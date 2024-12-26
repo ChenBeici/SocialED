@@ -13,7 +13,7 @@ class DatasetLoader:
         self.dir_path = dir_path
         self.dataset = dataset
         self.default_root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../dataset/data"))
-        print(f"Data root path: {self.default_root_path}")  # 调试信息
+        #print(f"Data root path: {self.default_root_path}")  # 调试信息
         os.makedirs(self.default_root_path, exist_ok=True)
         
         self.required_columns = [
@@ -68,7 +68,13 @@ class DatasetLoader:
         )
 
     def load_data(self):
-        raise NotImplementedError("Subclasses must implement load_data()")
+        """Temporary implementation that returns empty dataset"""
+        print(f"Loading {self.dataset} dataset (mock data)")
+        return {
+            'texts': [],
+            'labels': [],
+            'metadata': {'name': self.dataset}
+        }
 
     def get_dataset_language(self):
         """
@@ -100,6 +106,15 @@ class DatasetLoader:
         if not language:
             raise ValueError(f"Unsupported dataset: {self.dataset}. Supported datasets are: {', '.join(dataset_language_map.keys())}")
         return language
+
+    def get_dataset_name(self):
+        """
+        Get the name of the current dataset.
+        
+        Returns:
+            str: The name of the dataset.
+        """
+        return self.dataset
 
 class MAVEN(DatasetLoader):
     def __init__(self, dir_path=None):
@@ -338,7 +353,6 @@ class KBP(DatasetLoader):
 if __name__ == "__main__":
     # Test MAVEN dataset
     #maven = MAVEN()
-    dataset = MAVEN().load_data()
-    print("MAVEN dataset head:")
-    print(dataset.head())
-    
+    #dataset = MAVEN().load_data()
+    print(Event2018().get_dataset_name())
+    print(Event2018().get_dataset_language())

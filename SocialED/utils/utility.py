@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """A set of utility functions to support outlier detection.
 """
-# Author: Yue Zhao <zhaoy@cmu.edu>
-# License: BSD 2 clause
+
 
 import os
 import torch
@@ -298,6 +297,7 @@ def validate_device(gpu_id):
 def check_parameter(param, low=MIN_INT, high=MAX_INT, param_name='',
                     include_left=False, include_right=False):
     """Check if an input is within the defined range.
+    
     Parameters
     ----------
     param : int, float
