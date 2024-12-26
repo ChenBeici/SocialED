@@ -1,4 +1,5 @@
 ![SocialED Logo](https://github.com/RingBDStack/SocialED/blob/main/docs/SocialED.png?raw=true)
+<div align="center">
 
 [![PyPI version](https://img.shields.io/pypi/v/socialed.svg?color=brightgreen)](https://pypi.org/project/SocialED/)
 [![Documentation status](https://readthedocs.org/projects/socialed/badge/?version=latest)](https://socialed.readthedocs.io/en/latest/?badge=latest)
@@ -7,7 +8,6 @@
 [![PyPI downloads](https://static.pepy.tech/personalized-badge/SocialED?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/SocialED)
 [![testing](https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg)](https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ChenBeici/SocialED/badge.svg?branch=main)](https://coveralls.io/github/ChenBeici/SocialED?branch=main)
-<div align="center">
 
 [![License](https://img.shields.io/github/license/RingBDStack/SocialED.svg)](https://github.com/RingBDStack/SocialED/blob/master/LICENSE)
 [![CodeQL](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg)](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml)
