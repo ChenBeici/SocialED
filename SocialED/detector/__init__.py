@@ -35,6 +35,6 @@ __all__ = [
     "HCRC",
     "UCLSED",
     "RPLM_SED",
-    "HISEvent" #test160s
+    "HISEvent", #test160s
     "ADPSemEvent"
 ]

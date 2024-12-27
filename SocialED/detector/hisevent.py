@@ -21,7 +21,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 #2012 user_id,user_mentions,hashtags,entities,text,event_id
-class HISEvent():
+class HISEvent:
     def __init__(self, dataset):
         self.dataset = dataset
         self.language = dataset.get_dataset_language()
