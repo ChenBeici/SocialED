@@ -394,9 +394,6 @@ The library provides several utility functions including:
 
 ## 📚 References
 
-## 📚 References
-
-### Foundational Methods
 * D.M. Blei, A.Y. Ng, and M.I. Jordan. Latent Dirichlet allocation. Journal of Machine Learning Research, 3(Jan):993-1022, 2003.
 
 * A. Graves and J. Schmidhuber. Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5-6):602-610, 2005.
@@ -411,7 +408,6 @@ The library provides several utility functions including:
 
 * N. Reimers and I. Gurevych. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of EMNLP-IJCNLP, pages 3980-3990, 2019.
 
-### Social Event Detection Methods
 * B. Liu, F.X. Han, D. Niu, L. Kong, K. Lai, and Y. Xu. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data, 14(3):1-28, 2020.
 
 * J. Ren, H. Peng, L. Jiang, J. Wu, Y. Tong, L. Wang, X. Bai, B. Wang, and Q. Yang. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084, 2021.
