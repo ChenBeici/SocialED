@@ -166,7 +166,7 @@ The library integrates methods ranging from classic approaches like LDA and BiLS
 
 SocialED implements the following algorithms:
 
-|    Methods    |       Year        |       Backbone        |       Scenario        |    Supervision    |    Reference    |
+|    Methods    |       Year        |       Backbone        |       Scenario        |    Supervision    |    Paper    |
 | :-----------: | :---------------: | :------------------: | :------------------: | :---------------: | :---------------: |
 |  LDA  |       2003       |       Topic        |        Offline         | Unsupervised | [Blei2003lda](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf) |
 |   BiLSTM   |       2005       |    Deep learning    |        Offline         | Supervised | [Graves2005bilstm](https://www.sciencedirect.com/science/article/abs/pii/S0893608005001206) |
