@@ -394,41 +394,44 @@ The library provides several utility functions including:
 
 ## 📚 References
 
-[Blei2003lda]: Blei, D.M., Ng, A.Y., and Jordan, M.I., 2003. Latent Dirichlet allocation. Journal of Machine Learning Research, 3(Jan), pp. 993-1022.
+## 📚 References
 
-[Graves2005bilstm]: Graves, A., and Schmidhuber, J., 2005. Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5-6), pp. 602-610. Elsevier.
+### Foundational Methods
+* D.M. Blei, A.Y. Ng, and M.I. Jordan. Latent Dirichlet allocation. Journal of Machine Learning Research, 3(Jan):993-1022, 2003.
 
-[Mikolov2013word2vec]: Mikolov, T., Chen, K., Corrado, G., and Dean, J., 2013. Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.
+* A. Graves and J. Schmidhuber. Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5-6):602-610, 2005.
 
-[Pennington2014glove]: Pennington, J., Socher, R., and Manning, C.D., 2014. GloVe: Global Vectors for Word Representation. In Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 1532-1543. Association for Computational Linguistics.
+* T. Mikolov, K. Chen, G. Corrado, and J. Dean. Efficient estimation of word representations in vector space. In International Conference on Learning Representations, pages 1-12, 2013.
 
-[Kusner2015wmd]: Kusner, M., Sun, Y., Kolkin, N., and Weinberger, K., 2015. From word embeddings to document distances. In International Conference on Machine Learning, pp. 957-966. PMLR.
+* J. Pennington, R. Socher, and C.D. Manning. GloVe: Global Vectors for Word Representation. In Proceedings of EMNLP, pages 1532-1543, 2014.
 
-[Devlin2018bert]: Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K., 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of NAACL-HLT, 1, pp. 2.
+* M. Kusner, Y. Sun, N. Kolkin, and K. Weinberger. From word embeddings to document distances. In International Conference on Machine Learning, pages 957-966, 2015.
 
-[Reimers2019sbert]: Reimers, N., and Gurevych, I., 2019. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 3980-3990. Association for Computational Linguistics.
+* J. Devlin, M.W. Chang, K. Lee, and K. Toutanova. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of NAACL-HLT, pages 4171-4186, 2019.
 
-[Liu2020eventx]: Liu, B., Han, F.X., Niu, D., Kong, L., Lai, K., and Xu, Y., 2020. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data (TKDD), 14(3), pp. 1-28. ACM New York, NY, USA.
+* N. Reimers and I. Gurevych. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of EMNLP-IJCNLP, pages 3980-3990, 2019.
 
-[Ren2021clkd]: Ren, J., Peng, H., Jiang, L., Wu, J., Tong, Y., Wang, L., Bai, X., Wang, B., and Yang, Q., 2021. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084.
+### Social Event Detection Methods
+* B. Liu, F.X. Han, D. Niu, L. Kong, K. Lai, and Y. Xu. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data, 14(3):1-28, 2020.
 
-[Cao2021kpgnn]: Cao, Y., Peng, H., Wu, J., Dou, Y., Li, J., and Yu, P.S., 2021. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of the Web Conference 2021, pp. 3383-3395.
+* J. Ren, H. Peng, L. Jiang, J. Wu, Y. Tong, L. Wang, X. Bai, B. Wang, and Q. Yang. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084, 2021.
 
-[Peng2022finevent]: Peng, H., Zhang, R., Li, S., et al., 2022. Reinforced, incremental and cross-lingual event detection from social messages. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(1), pp. 980-998.
+* Y. Cao, H. Peng, J. Wu, Y. Dou, J. Li, and P.S. Yu. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of The Web Conference, pages 3383-3395, 2021.
 
-[Ren2022qsgnn]: Ren, J., Jiang, L., Peng, H., Cao, Y., Wu, J., Yu, P.S., and He, L., 2022. From known to unknown: Quality-aware self-improving graph neural network for open set social event detection. In Proceedings of the 31st ACM International Conference on Information & Knowledge Management, pp. 1696-1705.
+* H. Peng, R. Zhang, S. Li, et al. Reinforced, incremental and cross-lingual event detection from social messages. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(1):980-998, 2022.
 
-[Ren2023etgnn]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2022. Evidential temporal-aware graph-based social event detection via Dempster-Shafer theory. In 2022 IEEE International Conference on Web Services (ICWS), pp. 331-336. IEEE.
+* J. Ren, L. Jiang, H. Peng, Y. Cao, J. Wu, P.S. Yu, and L. He. From known to unknown: Quality-aware self-improving graph neural network for open set social event detection. In Proceedings of CIKM, pages 1696-1705, 2022.
 
-[Guo2023hcrc]: Guo, Y., Zang, Z., Gao, H., Xu, X., Wang, R., Liu, L., and Li, J., 2024. Unsupervised social event detection via hybrid graph contrastive learning and reinforced incremental clustering. Knowledge-Based Systems, 284, p. 111225. Elsevier.
+* J. Ren, L. Jiang, H. Peng, Z. Liu, J. Wu, and P.S. Yu. Evidential temporal-aware graph-based social event detection via Dempster-Shafer theory. In IEEE ICWS, pages 331-336, 2022.
 
-[Ren2023uclsad]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2023. Uncertainty-guided boundary learning for imbalanced social event detection. IEEE Transactions on Knowledge and Data Engineering. IEEE.
+* Y. Guo, Z. Zang, H. Gao, X. Xu, R. Wang, L. Liu, and J. Li. Unsupervised social event detection via hybrid graph contrastive learning and reinforced incremental clustering. Knowledge-Based Systems, 284:111225, 2024.
 
-[Li2024rplmsed]: Li, P., Yu, X., Peng, H., Xian, Y., Wang, L., Sun, L., Zhang, J., and Yu, P.S., 2024. Relational prompt-based pre-trained language models for social event detection. ACM Transactions on Information Systems, 43(1), pp. 1-43.
+* J. Ren, L. Jiang, H. Peng, Z. Liu, J. Wu, and P.S. Yu. Uncertainty-guided boundary learning for imbalanced social event detection. IEEE Transactions on Knowledge and Data Engineering, 2023.
 
-[Cao2024hisevent]: Cao, Y., Peng, H., Yu, Z., and Philip, S.Y., 2024. Hierarchical and incremental structural entropy minimization for unsupervised social event detection. In Proceedings of the AAAI Conference on Artificial Intelligence, 38(8), pp. 8255-8264.
+* P. Li, X. Yu, H. Peng, Y. Xian, L. Wang, L. Sun, J. Zhang, and P.S. Yu. Relational prompt-based pre-trained language models for social event detection. ACM Transactions on Information Systems, 43(1):1-43, 2024.
 
-[Yang2024adpsemevent]: Yang, Z., Wei, Y., Li, H., et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection[C]//Proceedings of the 33rd ACM International Conference on Information and Knowledge Management. 2024: 2950-2960.
+* Y. Cao, H. Peng, Z. Yu, and P.S. Yu. Hierarchical and incremental structural entropy minimization for unsupervised social event detection. In Proceedings of AAAI, 38(8):8255-8264, 2024.
 
-[Yu2024hypersed]: Yu, X., Wei, Y., Zhou, S., Yang, Z., Sun, L., Peng, H., Zhu, L., and Yu, P.S., 2024. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712.
+* Z. Yang, Y. Wei, H. Li, et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection. In Proceedings of CIKM, pages 2950-2960, 2024.
 
+* X. Yu, Y. Wei, S. Zhou, Z. Yang, L. Sun, H. Peng, L. Zhu, and P.S. Yu. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712, 2024.
