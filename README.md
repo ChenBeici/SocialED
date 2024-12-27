@@ -168,25 +168,25 @@ SocialED implements the following algorithms:
 
 |    Methods    |       Year        |       Backbone        |       Scenario        |    Supervision    |    Reference    |
 | :-----------: | :---------------: | :------------------: | :------------------: | :---------------: | :---------------: |
-|  LDA  |       2003       |       Topic        |        Offline         | Unsupervised | [Blei2003lda](#Blei2003lda) |
-|   BiLSTM   |       2005       |    Deep learning    |        Offline         | Supervised | [Graves2005bilstm](#Graves2005bilstm) |
-| Word2Vec  |       2013       |  Word embeddings   |        Offline         | Unsupervised | [Mikolov2013word2vec](#Mikolov2013word2vec) |
-| GloVe | 2014 | Word embeddings | Offline | Unsupervised | [Pennington2014glove](#Pennington2014glove) |
-| WMD | 2015 | Similarity | Offline | Unsupervised | [Kusner2015wmd](#Kusner2015wmd) |
-| BERT | 2018 | PLMs | Offline | Unsupervised | [Devlin2018bert](#Devlin2018bert) |
-| SBERT | 2019 | PLMs | Offline | Unsupervised | [Reimers2019sbert](#Reimers2019sbert)    |
-| EventX | 2020 | Community | Offline | Unsupervised | [Liu2020eventx](#Liu2020eventx) |
-| CLKD | 2021 | GNNs | Online | Supervised | [Ren2021clkd](#Ren2021clkd) |
-| KPGNN | 2021 | GNNs | Online | Supervised | [Cao2021kpgnn](#Cao2021kpgnn) |
-| FinEvent | 2022 | GNNs | Online | Supervised | [Peng2022finevent](#Peng2022finevent) |
-| QSGNN | 2022 | GNNs | Online | Supervised | [Ren2022qsgnn](#Ren2022qsgnn) |
-| ETGNN | 2023 | GNNs | Offline | Supervised | [Ren2023etgnn](#Ren2023etgnn) |
-| HCRC | 2023 | GNNs | Online | Unsupervised | [Guo2023hcrc](#Guo2023hcrc) |
-| UCLSED | 2023 | GNNs | Offline | Supervised | [Ren2023uclsad](#Ren2023uclsad) |
-| RPLMSED | 2024 | PLMs | Online | Supervised | [Li2024rplmsed](#Li2024rplmsed) |
-| HISEvent | 2024 | Community | Online | Unsupervised | [Cao2024hisevent](#Cao2024hisevent) |
-| ADPSEMEvent | 2024 | Community | Online | Unsupervised | [Yang2024adpsemevent](#Yang2024adpsemevent) |
-| HyperSED | 2024 | Community | Online | Unsupervised | [Yu2024hypersed](#Yu2024hypersed) |
+|  LDA  |       2003       |       Topic        |        Offline         | Unsupervised | [Blei2003lda](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf) |
+|   BiLSTM   |       2005       |    Deep learning    |        Offline         | Supervised | [Graves2005bilstm](https://www.sciencedirect.com/science/article/abs/pii/S0893608005001206) |
+| Word2Vec  |       2013       |  Word embeddings   |        Offline         | Unsupervised | [Mikolov2013word2vec](https://arxiv.org/abs/1301.3781) |
+| GloVe | 2014 | Word embeddings | Offline | Unsupervised | [Pennington2014glove](https://aclanthology.org/D14-1162.pdf) |
+| WMD | 2015 | Similarity | Offline | Unsupervised | [Kusner2015wmd](https://proceedings.mlr.press/v37/kusnerb15) |
+| BERT | 2018 | PLMs | Offline | Unsupervised | [Devlin2018bert](https://aclanthology.org/N19-1423/) |
+| SBERT | 2019 | PLMs | Offline | Unsupervised | [Reimers2019sbert](https://aclanthology.org/D19-1410.pdf)    |
+| EventX | 2020 | Community | Offline | Unsupervised | [Liu2020eventx](https://dl.acm.org/doi/abs/10.1145/3377939) |
+| CLKD | 2021 | GNNs | Online | Supervised | [Ren2021clkd](https://arxiv.org/abs/2108.03084) |
+| KPGNN | 2021 | GNNs | Online | Supervised | [Cao2021kpgnn](https://dl.acm.org/doi/abs/10.1145/3442381.3449834) |
+| FinEvent | 2022 | GNNs | Online | Supervised | [Peng2022finevent](https://ieeexplore.ieee.org/document/9790195) |
+| QSGNN | 2022 | GNNs | Online | Supervised | [Ren2022qsgnn](https://dl.acm.org/doi/pdf/10.1145/3511808.3557329) |
+| ETGNN | 2023 | GNNs | Offline | Supervised | [Ren2023etgnn](https://ieeexplore.ieee.org/abstract/document/9885765) |
+| HCRC | 2023 | GNNs | Online | Unsupervised | [Guo2023hcrc](https://www.sciencedirect.com/science/article/abs/pii/S0950705123009759) |
+| UCLSED | 2023 | GNNs | Offline | Supervised | [Ren2023uclsad](https://ieeexplore.ieee.org/abstract/document/10285435) |
+| RPLMSED | 2024 | PLMs | Online | Supervised | [Li2024rplmsed](https://dl.acm.org/doi/abs/10.1145/3695869) |
+| HISEvent | 2024 | Community | Online | Unsupervised | [Cao2024hisevent](https://ojs.aaai.org/index.php/AAAI/article/view/28666) |
+| ADPSEMEvent | 2024 | Community | Online | Unsupervised | [Yang2024adpsemevent](https://dl.acm.org/doi/abs/10.1145/3627673.3679537) |
+| HyperSED | 2024 | Community | Online | Unsupervised | [Yu2024hypersed](https://arxiv.org/abs/2412.10712) |
 
 ### 📊 Supported Datasets
 
@@ -394,41 +394,41 @@ The library provides several utility functions including:
 
 ## 📚 References
 
-[#Blei2003lda]: Blei, D.M., Ng, A.Y., and Jordan, M.I., 2003. Latent Dirichlet allocation. Journal of Machine Learning Research, 3(Jan), pp. 993-1022.
+[Blei2003lda]: Blei, D.M., Ng, A.Y., and Jordan, M.I., 2003. Latent Dirichlet allocation. Journal of Machine Learning Research, 3(Jan), pp. 993-1022.
 
-[#Graves2005bilstm]: Graves, A., and Schmidhuber, J., 2005. Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5-6), pp. 602-610. Elsevier.
+[Graves2005bilstm]: Graves, A., and Schmidhuber, J., 2005. Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5-6), pp. 602-610. Elsevier.
 
-[#Mikolov2013word2vec]: Mikolov, T., Chen, K., Corrado, G., and Dean, J., 2013. Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.
+[Mikolov2013word2vec]: Mikolov, T., Chen, K., Corrado, G., and Dean, J., 2013. Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.
 
-[#Pennington2014glove]: Pennington, J., Socher, R., and Manning, C.D., 2014. GloVe: Global Vectors for Word Representation. In Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 1532-1543. Association for Computational Linguistics.
+[Pennington2014glove]: Pennington, J., Socher, R., and Manning, C.D., 2014. GloVe: Global Vectors for Word Representation. In Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 1532-1543. Association for Computational Linguistics.
 
-[#Kusner2015wmd]: Kusner, M., Sun, Y., Kolkin, N., and Weinberger, K., 2015. From word embeddings to document distances. In International Conference on Machine Learning, pp. 957-966. PMLR.
+[Kusner2015wmd]: Kusner, M., Sun, Y., Kolkin, N., and Weinberger, K., 2015. From word embeddings to document distances. In International Conference on Machine Learning, pp. 957-966. PMLR.
 
-[#Devlin2018bert]: Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K., 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of NAACL-HLT, 1, pp. 2.
+[Devlin2018bert]: Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K., 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of NAACL-HLT, 1, pp. 2.
 
-[#Reimers2019sbert]: Reimers, N., and Gurevych, I., 2019. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 3980-3990. Association for Computational Linguistics.
+[Reimers2019sbert]: Reimers, N., and Gurevych, I., 2019. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 3980-3990. Association for Computational Linguistics.
 
-[#Liu2020eventx]: Liu, B., Han, F.X., Niu, D., Kong, L., Lai, K., and Xu, Y., 2020. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data (TKDD), 14(3), pp. 1-28. ACM New York, NY, USA.
+[Liu2020eventx]: Liu, B., Han, F.X., Niu, D., Kong, L., Lai, K., and Xu, Y., 2020. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data (TKDD), 14(3), pp. 1-28. ACM New York, NY, USA.
 
-[#Ren2021clkd]: Ren, J., Peng, H., Jiang, L., Wu, J., Tong, Y., Wang, L., Bai, X., Wang, B., and Yang, Q., 2021. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084.
+[Ren2021clkd]: Ren, J., Peng, H., Jiang, L., Wu, J., Tong, Y., Wang, L., Bai, X., Wang, B., and Yang, Q., 2021. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084.
 
-[#Cao2021kpgnn]: Cao, Y., Peng, H., Wu, J., Dou, Y., Li, J., and Yu, P.S., 2021. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of the Web Conference 2021, pp. 3383-3395.
+[Cao2021kpgnn]: Cao, Y., Peng, H., Wu, J., Dou, Y., Li, J., and Yu, P.S., 2021. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of the Web Conference 2021, pp. 3383-3395.
 
-[#Peng2022finevent]: Peng, H., Zhang, R., Li, S., et al., 2022. Reinforced, incremental and cross-lingual event detection from social messages. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(1), pp. 980-998.
+[Peng2022finevent]: Peng, H., Zhang, R., Li, S., et al., 2022. Reinforced, incremental and cross-lingual event detection from social messages. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(1), pp. 980-998.
 
-[#Ren2022qsgnn]: Ren, J., Jiang, L., Peng, H., Cao, Y., Wu, J., Yu, P.S., and He, L., 2022. From known to unknown: Quality-aware self-improving graph neural network for open set social event detection. In Proceedings of the 31st ACM International Conference on Information & Knowledge Management, pp. 1696-1705.
+[Ren2022qsgnn]: Ren, J., Jiang, L., Peng, H., Cao, Y., Wu, J., Yu, P.S., and He, L., 2022. From known to unknown: Quality-aware self-improving graph neural network for open set social event detection. In Proceedings of the 31st ACM International Conference on Information & Knowledge Management, pp. 1696-1705.
 
-[#Ren2023etgnn]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2022. Evidential temporal-aware graph-based social event detection via Dempster-Shafer theory. In 2022 IEEE International Conference on Web Services (ICWS), pp. 331-336. IEEE.
+[Ren2023etgnn]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2022. Evidential temporal-aware graph-based social event detection via Dempster-Shafer theory. In 2022 IEEE International Conference on Web Services (ICWS), pp. 331-336. IEEE.
 
-[#Guo2023hcrc]: Guo, Y., Zang, Z., Gao, H., Xu, X., Wang, R., Liu, L., and Li, J., 2024. Unsupervised social event detection via hybrid graph contrastive learning and reinforced incremental clustering. Knowledge-Based Systems, 284, p. 111225. Elsevier.
+[Guo2023hcrc]: Guo, Y., Zang, Z., Gao, H., Xu, X., Wang, R., Liu, L., and Li, J., 2024. Unsupervised social event detection via hybrid graph contrastive learning and reinforced incremental clustering. Knowledge-Based Systems, 284, p. 111225. Elsevier.
 
-[#Ren2023uclsad]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2023. Uncertainty-guided boundary learning for imbalanced social event detection. IEEE Transactions on Knowledge and Data Engineering. IEEE.
+[Ren2023uclsad]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2023. Uncertainty-guided boundary learning for imbalanced social event detection. IEEE Transactions on Knowledge and Data Engineering. IEEE.
 
-[#Li2024rplmsed]: Li, P., Yu, X., Peng, H., Xian, Y., Wang, L., Sun, L., Zhang, J., and Yu, P.S., 2024. Relational prompt-based pre-trained language models for social event detection. ACM Transactions on Information Systems, 43(1), pp. 1-43.
+[Li2024rplmsed]: Li, P., Yu, X., Peng, H., Xian, Y., Wang, L., Sun, L., Zhang, J., and Yu, P.S., 2024. Relational prompt-based pre-trained language models for social event detection. ACM Transactions on Information Systems, 43(1), pp. 1-43.
 
-[#Cao2024hisevent]: Cao, Y., Peng, H., Yu, Z., and Philip, S.Y., 2024. Hierarchical and incremental structural entropy minimization for unsupervised social event detection. In Proceedings of the AAAI Conference on Artificial Intelligence, 38(8), pp. 8255-8264.
+[Cao2024hisevent]: Cao, Y., Peng, H., Yu, Z., and Philip, S.Y., 2024. Hierarchical and incremental structural entropy minimization for unsupervised social event detection. In Proceedings of the AAAI Conference on Artificial Intelligence, 38(8), pp. 8255-8264.
 
-[#Yang2024adpsemevent]: Yang, Z., Wei, Y., Li, H., et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection[C]//Proceedings of the 33rd ACM International Conference on Information and Knowledge Management. 2024: 2950-2960.
+[Yang2024adpsemevent]: Yang, Z., Wei, Y., Li, H., et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection[C]//Proceedings of the 33rd ACM International Conference on Information and Knowledge Management. 2024: 2950-2960.
 
-[#Yu2024hypersed]: Yu, X., Wei, Y., Zhou, S., Yang, Z., Sun, L., Peng, H., Zhu, L., and Yu, P.S., 2024. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712.
+[Yu2024hypersed]: Yu, X., Wei, Y., Zhou, S., Yang, Z., Sun, L., Peng, H., Zhu, L., and Yu, P.S., 2024. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712.
 
