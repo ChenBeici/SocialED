@@ -168,25 +168,25 @@ SocialED implements the following algorithms:
 
 |    Methods    |       Year        |       Backbone        |       Scenario        |    Supervision    |    Reference    |
 | :-----------: | :---------------: | :------------------: | :------------------: | :---------------: | :---------------: |
-|  LDA  |       2003       |       Topic        |        Offline         | Unsupervised | [#Blei2003lda] |
-|   BiLSTM   |       2005       |    Deep learning    |        Offline         | Supervised | [#Graves2005bilstm] |
-| Word2Vec  |       2013       |  Word embeddings   |        Offline         | Unsupervised | [#Mikolov2013word2vec] |
-| GloVe | 2014 | Word embeddings | Offline | Unsupervised | [#Pennington2014glove] |
-| WMD | 2015 | Similarity | Offline | Unsupervised | [#Kusner2015wmd] |
-| BERT | 2018 | PLMs | Offline | Unsupervised | [#Devlin2018bert] |
-| SBERT | 2019 | PLMs | Offline | Unsupervised | [#Reimers2019sbert] |
-| EventX | 2020 | Community | Offline | Unsupervised | [#Liu2020eventx] |
-| CLKD | 2021 | GNNs | Online | Supervised | [#Ren2021clkd] |
-| KPGNN | 2021 | GNNs | Online | Supervised | [#Cao2021kpgnn] |
-| FinEvent | 2022 | GNNs | Online | Supervised | [#Peng2022finevent] |
-| QSGNN | 2022 | GNNs | Online | Supervised | [#Ren2022qsgnn] |
-| ETGNN | 2023 | GNNs | Offline | Supervised | [#Ren2023etgnn] |
-| HCRC | 2023 | GNNs | Online | Unsupervised | [#Guo2023hcrc] |
-| UCLSED | 2023 | GNNs | Offline | Supervised | [#Ren2023uclsad] |
-| RPLMSED | 2024 | PLMs | Online | Supervised | [#Li2024rplmsed] |
-| HISEvent | 2024 | Community | Online | Unsupervised | [#Cao2024hisevent] |
-| ADPSEMEvent | 2024 | Community | Online | Unsupervised | [#Yang2024adpsemevent] |
-| HyperSED | 2024 | Community | Online | Unsupervised | [#Yu2024hyperbolic] |
+|  LDA  |       2003       |       Topic        |        Offline         | Unsupervised | [Blei2003lda](#Blei2003lda) |
+|   BiLSTM   |       2005       |    Deep learning    |        Offline         | Supervised | [Graves2005bilstm](#Graves2005bilstm) |
+| Word2Vec  |       2013       |  Word embeddings   |        Offline         | Unsupervised | [Mikolov2013word2vec](#Mikolov2013word2vec) |
+| GloVe | 2014 | Word embeddings | Offline | Unsupervised | [Pennington2014glove](#Pennington2014glove) |
+| WMD | 2015 | Similarity | Offline | Unsupervised | [Kusner2015wmd](#Kusner2015wmd) |
+| BERT | 2018 | PLMs | Offline | Unsupervised | [Devlin2018bert](#Devlin2018bert) |
+| SBERT | 2019 | PLMs | Offline | Unsupervised | [Reimers2019sbert](#Reimers2019sbert)    |
+| EventX | 2020 | Community | Offline | Unsupervised | [Liu2020eventx](#Liu2020eventx) |
+| CLKD | 2021 | GNNs | Online | Supervised | [Ren2021clkd](#Ren2021clkd) |
+| KPGNN | 2021 | GNNs | Online | Supervised | [Cao2021kpgnn](#Cao2021kpgnn) |
+| FinEvent | 2022 | GNNs | Online | Supervised | [Peng2022finevent](#Peng2022finevent) |
+| QSGNN | 2022 | GNNs | Online | Supervised | [Ren2022qsgnn](#Ren2022qsgnn) |
+| ETGNN | 2023 | GNNs | Offline | Supervised | [Ren2023etgnn](#Ren2023etgnn) |
+| HCRC | 2023 | GNNs | Online | Unsupervised | [Guo2023hcrc](#Guo2023hcrc) |
+| UCLSED | 2023 | GNNs | Offline | Supervised | [Ren2023uclsad](#Ren2023uclsad) |
+| RPLMSED | 2024 | PLMs | Online | Supervised | [Li2024rplmsed](#Li2024rplmsed) |
+| HISEvent | 2024 | Community | Online | Unsupervised | [Cao2024hisevent](#Cao2024hisevent) |
+| ADPSEMEvent | 2024 | Community | Online | Unsupervised | [Yang2024adpsemevent](#Yang2024adpsemevent) |
+| HyperSED | 2024 | Community | Online | Unsupervised | [Yu2024hypersed](#Yu2024hypersed) |
 
 ### 📊 Supported Datasets
 
@@ -404,7 +404,7 @@ The library provides several utility functions including:
 
 [#Kusner2015wmd]: Kusner, M., Sun, Y., Kolkin, N., and Weinberger, K., 2015. From word embeddings to document distances. In International Conference on Machine Learning, pp. 957-966. PMLR.
 
-[#Devlin2018bert]: Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K., 2018. BERT: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.
+[#Devlin2018bert]: Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K., 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of NAACL-HLT, 1, pp. 2.
 
 [#Reimers2019sbert]: Reimers, N., and Gurevych, I., 2019. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 3980-3990. Association for Computational Linguistics.
 
@@ -414,7 +414,7 @@ The library provides several utility functions including:
 
 [#Cao2021kpgnn]: Cao, Y., Peng, H., Wu, J., Dou, Y., Li, J., and Yu, P.S., 2021. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of the Web Conference 2021, pp. 3383-3395.
 
-[#Peng2022finevent]: Peng, H., Li, J., Gong, Q., Song, Y., Ning, Y., Lai, K., and Yu, P.S., 2019. Fine-grained event categorization with heterogeneous graph convolutional networks. arXiv preprint arXiv:1906.04580.
+[#Peng2022finevent]: Peng, H., Zhang, R., Li, S., et al., 2022. Reinforced, incremental and cross-lingual event detection from social messages. IEEE Transactions on Pattern Analysis and Machine Intelligence, 45(1), pp. 980-998.
 
 [#Ren2022qsgnn]: Ren, J., Jiang, L., Peng, H., Cao, Y., Wu, J., Yu, P.S., and He, L., 2022. From known to unknown: Quality-aware self-improving graph neural network for open set social event detection. In Proceedings of the 31st ACM International Conference on Information & Knowledge Management, pp. 1696-1705.
 
@@ -424,23 +424,11 @@ The library provides several utility functions including:
 
 [#Ren2023uclsad]: Ren, J., Jiang, L., Peng, H., Liu, Z., Wu, J., and Yu, P.S., 2023. Uncertainty-guided boundary learning for imbalanced social event detection. IEEE Transactions on Knowledge and Data Engineering. IEEE.
 
-[#Li2024rplmsed]: Li, P., Yu, X., Peng, H., Xian, Y., Wang, L., Sun, L., Zhang, J., and Yu, P.S., 2024. Relational Prompt-based Pre-trained Language Models for Social Event Detection. arXiv preprint arXiv:2404.08263.
+[#Li2024rplmsed]: Li, P., Yu, X., Peng, H., Xian, Y., Wang, L., Sun, L., Zhang, J., and Yu, P.S., 2024. Relational prompt-based pre-trained language models for social event detection. ACM Transactions on Information Systems, 43(1), pp. 1-43.
 
 [#Cao2024hisevent]: Cao, Y., Peng, H., Yu, Z., and Philip, S.Y., 2024. Hierarchical and incremental structural entropy minimization for unsupervised social event detection. In Proceedings of the AAAI Conference on Artificial Intelligence, 38(8), pp. 8255-8264.
 
 [#Yang2024adpsemevent]: Yang, Z., Wei, Y., Li, H., et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection[C]//Proceedings of the 33rd ACM International Conference on Information and Knowledge Management. 2024: 2950-2960.
 
-[#Yu2024hyperbolic]: Yu, X., Wei, Y., Zhou, S., Yang, Z., Sun, L., Peng, H., Zhu, L., and Yu, P.S., 2024. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712.
-
-[#liu2024pygod]: Liu, K., Dou, Y., Ding, X., Hu, X., Zhang, R., Peng, H., Sun, L., and Yu, P.S., 2024. PyGOD: A Python library for graph outlier detection. Journal of Machine Learning Research, 25(141), pp. 1-9.
-
-[#zhao2019pyod]: Zhao, Y., Nasrullah, Z., and Li, Z., 2019. PyOD: A python toolbox for scalable outlier detection. Journal of Machine Learning Research, 20(96), pp. 1-7.
-
-[#wang2020maven]: Wang, X., Wang, Z., Han, X., Jiang, W., Han, R., Liu, Z., Li, J., Li, P., Lin, Y., and Zhou, J., 2020. MAVEN: A massive general domain event detection dataset. arXiv preprint arXiv:2004.13590.
-
-[#mcminn2013event2012]: McMinn, A.J., Moshfeghi, Y., and Jose, J.M., 2013. Building a large-scale corpus for evaluating event detection on Twitter. In Proceedings of the 22nd ACM International Conference on Information & Knowledge Management, pp. 409-418.
-
-[#mazoyer2020event2018]: Mazoyer, B., Cagé, J., Hervé, N., and Hudelot, C., 2020. A French corpus for event detection on Twitter. European Language Resources Association (ELRA).
-
-
+[#Yu2024hypersed]: Yu, X., Wei, Y., Zhou, S., Yang, Z., Sun, L., Peng, H., Zhu, L., and Yu, P.S., 2024. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712.
 
