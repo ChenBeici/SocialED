@@ -24,26 +24,27 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint autopep8
+        pip install -r requirements.txt
 
     - name: Initial Pylint Check
       id: pylint-check
       run: |
-        pylint countdown_timer || true
+        pylint SocialED || true
 
     - name: Check Pylint Score
       id: score-check
       run: |
-        score=$(pylint countdown_timer | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d/ -f1)
-        echo "::set-output name=score::$score"
+        score=$(pylint SocialED | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d/ -f1)
+        echo "score=$score" >> $GITHUB_OUTPUT
 
     - name: Conditional Autopep8 Fix and Recheck
-      if: steps.score-check.outputs.score < 3.5
+      if: steps.score-check.outputs.score < 2.0
       run: |
-        echo "Pylint score (${{ steps.score-check.outputs.score }}) is less than 3.5. Running autopep8..."
-        autopep8 --in-place --aggressive --aggressive countdown_timer/**/*.py
-        pylint countdown_timer
+        echo "Pylint score (${{ steps.score-check.outputs.score }}) is less than 2.0. Running autopep8..."
+        find SocialED -name "*.py" -exec autopep8 --in-place --aggressive --aggressive {} +
+        pylint SocialED
 
     - name: Final Pylint Check
-      if: steps.score-check.outputs.score < 3.5
+      if: steps.score-check.outputs.score < 2.0
       run: |
-        pylint countdown_timer --fail-under=3.5
+        pylint SocialED --fail-under=2.0

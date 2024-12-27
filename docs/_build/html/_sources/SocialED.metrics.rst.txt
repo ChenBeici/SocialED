@@ -1,8 +1,6 @@
 SocialED.metrics 
 ========================
 
-Submodules
-----------
 
 SocialED.metrics.metric 
 ------------------------------
@@ -12,10 +10,3 @@ SocialED.metrics.metric
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: SocialED.metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:

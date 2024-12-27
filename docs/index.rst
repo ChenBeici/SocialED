@@ -11,74 +11,104 @@
 ----
 
 
-.. image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
-   :target: https://pypi.org/project/socialed/
+|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
+
+.. |badge_pypi| image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
+   :target: https://pypi.org/project/SocialED/
    :alt: PyPI version
 
-.. image:: https://readthedocs.org/projects/socialed/badge/?version=latest
-   :target: https://docs.socialed.org/en/latest/?badge=latest
+.. |badge_docs| image:: https://readthedocs.org/projects/socialed/badge/?version=latest
+   :target: https://socialed.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
-.. image:: https://img.shields.io/github/stars/chenbeici/socialed.svg
-   :target: https://github.com/ChenBeici/SocialED/stargazers
+.. |badge_stars| image:: https://img.shields.io/github/stars/RingBDStack/SocialED?style=flat
+   :target: https://github.com/RingBDStack/SocialED/stargazers
    :alt: GitHub stars
 
-.. image:: https://img.shields.io/github/forks/chenbeici/socialed.svg?color=blue
-   :target: https://github.com/ChenBeici/SocialED/network
+.. |badge_forks| image:: https://img.shields.io/github/forks/RingBDStack/SocialED?style=flat
+   :target: https://github.com/RingBDStack/SocialED/network
    :alt: GitHub forks
 
-.. image:: https://static.pepy.tech/personalized-badge/socialed?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads
-   :target: https://pypi.org/project/SocialED/
+.. |badge_downloads| image:: https://static.pepy.tech/personalized-badge/SocialED?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads
+   :target: https://pepy.tech/project/SocialED
    :alt: PyPI downloads
-
-.. image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
+   
+.. |badge_testing| image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
    :target: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml
    :alt: testing
 
-.. image:: https://coveralls.io/repos/github/chenbeici/socialed/badge.svg?branch=main
-   :target: https://coveralls.io/github/chenbeici/socialed?branch=main
+.. |badge_coverage| image:: https://coveralls.io/repos/github/pygod-team/pygod/badge.svg?branch=main
+   :target: https://coveralls.io/github/pygod-team/pygod?branch=main
    :alt: Coverage Status
 
-.. image:: https://img.shields.io/github/license/chenbeici/socialed.svg
-   :target: https://github.com/ChenBeici/SocialED/blob/master/LICENSE
+.. |badge_license| image:: https://img.shields.io/github/license/RingBDStack/SocialED.svg
+   :target: https://github.com/RingBDStack/SocialED/blob/master/LICENSE
    :alt: License
 
-----
+.. |badge_codeql| image:: https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg
+   :target: https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml
+   :alt: CodeQL
 
-SocialED is a **Python library** for **social event detection**.
-This field has critical applications, such as detecting events from social media streams and identifying patterns in large-scale social interactions.
-
-SocialED includes **10+** social event detection algorithms.
-For consistency and accessibility, SocialED is developed on top of `PyTorch <https://pytorch.org/>`_ and other popular libraries, ensuring ease of use and integration.
+-----
 
 
-**SocialED is featured for**:
+SocialED
+========
 
-* **Broad spectrum** of over 10 social event detection algorithms, including classic techniques like Latent Dirichlet Allocation (LDA) and modern deep learning models such as BiLSTM, Word2Vec, GloVe, and more.
-* **Unified APIs, comprehensive documentation, and practical examples** that enable users to format their data consistently, ensuring smooth integration with all social event detectors within SocialED.
-* **Customizable and modular components** that empower users to tailor detection algorithms to meet specific requirements, facilitating the setup of social event detection workflows.
-* **Rich utility functions** that streamline the process of building and executing social event detection tasks.
-* **Reliable implementation** featuring unit tests, cross-platform continuous integration, as well as code coverage and maintainability assessments.
+A Python Library for Social Event Detection
 
+The field of Social Event Detection represents a pivotal area of research within the broader domains of artificial 
+intelligence and natural language processing. Its objective is the automated identification and analysis of events from 
+social media platforms such as Twitter and Facebook. Such events encompass a wide range of occurrences, including natural 
+disasters and viral phenomena.
+
+SocialED is a comprehensive, open-source Python library designed to support social event detection (SED) tasks, integrating 19 detection algorithms and 14 diverse datasets. It provides a unified API with detailed documentation, offering researchers and practitioners a complete solution for event detection in social media. The library is built with modularity in mind, enabling users to adapt and extend components for various usages easily. SocialED supports a wide range of preprocessing techniques, such as graph construction and tokenization, and includes standardized interfaces for training models and making predictions. With its integration of popular deep learning frameworks, SocialED ensures high efficiency and scalability across CPU and GPU environments. Built adhering to high code quality standards, including unit testing, continuous integration, and code coverage, SocialED ensures robust, maintainable software.
+
+Key Features
+-----------------
+
+* **Comprehensive Algorithm Collection**: Integrates 19 detection algorithms and supports 14 widely-used datasets, with continuous updates to include emerging methods
+* **Unified API Design**: Implements algorithms with a consistent interface, allowing seamless data preparation and integration across all models
+* **Modular Components**: Provides customizable components for each algorithm, enabling users to adjust models to specific needs
+* **Rich Utility Functions**: Offers tools designed to simplify the construction of social event detection workflows
+* **Robust Implementation**: Includes comprehensive documentation, examples, unit tests, and maintainability features
+
+
+
+
+SocialED includes **19** social event detection algorithms.
+For consistency and accessibility, SocialED is developed on top of `DGL <https://www.dgl.ai/>`_ 
+and `PyTorch <https://pytorch.org/>`_, and follows the API design of `PyOD <https://github.com/yzhao062/pyod>`_ 
+and `PyGOD <https://github.com/pygod-team/pygod>`_.
+See examples below for detecting outliers with SocialED in 7 lines!
+
+
+
+SocialED plays a crucial role in various downstream applications, including:
+
+* Crisis management
+* Public opinion monitoring
+* Fake news detection
+* And more...
 
 **Social Event Detection Using SocialED with 5 Lines of Code**\ :
 
 
+
 .. code-block:: python
 
-   from SocialED.detector import KPGNN
-   from SocialED.data import Event2012_Dataset
+    from SocialED.dataset import MAVEN                 # Load the dataset
+    dataset = MAVEN().load_data()   # Load "arabic_twitter" dataset
+    
+    from SocialED.detector import KPGNN        # Import KPGNN model
+    args = args_define().args                  # Get training arguments
+    kpgnn = KPGNN(args, dataset)              # Initialize KPGNN model
+    
+    kpgnn.preprocess()                        # Preprocess data
+    kpgnn.fit()                               # Train the model
+    pres, trus = kpgnn.detection()            # Detect events
+    kpgnn.evaluate(pres, trus)                # Evaluate detection results
 
-   # Load the dataset using the Event2012_Dataset class
-   dataset = Event2012_Dataset.load_data()
-
-   # Create an instance of the KPGNN class and loaded dataset
-   model = KPGNN(dataset)
-
-   # Run the KPGNN instance
-   model.preprocess()
-   model = model.fit()
-   predictions, groundtruth = model.detection()
 
 
 ----
@@ -88,28 +118,69 @@ Implemented Algorithms
 ----------------------
 
 
+===================  ==================  ===============  =============  ============  =====================================
+Algorithm            Year                Backbone         Scenario       Supervision   Ref
+===================  ==================  ===============  =============  ============  =====================================
+LDA                  2003                Topic            Offline        Unsupervised  :class:`SocialED.detector.LDA`
+BiLSTM               2005                Deep learning    Offline        Supervised    :class:`SocialED.detector.BiLSTM`
+Word2Vec             2013                Word embeddings  Offline        Unsupervised  :class:`SocialED.detector.Word2Vec`
+GloVe                2014                Word embeddings  Offline        Unsupervised  :class:`SocialED.detector.GloVe`
+WMD                  2015                Similarity       Offline        Unsupervised  :class:`SocialED.detector.WMD`
+BERT                 2018                PLMs             Offline        Unsupervised  :class:`SocialED.detector.BERT`
+SBERT                2019                PLMs             Offline        Unsupervised  :class:`SocialED.detector.SBERT`
+EventX               2020                Community        Offline        Unsupervised  :class:`SocialED.detector.EventX`
+CLKD                 2021                GNNs             Online         Supervised    :class:`SocialED.detector.CLKD`
+KPGNN                2021                GNNs             Online         Supervised    :class:`SocialED.detector.KPGNN`
+FinEvent             2022                GNNs             Online         Supervised    :class:`SocialED.detector.FinEvent`
+QSGNN                2022                GNNs             Online         Supervised    :class:`SocialED.detector.QSGNN`
+ETGNN                2023                GNNs             Offline        Supervised    :class:`SocialED.detector.ETGNN`
+HCRC                 2023                GNNs             Online         Unsupervised  :class:`SocialED.detector.HCRC`
+UCLSED               2023                GNNs             Offline        Supervised    :class:`SocialED.detector.UCLSED`
+RPLMSED              2024                PLMs             Online         Supervised    :class:`SocialED.detector.RPLMSED`
+HISEvent             2024                Community        Online         Unsupervised  :class:`SocialED.detector.HISEvent`
+ADPSEMEvent          2024                Community        Online         Unsupervised  :class:`SocialED.detector.ADPSEMEvent`
+HyperSED             2025                Community        Online         Unsupervised  :class:`SocialED.detector.HyperSED`
+===================  ==================  ===============  =============  ============  =====================================
 
-==================  =====  ==========  ============  ==============  =====================================
-Algorithm           Year   Category    Environment   Supervision     Ref
-==================  =====  ==========  ============  ==============  =====================================
-LDA                 2003   Others      Offline       Supervised      :class:`SocialED.detector.LDA`
-BiLSTM              2005   Others      Offline       Supervised      :class:`SocialED.detector.BiLSTM`
-Word2Vec            2013   Others      Offline       Supervised      :class:`SocialED.detector.Word2Vec`
-GloVe               2014   Others      Offline       Supervised      :class:`SocialED.detector.GloVe`
-WMD                 2015   Others      Offline       Supervised      :class:`SocialED.detector.WMD`
-BERT                2018   PLM         Offline       Supervised      :class:`SocialED.detector.BERT`
-SBERT               2019   PLM         Offline       Supervised      :class:`SocialED.detector.SBERT`
-EventX              2020   Others      Online        Supervised      :class:`SocialED.detector.EventX`
-CLKD                2021   GNN         Online        Supervised      :class:`SocialED.detector.CLKD`
-KPGNN               2021   GNN         Online        Supervised      :class:`SocialED.detector.KPGNN`
-FinEvent            2022   GNN         Online        Supervised      :class:`SocialED.detector.FinEvent`
-QSGNN               2022   GNN         Online        Supervised      :class:`SocialED.detector.QSGNN`
-ETGNN               2023   GNN         Offline       Supervised      :class:`SocialED.detector.ETGNN`
-HCRC                2023   GNN         Online        Unsupervised    :class:`SocialED.detector.HCRC`
-UCLSED              2023   GNN         Offline       Supervised      :class:`SocialED.detector.UCLSED`
-RPLMSED             2024   PLM         Online        Supervised      :class:`SocialED.detector.RPLMSED`
-HISEvent            2024   Others      Online        Unsupervised    :class:`SocialED.detector.HISEvent`
-==================  =====  ==========  ============  ==============  =====================================
+
+Modular Design and Utility Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+SocialED is built with a modular design to improve reusability and reduce redundancy. It organizes social event detection into distinct modules:
+
+* ``preprocessing``
+* ``modeling``
+* ``evaluation``
+
+
+The library provides several utility functions including:
+
+* ``utils.tokenize_text`` and ``utils.construct_graph`` for data preprocessing
+* ``metric`` for evaluation metrics
+* ``utils.load_data`` for built-in datasets
+
+Library Robustness and Accessibility
+------------------------------------
+
+Quality and Reliability
+^^^^^^^^^^^^^^^^^^^^^^^
+
+* Built with robustness and high-quality standards
+* Continuous integration through GitHub Actions
+* Automated testing across Python versions and operating systems
+* >99% code coverage
+* PyPI-compatible and PEP 625 compliant
+* Follows PEP 8 style guide
+
+Accessibility and Community Support
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Detailed API documentation on Read the Docs
+* Step-by-step guides and tutorials
+* Intuitive API design inspired by scikit-learn
+* Open-source project hosted on GitHub
+* Easy issue-reporting mechanism
+* Clear contribution guidelines
 
 
 ----

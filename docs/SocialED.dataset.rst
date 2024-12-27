@@ -1,24 +1,16 @@
 SocialED.dataset 
 ========================
 
-Submodules
-----------
 
-SocialED.dataset.dataset 
+SocialED.dataset.dataloader 
 -------------------------------
 
-.. automodule:: SocialED.dataset.dataset
+.. automodule:: SocialED.dataset.dataloader
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: SocialED.dataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 

@@ -261,17 +261,155 @@
         <article role="main" id="furo-main-content">
           <section id="socialed-utils">
 <h1>SocialED.utils<a class="headerlink" href="#socialed-utils" title="Permalink to this heading">¶</a></h1>
-<section id="socialed-utils-data-module">
-<h2>SocialED.utils.data module<a class="headerlink" href="#socialed-utils-data-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-utils-example-module">
-<h2>SocialED.utils.example module<a class="headerlink" href="#socialed-utils-example-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-utils-stat-models-module">
-<h2>SocialED.utils.stat_models module<a class="headerlink" href="#socialed-utils-stat-models-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-utils-utility-module">
-<h2>SocialED.utils.utility module<a class="headerlink" href="#socialed-utils-utility-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.utils.utility">
+<span id="socialed-utils-utility"></span><h2>SocialED.utils.utility<a class="headerlink" href="#module-SocialED.utils.utility" title="Permalink to this heading">¶</a></h2>
+<p>A set of utility functions to support outlier detection.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.check_parameter">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">check_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2147483648</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2147483647</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#check_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.check_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an input is within the defined range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The input parameter to check.</p></li>
+<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The lower bound of the range.</p></li>
+<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The higher bound of the range.</p></li>
+<li><p><strong>param_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em><em> (</em><em>default=''</em><em>)</em>) – The name of the parameter.</p></li>
+<li><p><strong>include_left</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the lower bound (lower bound &lt;=).</p></li>
+<li><p><strong>include_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the higher bound (&lt;= higher bound).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>within_range</strong> – Whether the parameter is within the range of (low, high)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a> or raise errors</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.construct_graph_from_df">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">construct_graph_from_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#construct_graph_from_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.construct_graph_from_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a graph from a DataFrame containing social media data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing social media data with columns:
+tweet_id, user_mentions, user_id, entities, sampled_words</p></li>
+<li><p><strong>G</strong> (<a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph" title="(in NetworkX v3.4.2)"><em>networkx.Graph</em></a><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Existing graph to add nodes/edges to. If None, creates new graph.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>G</strong> – Graph with nodes for tweets, users, entities and words, and edges between them.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph" title="(in NetworkX v3.4.2)">networkx.Graph</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.load_data">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data loading function that downloads .npy files from SocialED_datasets repository.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the dataset.</p></li>
+<li><p><strong>cache_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The directory for dataset caching.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – The loaded dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">SocialED.utils</span> <span class="kn">import</span> <span class="n">load_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;maven&#39;</span><span class="p">)</span> <span class="c1"># loads maven.npy dataset</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.logger">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logger for detector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The current epoch.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The current epoch loss value.</p></li>
+<li><p><strong>score</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – The current outlier scores.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – The ground truth labels.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The current epoch time.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Verbosity mode. Range in [0, 3]. Larger value for printing out
+more log information. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>train</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the logger is used for training.</p></li>
+<li><p><strong>deep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the logger is used for deep detector.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.pprint">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;built-in</span> <span class="pre">function</span> <span class="pre">repr&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.pprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print the dictionary ‘params’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – The dictionary to pretty print</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The offset at the beginning of each line.</p></li>
+<li><p><strong>printer</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function to convert entries to strings, typically
+the builtin str or repr.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.tokenize_text">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">tokenize_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#tokenize_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.tokenize_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenize text for social event detection tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The input text to tokenize.</p></li>
+<li><p><strong>max_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default=512</em><em>)</em>) – Maximum length of tokenized sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tokens</strong> – List of tokenized words/subwords.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.validate_device">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">validate_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gpu_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#validate_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.validate_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the input GPU ID is valid on the given environment.
+If no GPU is presented, return ‘cpu’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gpu_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – GPU ID to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>device</strong> – Valid device, e.g., ‘cuda:0’ or ‘cpu’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -331,10 +469,16 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">SocialED.utils</a><ul>
-<li><a class="reference internal" href="#socialed-utils-data-module">SocialED.utils.data module</a></li>
-<li><a class="reference internal" href="#socialed-utils-example-module">SocialED.utils.example module</a></li>
-<li><a class="reference internal" href="#socialed-utils-stat-models-module">SocialED.utils.stat_models module</a></li>
-<li><a class="reference internal" href="#socialed-utils-utility-module">SocialED.utils.utility module</a></li>
+<li><a class="reference internal" href="#module-SocialED.utils.utility">SocialED.utils.utility</a><ul>
+<li><a class="reference internal" href="#SocialED.utils.utility.check_parameter"><code class="docutils literal notranslate"><span class="pre">check_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.construct_graph_from_df"><code class="docutils literal notranslate"><span class="pre">construct_graph_from_df()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.logger"><code class="docutils literal notranslate"><span class="pre">logger()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.pprint"><code class="docutils literal notranslate"><span class="pre">pprint()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.tokenize_text"><code class="docutils literal notranslate"><span class="pre">tokenize_text()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.validate_device"><code class="docutils literal notranslate"><span class="pre">validate_device()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

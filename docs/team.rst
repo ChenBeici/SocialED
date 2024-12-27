@@ -1,20 +1,21 @@
 Core Team
 =========
 
-PyGOD is a great team effort by researchers from UIC, IIT, BUAA, ASU, and CMU. Our core team members include:
+SocialED is a great team effort by researchers from BUAA, BIT, KUST and UIC . Our core team members include:
 
-`Kay Liu (UIC) <https://kayzliu.com/>`_
 
-`Yingtong Dou (UIC) <http://ytongdou.com/>`_
 
-`Yue Zhao (CMU) <https://www.andrew.cmu.edu/user/yuezhao2/>`_
+ - **Kun Zhang** (Beihang University)
+   Email: zhangkun23@buaa.edu.cn
 
-`Xueying Ding (CMU) <https://scholar.google.com/citations?user=U9CMsh0AAAAJ&hl=en>`_
+ - **Xiaoyan Yu** (Beijing Institute of Technology) 
+   Email: xiaoyan.yu@bit.edu.cn
 
-`Xiyang Hu (CMU) <https://www.andrew.cmu.edu/user/xiyanghu/>`_
+ - **Pu Li** (Kunming University of Science and Technology)
+   Email: lip@stu.kust.edu.cn
 
-`Ruitong Zhang (BUAA) <https://github.com/pygod-team/pygod>`_
+ - **Hao Peng*** (Beihang University)
+   Email: penghao@buaa.edu.cn
 
-`Kaize Ding (ASU) <https://www.public.asu.edu/~kding9/>`_
-
-`Canyu Chen (IIT) <https://github.com/pygod-team/pygod>`_
+ - **Philip S. Yu** (University of Illinois at Chicago)
+   Email: psyu@uic.edu

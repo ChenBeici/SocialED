@@ -261,14 +261,109 @@
         <article role="main" id="furo-main-content">
           <section id="socialed-metrics">
 <h1>SocialED.metrics<a class="headerlink" href="#socialed-metrics" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="socialed-metrics-metric">
-<h2>SocialED.metrics.metric<a class="headerlink" href="#socialed-metrics-metric" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.metrics.metric">
+<span id="socialed-metrics-metric"></span><h2>SocialED.metrics.metric<a class="headerlink" href="#module-SocialED.metrics.metric" title="Permalink to this heading">¶</a></h2>
+<p>Metrics used to evaluate the outlier detection performance</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_acc">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_acc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy score for classification evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>acc</strong> – Accuracy score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_ami">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_ami</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_ami"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_ami" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjusted Mutual Information (AMI) score for clustering evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted cluster labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ami</strong> – Adjusted Mutual Information score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_ari">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_ari</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_ari"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_ari" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjusted Rand Index (ARI) score for clustering evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted cluster labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ari</strong> – Adjusted Rand Index score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_f1">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_f1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_f1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_f1" title="Permalink to this definition">¶</a></dt>
+<dd><p>F1 score for classification evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f1</strong> – F1 score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_nmi">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_nmi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_nmi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_nmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized Mutual Information (NMI) score for clustering evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted cluster labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>nmi</strong> – Normalized Mutual Information score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -328,9 +423,14 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">SocialED.metrics</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#socialed-metrics-metric">SocialED.metrics.metric</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-SocialED.metrics.metric">SocialED.metrics.metric</a><ul>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_acc"><code class="docutils literal notranslate"><span class="pre">eval_acc()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_ami"><code class="docutils literal notranslate"><span class="pre">eval_ami()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_ari"><code class="docutils literal notranslate"><span class="pre">eval_ari()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_f1"><code class="docutils literal notranslate"><span class="pre">eval_f1()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_nmi"><code class="docutils literal notranslate"><span class="pre">eval_nmi()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

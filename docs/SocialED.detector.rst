@@ -1,9 +1,6 @@
 SocialED.detector 
 =========================
 
-Submodules
-----------
-
 SocialED.detector.bert 
 -----------------------------
 

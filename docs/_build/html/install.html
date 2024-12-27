@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.dataset" href="SocialED.dataset.html" /><link rel="prev" title="Implemented Algorithms" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.dataset" href="SocialED.dataset.html" /><link rel="prev" title="SocialED" href="index.html" />
 
     <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
         <title>Installation - SocialED documentation</title>
@@ -263,13 +263,19 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>It is recommended to use <strong>pip</strong> for installation.
 Please make sure <strong>the latest version</strong> is installed, as SocialED is updated frequently:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>socialed<span class="w">            </span><span class="c1"># normal install</span>
-pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>socialed<span class="w">  </span><span class="c1"># or update if needed</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>SocialED<span class="w">           </span><span class="c1"># normal install</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>SocialED<span class="w">  </span><span class="c1"># or update if needed</span>
 </pre></div>
 </div>
 <p>Alternatively, you could clone and run setup.py file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ChenBeici/SocialED.git
-<span class="nb">cd</span><span class="w"> </span>socialed
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up the environment</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>SocialED<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.8
+conda<span class="w"> </span>activate<span class="w"> </span>SocialED
+
+<span class="c1"># Installation</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/RingBDStack/SocialED.git
+<span class="nb">cd</span><span class="w"> </span>SocialED
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
@@ -286,9 +292,16 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 SocialED depends on <a class="reference external" href="https://https://pytorch.org/get-started/locally/">torch</a> and <a class="reference external" href="https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html#">torch_geometric (including its optional dependencies)</a>.
 To streamline the installation, SocialED does <strong>NOT</strong> install these libraries for you.
 Please install them from the above links for running SocialED:</p>
+<p><strong>Required Dependencies</strong>:</p>
 <ul class="simple">
+<li><p>python&gt;=3.8</p></li>
+<li><p>numpy&gt;=1.24.3</p></li>
+<li><p>scikit-learn&gt;=1.2.2</p></li>
+<li><p>scipy&gt;=1.10.1</p></li>
+<li><p>networkx&gt;=2.3</p></li>
 <li><p>torch&gt;=2.3.0</p></li>
 <li><p>torch_geometric&gt;=2.5.3</p></li>
+<li><p>dgl&gt;=0.6.0</p></li>
 </ul>
 </section>
 

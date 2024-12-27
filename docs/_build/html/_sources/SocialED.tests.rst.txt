@@ -1,15 +1,10 @@
 SocialED.tests 
 ======================
 
-Submodules
-----------
+SocialED.tests.test_bert module
+-------------------------------
 
-SocialED.tests.testlda module
------------------------------
-
-.. automodule:: SocialED.tests.test_lda
+.. automodule:: SocialED.tests.test_bert
    :members:
    :undoc-members:
    :show-inheritance:
-
-
