@@ -6,9 +6,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/RingBDStack/SocialED?style=flat)](https://github.com/RingBDStack/SocialED/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/RingBDStack/SocialED?style=flat)](https://github.com/RingBDStack/SocialED/network)
 [![PyPI downloads](https://static.pepy.tech/personalized-badge/SocialED?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/SocialED)
-[![testing](https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg)](https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml)
+[![Testing](https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml/badge.svg)](https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ChenBeici/SocialED/badge.svg?branch=main)](https://coveralls.io/github/ChenBeici/SocialED?branch=main)
-
 [![License](https://img.shields.io/github/license/RingBDStack/SocialED.svg)](https://github.com/RingBDStack/SocialED/blob/master/LICENSE)
 [![CodeQL](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg)](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml)
 [![arXiv](https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2412.13472)
