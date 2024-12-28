@@ -1,19 +1,15 @@
 version: 2
 
-# 构建环境的设置
+# 构建环境设置
 build:
-  os: "ubuntu-22.04"  # 设置使用的操作系统
+  os: "ubuntu-22.04"  # 设置操作系统为 ubuntu-22.04
   tools:
-    python: "3.8"  # 设置Python版本
+    python: "3.8"  # 设置 Python 版本为 3.8
 
-# 安装依赖配置
-requirements:
-  - requirements.txt  # 如果你有 requirements.txt，可以直接列出它
-
-# 安装 SocialED 并跳过依赖项
+# 安装依赖包
 install:
-  - pip install --no-deps SocialED==1.1.2  # 安装 SocialED，跳过依赖
+  - pip install --no-deps SocialED==1.1.2  # 安装 SocialED 并跳过依赖
 
 # 构建文档
 sphinx:
-  configuration: docs/conf.py  # 指定 Sphinx 配置文件
+  configuration: docs/conf.py  # 指定 Sphinx 配置文件的位置
