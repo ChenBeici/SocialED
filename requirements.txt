@@ -10,9 +10,7 @@ uvicorn>=0.29.0
 starlette>=0.36.3
 
 # 机器学习相关
-transformers>=4.41.2
 huggingface-hub>=0.25.1
-tokenizers>=0.19.1
 sentence-transformers>=3.0.1
 
 # 测试和代码质量
@@ -25,4 +23,7 @@ tqdm>=4.66.4
 PyYAML>=6.0.1
 requests>=2.32.3
 
-# 注：PyTorch 相关依赖将在 CI/CD 中单独安装
+# 注：以下依赖将在 CI/CD 中单独安装
+# - PyTorch 相关依赖
+# - tokenizers
+# - transformers
