@@ -28,6 +28,12 @@ jobs:
         channels: pytorch,conda-forge,defaults
         channel-priority: strict
 
+    - name: Install initial tools
+      shell: bash -l {0}
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint autopep8
+
     - name: Create Pylint config
       shell: bash -l {0}
       run: |
@@ -45,8 +51,6 @@ jobs:
         conda install -c conda-forge tokenizers transformers
         
         # 安装其他依赖
-        python -m pip install --upgrade pip
-        pip install pylint autopep8
         pip install -r requirements.txt
 
     - name: Run Pylint
