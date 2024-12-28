@@ -6,18 +6,15 @@ version: 2
 
 # 构建文档的配置
 build:
-  os: ubuntu-22.04
+  image: "ubuntu-22.04"  # 选择使用的操作系统镜像
+  os: "ubuntu-22.04"
   tools:
     python: "3.8"
-
-# Python 配置
-python:
+  requirements:
+    files:
+      - requirements.txt
   install:
-    - method: pip
-      path: .
-    - requirements: requirements.txt
-    install:
-      - pip install --no-deps SocialED==1.1.2
+    - pip install --no-deps SocialED==1.1.2
 # Sphinx 配置
 sphinx:
   configuration: docs/conf.py
