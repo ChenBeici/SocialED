@@ -35,19 +35,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest coverage coveralls GitPython
 
-    - name: Install dependencies
+    - name: Install PyTorch dependencies
       shell: bash -l {0}
       run: |
-        # Install PyTorch related dependencies
-        conda install pytorch torchvision torchaudio cpuonly -c pytorch
+        conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 cpuonly -c pytorch
         conda install pyg -c pyg
         conda install -c conda-forge faiss-cpu
-        
-        # Install transformers related dependencies
-        conda install -c conda-forge tokenizers transformers
-        
-        # Install other dependencies
-        pip install -r requirements.txt
+
+    - name: Install transformers dependencies
+      shell: bash -l {0}
+      run: |
+        pip install transformers==4.30.2 tokenizers==0.13.3
+        pip install accelerate==0.20.3
+        pip install sentence-transformers==2.2.2
+        pip install peft==0.3.0
+
+    - name: Install other dependencies
+      shell: bash -l {0}
+      run: |
+        pip install -r requirements.txt --no-deps
+        pip install scikit-learn pandas numpy matplotlib seaborn
 
     - name: Run coverage
       shell: bash -l {0}
