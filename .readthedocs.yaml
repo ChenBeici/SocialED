@@ -2,18 +2,17 @@ version: 2
 
 # 构建环境的设置
 build:
-  os: ubuntu-22.04  # 设置使用的操作系统
+  os: "ubuntu-22.04"  # 设置使用的操作系统
   tools:
     python: "3.8"  # 设置Python版本
 
 # 安装依赖配置
 requirements:
-  files:
-    - requirements.txt  # 如果你有 requirements.txt，可以列出它
+  - requirements.txt  # 如果你有 requirements.txt，可以直接列出它
 
 # 安装 SocialED 并跳过依赖项
 install:
-  - pip install --no-deps SocialED==1.1.2
+  - pip install --no-deps SocialED==1.1.2  # 安装 SocialED，跳过依赖
 
 # 构建文档
 sphinx:
