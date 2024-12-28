@@ -1,20 +1,20 @@
-# .readthedocs.yaml
-
 version: 2
 
-
-
-# 构建文档的配置
+# 构建环境的设置
 build:
-  image: "ubuntu-22.04"  # 选择使用的操作系统镜像
-  os: "ubuntu-22.04"
+  os: ubuntu-22.04  # 设置使用的操作系统
   tools:
-    python: "3.8"
-  requirements:
-    files:
-      - requirements.txt
-  install:
-    - pip install --no-deps SocialED==1.1.2
-# Sphinx 配置
+    python: "3.8"  # 设置Python版本
+
+# 安装依赖配置
+requirements:
+  files:
+    - requirements.txt  # 如果你有 requirements.txt，可以列出它
+
+# 安装 SocialED 并跳过依赖项
+install:
+  - pip install --no-deps SocialED==1.1.2
+
+# 构建文档
 sphinx:
-  configuration: docs/conf.py
+  configuration: docs/conf.py  # 指定 Sphinx 配置文件
