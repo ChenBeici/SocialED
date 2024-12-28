@@ -45,7 +45,8 @@ jobs:
     - name: Install Tokenizers and Transformers
       shell: bash -l {0}
       run: |
-        pip install --no-build-isolation tokenizers
+        pip install maturin
+        pip install --no-deps tokenizers
         pip install transformers
 
     - name: Install other dependencies
