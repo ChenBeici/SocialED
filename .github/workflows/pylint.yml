@@ -20,13 +20,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        profile: minimal
-        override: true
-
     - name: Setup conda
       uses: conda-incubator/setup-miniconda@v2
       with:
@@ -35,23 +28,18 @@ jobs:
         channels: pytorch,conda-forge,defaults
         channel-priority: strict
 
-    - name: Install PyTorch dependencies
+    - name: Install dependencies
       shell: bash -l {0}
       run: |
+        # 安装 PyTorch 相关依赖
         conda install pytorch torchvision torchaudio cpuonly -c pytorch
         conda install pyg -c pyg
         conda install -c conda-forge faiss-cpu
-
-    - name: Install Tokenizers and Transformers
-      shell: bash -l {0}
-      run: |
-        pip install maturin
-        pip install --no-deps tokenizers
-        pip install transformers
-
-    - name: Install other dependencies
-      shell: bash -l {0}
-      run: |
+        
+        # 安装 transformers 相关依赖
+        conda install -c conda-forge tokenizers transformers
+        
+        # 安装其他依赖
         python -m pip install --upgrade pip
         pip install pylint autopep8
         pip install -r requirements.txt
