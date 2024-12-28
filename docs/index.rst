@@ -33,12 +33,12 @@
    :target: https://pepy.tech/project/SocialED
    :alt: PyPI downloads
    
-.. |badge_testing| image:: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml/badge.svg
-   :target: https://github.com/ChenBeici/SocialED/actions/workflows/testing.yml
-   :alt: testing
+.. |badge_testing| image:: https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml/badge.svg
+   :target: https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml
+   :alt: Testing
 
-.. |badge_coverage| image:: https://coveralls.io/repos/github/pygod-team/pygod/badge.svg?branch=main
-   :target: https://coveralls.io/github/pygod-team/pygod?branch=main
+.. |badge_coverage| image:: https://coveralls.io/repos/github/ChenBeici/SocialED/badge.svg?branch=main
+   :target: https://coveralls.io/github/ChenBeici/SocialED?branch=main
    :alt: Coverage Status
 
 .. |badge_license| image:: https://img.shields.io/github/license/RingBDStack/SocialED.svg
@@ -48,6 +48,11 @@
 .. |badge_codeql| image:: https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg
    :target: https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml
    :alt: CodeQL
+
+.. |badge_arxiv| image:: https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red
+   :target: https://arxiv.org/abs/2412.13472
+   :alt: arXiv
+
 
 -----
 
@@ -173,7 +178,7 @@ Quality and Reliability
 * Follows PEP 8 style guide
 
 Accessibility and Community Support
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Detailed API documentation on Read the Docs
 * Step-by-step guides and tutorials
@@ -202,7 +207,6 @@ Accessibility and Community Support
    SocialED.detector
    SocialED.metrics
    SocialED.utils
-   SocialED.tests
 
 .. toctree::
    :maxdepth: 2

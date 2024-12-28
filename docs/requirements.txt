@@ -12,3 +12,12 @@ sphinxcontrib-bibtex
 matplotlib
 sphinx_gallery
 GitPython
+sphinx
+sphinx-rtd-theme
+sphinx-autodoc-typehints
+transformers
+torch
+scipy
+sentence-transformers
+tqdm
+recommonmark

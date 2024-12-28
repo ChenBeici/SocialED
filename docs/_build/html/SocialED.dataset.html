@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.detector" href="SocialED.detector.html" /><link rel="prev" title="Installation" href="install.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.Detector" href="SocialED.detector.html" /><link rel="prev" title="Installation" href="install.html" />
 
-    <link rel="shortcut icon" href="_static/SocialED.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.dataset - SocialED documentation</title>
+    <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
+        <title>SocialED.Dataset - SocialED documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
@@ -208,17 +208,16 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.tests.html">SocialED.tests</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cite.html">Cite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="team.html">Core Team</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
 </ul>
 
 </div>
@@ -260,9 +259,9 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="socialed-dataset">
-<h1>SocialED.dataset<a class="headerlink" href="#socialed-dataset" title="Permalink to this heading">¶</a></h1>
+<h1>SocialED.Dataset<a class="headerlink" href="#socialed-dataset" title="Permalink to this heading">¶</a></h1>
 <section id="module-SocialED.dataset.dataloader">
-<span id="socialed-dataset-dataloader"></span><h2>SocialED.dataset.dataloader<a class="headerlink" href="#module-SocialED.dataset.dataloader" title="Permalink to this heading">¶</a></h2>
+<span id="dataloader"></span><h2>Dataloader<a class="headerlink" href="#module-SocialED.dataset.dataloader" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="SocialED.dataset.dataloader.ArabicTwitter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">ArabicTwitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#ArabicTwitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.ArabicTwitter" title="Permalink to this definition">¶</a></dt>
@@ -332,6 +331,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The language of the dataset (‘English’, ‘French’, ‘Arabic’).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.get_dataset_name">
+<span class="sig-name descname"><span class="pre">get_dataset_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.get_dataset_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the name of the current dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The name of the dataset.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
@@ -420,7 +433,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">SocialED.detector</div>
+                <div class="title">SocialED.Detector</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -465,8 +478,8 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">SocialED.dataset</a><ul>
-<li><a class="reference internal" href="#module-SocialED.dataset.dataloader">SocialED.dataset.dataloader</a><ul>
+<li><a class="reference internal" href="#">SocialED.Dataset</a><ul>
+<li><a class="reference internal" href="#module-SocialED.dataset.dataloader">Dataloader</a><ul>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.ArabicTwitter"><code class="docutils literal notranslate"><span class="pre">ArabicTwitter</span></code></a><ul>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.ArabicTwitter.load_data"><code class="docutils literal notranslate"><span class="pre">ArabicTwitter.load_data()</span></code></a></li>
 </ul>
@@ -487,6 +500,7 @@
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download_and_cleanup()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_language"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_language()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_name"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_name()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.load_data"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.load_data()</span></code></a></li>
 </ul>
 </li>

@@ -1,8 +1,8 @@
-SocialED.dataset 
+SocialED.Dataset 
 ========================
 
 
-SocialED.dataset.dataloader 
+Dataloader 
 -------------------------------
 
 .. automodule:: SocialED.dataset.dataloader

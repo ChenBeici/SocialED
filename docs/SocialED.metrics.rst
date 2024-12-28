@@ -1,8 +1,7 @@
-SocialED.metrics 
+SocialED.Metrics 
 ========================
 
-
-SocialED.metrics.metric 
+metric 
 ------------------------------
 
 .. automodule:: SocialED.metrics.metric

@@ -1,8 +1,8 @@
-SocialED.utils
+SocialED.Utils
 ==================
 
 
-SocialED.utils.utility 
+utility 
 -----------------------------
 
 .. automodule:: SocialED.utils.utility

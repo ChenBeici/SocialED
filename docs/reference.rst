@@ -1,5 +1,6 @@
-Reference
-=========
+References
+==========
 
-.. bibliography::
-   :cited:
+.. bibliography:: zreferences.bib
+   :style: unsrt
+   :all:

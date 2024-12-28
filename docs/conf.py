@@ -46,7 +46,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
-html_favicon = 'SocialED.ico'
+html_favicon = 'socialed.ico'
 html_static_path = ['_static']
 
 # -- Options for HTMLHelp output ---------------------------------------------
