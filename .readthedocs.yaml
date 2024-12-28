@@ -16,7 +16,8 @@ python:
     - method: pip
       path: .
     - requirements: requirements.txt
-
+    install:
+      - pip install --no-deps SocialED==1.1.2
 # Sphinx 配置
 sphinx:
   configuration: docs/conf.py

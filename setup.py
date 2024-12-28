@@ -1,7 +1,26 @@
 from setuptools import setup, find_packages
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
+requirements = [
+    'torch>=1.13.1,<1.14.0',
+    'torchvision>=0.14.1,<0.15.0',
+    'transformers>=4.27.0,<4.28.0',
+    'sentence-transformers>=2.2.2,<2.3.0',
+    'accelerate>=0.18.0,<0.19.0',
+    'torch-geometric>=2.3.0,<2.4.0',
+    'dgl',
+    'faiss-cpu',
+    'pytorch-ignite>=0.4.11,<0.5.0',
+    'geoopt>=0.4.0,<0.5.0',
+    'numpy',
+    'pandas',
+    'scikit-learn',
+    'scipy',
+    'networkx',
+    'spacy',
+    'gensim',
+    'matplotlib',
+    'seaborn',
+]
 
 setup(
     name='SocialED',

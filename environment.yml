@@ -6,25 +6,19 @@ channels:
 dependencies:
   - python>=3.8,<3.10
   - pip
-  # PyTorch ecosystem
+  # Core dependencies
   - pytorch=1.13.1
   - torchvision=0.14.1
   - torchaudio=0.13.1
-  - pytorch-cuda=11.7
-  - cudatoolkit=11.7
+  - cpuonly
   
   # Scientific computing
   - numpy
   - pandas
   - scikit-learn
   - scipy
-  - matplotlib
-  - seaborn
   
   # Graph related
-  - pyg=2.3.0
-  - dgl-cuda11.7
-  - faiss-gpu
   - networkx
   
   # NLP tools
@@ -37,18 +31,24 @@ dependencies:
   - coverage
   
   - pip:
-    # Transformers ecosystem (compatible with PyTorch 1.13.1)
+    # Transformers ecosystem
     - transformers==4.27.4
     - tokenizers==0.13.3
     - accelerate==0.18.0
     - sentence-transformers==2.2.2
-    - peft==0.2.0
+    
+    # Graph related
+    - torch-geometric==2.3.0
+    - dgl
+    - faiss-cpu
     
     # Other dependencies
     - pytorch-ignite==0.4.11
     - geoopt==0.4.0
     - coveralls
     - GitPython
+    - matplotlib
+    - seaborn
     
     # Language models
     - en-core-web-lg
