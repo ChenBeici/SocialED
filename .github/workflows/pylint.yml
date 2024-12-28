@@ -54,7 +54,10 @@ jobs:
       shell: bash -l {0}
       id: score-check
       run: |
-        score=$(pylint --rcfile=.pylintrc SocialED | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d/ -f1)
+        score=$(pylint --rcfile=.pylintrc SocialED 2>&1 | grep 'Your code has been rated at' | awk '{print $7}' | cut -d/ -f1)
+        if [ -z "$score" ]; then
+          score="0"
+        fi
         echo "score=$score" >> $GITHUB_OUTPUT
 
     - name: Conditional Autopep8 Fix and Recheck
