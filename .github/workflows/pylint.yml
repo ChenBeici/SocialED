@@ -44,32 +44,32 @@ jobs:
         pip install pylint autopep8
         pip install -r requirements.txt
 
-    - name: Initial Pylint Check
+    - name: Run Pylint
       shell: bash -l {0}
-      id: pylint-check
       run: |
-        pylint --rcfile=.pylintrc SocialED || true
-
-    - name: Check Pylint Score
-      shell: bash -l {0}
-      id: score-check
-      run: |
-        score=$(pylint --rcfile=.pylintrc SocialED 2>&1 | grep 'Your code has been rated at' | awk '{print $7}' | cut -d/ -f1)
-        if [ -z "$score" ]; then
+        # 创建输出目录
+        mkdir -p pylint_output
+        
+        # 运行 pylint 并保存输出
+        pylint --rcfile=.pylintrc SocialED > pylint_output/report.txt || true
+        
+        # 提取分数
+        if grep -q "Your code has been rated at" pylint_output/report.txt; then
+          score=$(grep "Your code has been rated at" pylint_output/report.txt | awk '{print $7}' | cut -d'/' -f1)
+        else
           score="0"
         fi
-        echo "score=$score" >> $GITHUB_OUTPUT
-
-    - name: Conditional Autopep8 Fix and Recheck
-      if: steps.score-check.outputs.score < 2.0
-      shell: bash -l {0}
-      run: |
-        echo "Pylint score (${{ steps.score-check.outputs.score }}) is less than 2.0. Running autopep8..."
-        find SocialED -name "*.py" -exec autopep8 --in-place --aggressive --aggressive {} +
-        pylint --rcfile=.pylintrc SocialED
-
-    - name: Final Pylint Check
-      if: steps.score-check.outputs.score < 2.0
-      shell: bash -l {0}
-      run: |
+        
+        # 显示报告
+        cat pylint_output/report.txt
+        
+        # 如果分数低于 2.0，运行 autopep8
+        if (( $(echo "$score < 2.0" | bc -l) )); then
+          echo "Pylint score ($score) is less than 2.0. Running autopep8..."
+          find SocialED -name "*.py" -exec autopep8 --in-place --aggressive --aggressive {} +
+          pylint --rcfile=.pylintrc SocialED > pylint_output/final_report.txt
+          cat pylint_output/final_report.txt
+        fi
+        
+        # 最终检查
         pylint --rcfile=.pylintrc SocialED --fail-under=2.0
