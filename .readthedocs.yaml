@@ -6,9 +6,9 @@ build:
   tools:
     python: "3.8"  # 设置 Python 版本为 3.8
 
-# 安装依赖包
-install:
-  - pip install --no-deps SocialED==1.1.2  # 安装 SocialED 并跳过依赖
+# 使用 requirements.txt 文件安装依赖
+requirements:
+  file: requirements.txt  # 使用 requirements.txt 安装依赖
 
 # 构建文档
 sphinx:
