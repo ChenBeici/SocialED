@@ -11,11 +11,39 @@ sys.path.insert(0, os.path.join(root_dir, 'SocialED'))
 
 # Mock imports for modules that are difficult to install
 autodoc_mock_imports = [
+    # 基础依赖
+    'numpy', 'pandas', 'scipy', 'sklearn', 'matplotlib', 'seaborn',
+    'networkx', 'tqdm',
+    
+    # PyTorch 相关
     'torch', 'torch.nn', 'torch.optim', 'torch.utils', 'torch.utils.data',
-    'transformers', 'sentence_transformers', 'dgl', 'torch_geometric',
-    'numpy', 'pandas', 'sklearn', 'scipy', 'networkx', 'spacy',
-    'gensim', 'faiss', 'tqdm', 'matplotlib', 'seaborn',
-    'git', 'GitPython'
+    'torchvision', 'pytorch_ignite',
+    
+    # 深度学习框架
+    'dgl', 'dgl.function', 'dgl.dataloading',
+    'torch_geometric',
+    
+    # NLP 相关
+    'transformers', 'sentence_transformers', 'tokenizers',
+    'spacy', 'gensim', 'en_core_web_lg', 'fr_core_news_lg',
+    
+    # 其他依赖
+    'faiss', 'faiss_cpu',
+    'git', 'GitPython',
+    
+    # SocialED 内部模块
+    'SocialED.detector.bert',
+    'SocialED.detector.sbert',
+    'SocialED.detector.eventx',
+    'SocialED.detector.clkd',
+    'SocialED.detector.kpgnn',
+    'SocialED.detector.finevent',
+    'SocialED.detector.qsgnn',
+    'SocialED.detector.hcrc',
+    'SocialED.detector.uclsed',
+    'SocialED.detector.rplmsed',
+    'SocialED.detector.hisevent',
+    'SocialED.detector.adpsemevent'
 ]
 
 # Project information
