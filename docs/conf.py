@@ -3,19 +3,25 @@
 import os
 import sys
 from os.path import dirname, abspath
-from sphinx_gallery.sorting import FileNameSortKey
 
-# 添加项目根目录和包目录到 Python 路径
+# 将 SocialED 项目的根目录添加到 sys.path
+sys.path.insert(0, abspath('..'))
 root_dir = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, root_dir)
-sys.path.insert(0, os.path.join(root_dir, 'SocialED'))
 
-# Project information
+# -- Project information -----------------------------------------------------
+
 project = 'SocialED'
 copyright = '2024 beici'
 author = 'beici'
 
-# General configuration
+# 如果您有版本信息，可以使用以下代码获取版本号
+# version_path = os.path.join(root_dir, 'SocialED', 'version.py')
+# exec(open(version_path).read())
+# version = __version__
+# release = __version__
+
+# -- General configuration ---------------------------------------------------
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -29,41 +35,58 @@ extensions = [
     'sphinx_gallery.gen_gallery'
 ]
 
-# 添加 autosummary 配置
-autosummary_generate = True
-autosummary_imported_members = True
-templates_path = ['_templates']
-
-# Basic configuration
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-source_suffix = '.rst'
-master_doc = 'index'
-
-# Mock imports
-autodoc_mock_imports = [
-    'numpy', 'pandas', 'scipy', 'sklearn', 'matplotlib', 'seaborn',
-    'networkx', 'tqdm', 'torch', 'transformers', 'dgl', 'spacy',
-    'gensim', 'faiss', 'git'
-]
-
-# Bibliography
 bibtex_bibfiles = ['zreferences.bib']
 
-# HTML output options
+autodoc_mock_imports = ['en_core_web_lg','fr_core_news_lg','dgl.function', 'dgl.dataloading', 'spacy', 'torch.nn', 'torch','transformers','dgl'] 
+
+templates_path = ['_templates']
+source_suffix = '.rst'
+master_doc = 'index'
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
 html_favicon = 'socialed.ico'
 html_static_path = ['_static']
 
-# Sphinx Gallery configuration
+# -- Options for HTMLHelp output ---------------------------------------------
+htmlhelp_basename = 'socialEDdoc'
+
+# -- Options for LaTeX output ------------------------------------------------
+latex_documents = [
+    (master_doc, 'socialED.tex', 'SocialED Documentation',
+     'beici', 'manual'),
+]
+
+# -- Options for manual page output ------------------------------------------
+man_pages = [
+    (master_doc, 'socialED', 'SocialED Documentation',
+     [author], 1)
+]
+
+# -- Options for Texinfo output ----------------------------------------------
+texinfo_documents = [
+    (master_doc, 'socialED', 'SocialED Documentation',
+     author, 'SocialED', 'A Python library for social event detection.',
+     'Miscellaneous'),
+]
+
+# -- Extension configuration -------------------------------------------------
+from sphinx_gallery.sorting import FileNameSortKey
+
+html_static_path = []
+
+
+
 sphinx_gallery_conf = {
-    'examples_dirs': 'examples/',
+    'examples_dirs': 'examples/',   # Path to your example scripts
     'gallery_dirs': 'tutorials/',
     'within_subsection_order': FileNameSortKey,
     'filename_pattern': '.py',
     'download_all_examples': False,
 }
 
-# Intersphinx mapping
+# -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
