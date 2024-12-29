@@ -3,6 +3,7 @@
 import os
 import sys
 from os.path import dirname, abspath
+from sphinx_gallery.sorting import FileNameSortKey
 
 # 添加项目根目录到 Python 路径
 root_dir = dirname(dirname(abspath(__file__)))
@@ -69,7 +70,7 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 source_suffix = '.rst'
-root_doc = 'index'  # 替换 master_doc
+root_doc = 'index'
 
 # Bibliography
 bibtex_bibfiles = ['zreferences.bib']
