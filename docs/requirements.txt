@@ -5,6 +5,10 @@ furo==2022.12.7
 sphinx-gallery==0.10.1
 sphinxcontrib-bibtex==2.4.2
 recommonmark==0.7.1
+docutils==0.18.1
+
+# Git support
+GitPython==3.1.40
 
 # Core dependencies for docs
 numpy==1.19.5
