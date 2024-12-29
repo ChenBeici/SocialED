@@ -55,8 +55,8 @@ jobs:
       shell: bash -l {0}
       run: |
         conda install -c conda-forge spacy gensim
-        python -m pip install spacy-model-en_core_web_lg
-        python -m pip install spacy-model-fr_core_news_lg
+        python -m spacy download en_core_web_lg
+        python -m spacy download fr_core_news_lg
 
     - name: Install transformers dependencies
       shell: bash -l {0}
