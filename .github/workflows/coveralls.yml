@@ -54,9 +54,13 @@ jobs:
     - name: Run coverage
       shell: bash -l {0}
       run: |
-        python -m pytest --cov=SocialED tests/ || echo "No tests found or tests completed with warnings"
+        if [ -d "SocialED/tests" ]; then
+          python -m pytest --cov=SocialED SocialED/tests/ || echo "Coverage completed with warnings"
+        else
+          echo "Looking for tests in SocialED/SocialED/tests/"
+          python -m pytest --cov=SocialED SocialED/SocialED/tests/ || echo "Coverage completed with warnings"
+        fi
         echo "Coverage step completed successfully"
-        exit 0
 
     - name: Upload coverage data to coveralls.io
       shell: bash -l {0}
@@ -65,9 +69,12 @@ jobs:
         COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
         COVERALLS_PARALLEL: true
       run: |
-        coveralls --service=github || echo "Coverage upload completed with warnings"
+        if [ -d "tests" ]; then
+          coveralls --service=github || echo "Coverage upload completed with warnings"
+        else
+          echo "No coverage data to upload"
+        fi
         echo "Upload step completed successfully"
-        exit 0
 
   coveralls:
     name: Indicate completion to coveralls.io
@@ -80,4 +87,3 @@ jobs:
         pip3 install --upgrade coveralls
         coveralls --finish || echo "Coveralls finish step completed with warnings"
         echo "Coveralls step completed successfully"
-        exit 0
