@@ -6,36 +6,8 @@ from os.path import dirname, abspath
 from sphinx_gallery.sorting import FileNameSortKey
 
 # 添加项目根目录到 Python 路径
+sys.path.insert(0, abspath('..'))
 root_dir = dirname(dirname(abspath(__file__)))
-sys.path.insert(0, root_dir)
-
-# 确保能找到 SocialED 包
-package_dir = os.path.join(root_dir, 'SocialED')
-if os.path.exists(package_dir):
-    sys.path.insert(0, package_dir)
-
-# Mock imports for modules that are difficult to install
-autodoc_mock_imports = [
-    # 基础依赖
-    'numpy', 'pandas', 'scipy', 'sklearn', 'matplotlib', 'seaborn',
-    'networkx', 'tqdm',
-    
-    # PyTorch 相关
-    'torch', 'torch.nn', 'torch.optim', 'torch.utils', 'torch.utils.data',
-    'torchvision', 'pytorch_ignite',
-    
-    # 深度学习框架
-    'dgl', 'dgl.function', 'dgl.dataloading',
-    'torch_geometric',
-    
-    # NLP 相关
-    'transformers', 'sentence_transformers', 'tokenizers',
-    'spacy', 'gensim', 'en_core_web_lg', 'fr_core_news_lg',
-    
-    # 其他依赖
-    'faiss', 'faiss_cpu',
-    'git', 'GitPython'
-]
 
 # Project information
 project = 'SocialED'
@@ -56,11 +28,21 @@ extensions = [
     'sphinx_gallery.gen_gallery'
 ]
 
-# Basic configuration
+# 添加 autosummary 配置
+autosummary_generate = True
 templates_path = ['_templates']
+
+# Basic configuration
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 source_suffix = '.rst'
-root_doc = 'index'
+master_doc = 'index'
+
+# Mock imports
+autodoc_mock_imports = [
+    'numpy', 'pandas', 'scipy', 'sklearn', 'matplotlib', 'seaborn',
+    'networkx', 'tqdm', 'torch', 'transformers', 'dgl', 'spacy',
+    'gensim', 'faiss', 'git'
+]
 
 # Bibliography
 bibtex_bibfiles = ['zreferences.bib']
@@ -89,22 +71,3 @@ intersphinx_mapping = {
     'torch': ("https://pytorch.org/docs/master", None),
     'torch_geometric': ("https://pytorch-geometric.readthedocs.io/en/latest", None),
 }
-
-# LaTeX output options
-latex_documents = [
-    (root_doc, 'socialED.tex', 'SocialED Documentation',
-     'beici', 'manual'),
-]
-
-# Manual page output options
-man_pages = [
-    (root_doc, 'socialED', 'SocialED Documentation',
-     [author], 1)
-]
-
-# Texinfo output options
-texinfo_documents = [
-    (root_doc, 'socialED', 'SocialED Documentation',
-     author, 'SocialED', 'A Python library for social event detection.',
-     'Miscellaneous'),
-]
