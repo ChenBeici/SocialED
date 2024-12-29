@@ -4,12 +4,21 @@ import os
 import sys
 from os.path import dirname, abspath
 
-# 将 SocialED 项目的根目录添加到 sys.path
-sys.path.insert(0, abspath('..'))
+# 添加项目根目录到 Python 路径
 root_dir = dirname(dirname(abspath(__file__)))
+sys.path.insert(0, root_dir)
+sys.path.insert(0, os.path.join(root_dir, 'SocialED'))
 
-# -- Project information -----------------------------------------------------
+# Mock imports for modules that are difficult to install
+autodoc_mock_imports = [
+    'torch', 'torch.nn', 'torch.optim', 'torch.utils', 'torch.utils.data',
+    'transformers', 'sentence_transformers', 'dgl', 'torch_geometric',
+    'numpy', 'pandas', 'sklearn', 'scipy', 'networkx', 'spacy',
+    'gensim', 'faiss', 'tqdm', 'matplotlib', 'seaborn',
+    'git', 'GitPython'
+]
 
+# Project information
 project = 'SocialED'
 copyright = '2024 beici'
 author = 'beici'
@@ -36,13 +45,6 @@ extensions = [
 ]
 
 bibtex_bibfiles = ['zreferences.bib']
-
-autodoc_mock_imports = ['en_core_web_lg','fr_core_news_lg','dgl.function', 'dgl.dataloading', 'spacy', 'torch.nn', 'torch','transformers','dgl'] 
-
-templates_path = ['_templates']
-source_suffix = '.rst'
-master_doc = 'index'
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
