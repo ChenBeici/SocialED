@@ -8,7 +8,11 @@ from sphinx_gallery.sorting import FileNameSortKey
 # 添加项目根目录到 Python 路径
 root_dir = dirname(dirname(abspath(__file__)))
 sys.path.insert(0, root_dir)
-sys.path.insert(0, os.path.join(root_dir, 'SocialED'))
+
+# 确保能找到 SocialED 包
+package_dir = os.path.join(root_dir, 'SocialED')
+if os.path.exists(package_dir):
+    sys.path.insert(0, package_dir)
 
 # Mock imports for modules that are difficult to install
 autodoc_mock_imports = [
