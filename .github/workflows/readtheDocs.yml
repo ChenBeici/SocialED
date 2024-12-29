@@ -41,39 +41,45 @@ jobs:
     - name: Install core dependencies
       shell: bash -l {0}
       run: |
-        # Install numpy first
+        # Install build tools
+        pip install setuptools wheel cython
+
+        # Install numpy and scipy first
         pip install numpy==1.24.4
-        
+        pip install scipy==1.10.1
+
         # Install PyTorch CPU version
         pip install torch==1.13.1+cpu torchvision==0.14.1+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
         
         # Install other core dependencies
-        pip install pandas==2.0.3 \
-                    scikit-learn==1.3.2 \
-                    scipy==1.10.1 \
-                    networkx==3.1 \
-                    matplotlib==3.7.5
+        pip install pandas==2.0.3
+        pip install scikit-learn==1.3.2
+        pip install networkx==3.1
+        pip install matplotlib==3.7.5
 
-    - name: Install NLP dependencies
+    - name: Install pre-built NLP dependencies
       shell: bash -l {0}
       run: |
-        pip install spacy==3.5.3
-        pip install gensim==4.3.2
-        python -m spacy download en_core_web_sm
-        python -m spacy download fr_core_news_sm
+        # Install pre-built wheels
+        pip install -f https://download.pytorch.org/whl/torch_stable.html spacy==3.5.3
+        pip install -f https://download.pytorch.org/whl/torch_stable.html gensim==4.3.2
+        
+        # Install small language models
+        pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0.tar.gz
+        pip install https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0.tar.gz
 
     - name: Install transformers dependencies
       shell: bash -l {0}
       run: |
-        pip install transformers==4.27.4 \
-                    tokenizers==0.13.3 \
-                    accelerate==0.18.0 \
-                    sentence-transformers==2.2.2
+        pip install --no-deps transformers==4.27.4
+        pip install --no-deps tokenizers==0.13.3
+        pip install --no-deps accelerate==0.18.0
+        pip install --no-deps sentence-transformers==2.2.2
 
-    - name: Install package
+    - name: Install minimal package dependencies
       shell: bash -l {0}
       run: |
-        pip install -e .
+        pip install --no-deps -e .
 
     - name: Build documentation
       shell: bash -l {0}
