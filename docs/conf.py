@@ -51,14 +51,7 @@ project = 'SocialED'
 copyright = '2024 beici'
 author = 'beici'
 
-# 如果您有版本信息，可以使用以下代码获取版本号
-# version_path = os.path.join(root_dir, 'SocialED', 'version.py')
-# exec(open(version_path).read())
-# version = __version__
-# release = __version__
-
-# -- General configuration ---------------------------------------------------
-
+# General configuration
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -72,51 +65,30 @@ extensions = [
     'sphinx_gallery.gen_gallery'
 ]
 
+# Basic configuration
+templates_path = ['_templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+source_suffix = '.rst'
+root_doc = 'index'  # 替换 master_doc
+
+# Bibliography
 bibtex_bibfiles = ['zreferences.bib']
 
-# -- Options for HTML output -------------------------------------------------
+# HTML output options
 html_theme = "furo"
 html_favicon = 'socialed.ico'
 html_static_path = ['_static']
 
-# -- Options for HTMLHelp output ---------------------------------------------
-htmlhelp_basename = 'socialEDdoc'
-
-# -- Options for LaTeX output ------------------------------------------------
-latex_documents = [
-    (master_doc, 'socialED.tex', 'SocialED Documentation',
-     'beici', 'manual'),
-]
-
-# -- Options for manual page output ------------------------------------------
-man_pages = [
-    (master_doc, 'socialED', 'SocialED Documentation',
-     [author], 1)
-]
-
-# -- Options for Texinfo output ----------------------------------------------
-texinfo_documents = [
-    (master_doc, 'socialED', 'SocialED Documentation',
-     author, 'SocialED', 'A Python library for social event detection.',
-     'Miscellaneous'),
-]
-
-# -- Extension configuration -------------------------------------------------
-from sphinx_gallery.sorting import FileNameSortKey
-
-html_static_path = []
-
-
-
+# Sphinx Gallery configuration
 sphinx_gallery_conf = {
-    'examples_dirs': 'examples/',   # Path to your example scripts
+    'examples_dirs': 'examples/',
     'gallery_dirs': 'tutorials/',
     'within_subsection_order': FileNameSortKey,
     'filename_pattern': '.py',
     'download_all_examples': False,
 }
 
-# -- Options for intersphinx extension ---------------------------------------
+# Intersphinx mapping
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
@@ -126,3 +98,22 @@ intersphinx_mapping = {
     'torch': ("https://pytorch.org/docs/master", None),
     'torch_geometric': ("https://pytorch-geometric.readthedocs.io/en/latest", None),
 }
+
+# LaTeX output options
+latex_documents = [
+    (root_doc, 'socialED.tex', 'SocialED Documentation',
+     'beici', 'manual'),
+]
+
+# Manual page output options
+man_pages = [
+    (root_doc, 'socialED', 'SocialED Documentation',
+     [author], 1)
+]
+
+# Texinfo output options
+texinfo_documents = [
+    (root_doc, 'socialED', 'SocialED Documentation',
+     author, 'SocialED', 'A Python library for social event detection.',
+     'Miscellaneous'),
+]
