@@ -5,9 +5,10 @@ import sys
 from os.path import dirname, abspath
 from sphinx_gallery.sorting import FileNameSortKey
 
-# 添加项目根目录到 Python 路径
-sys.path.insert(0, abspath('..'))
+# 添加项目根目录和包目录到 Python 路径
 root_dir = dirname(dirname(abspath(__file__)))
+sys.path.insert(0, root_dir)
+sys.path.insert(0, os.path.join(root_dir, 'SocialED'))
 
 # Project information
 project = 'SocialED'
@@ -30,6 +31,7 @@ extensions = [
 
 # 添加 autosummary 配置
 autosummary_generate = True
+autosummary_imported_members = True
 templates_path = ['_templates']
 
 # Basic configuration
