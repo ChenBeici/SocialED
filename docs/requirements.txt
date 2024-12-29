@@ -1,6 +1,6 @@
 # Documentation dependencies only
-sphinx>=5.0.0
-furo>=2023.9.10
+sphinx==4.5.0
+furo==2022.12.7
 sphinx-gallery==0.10.1
 sphinxcontrib-bibtex==2.4.2
 recommonmark==0.7.1
