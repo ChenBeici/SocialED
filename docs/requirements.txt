@@ -1,4 +1,4 @@
-# Documentation dependencies only (no docutils)
+# Documentation dependencies only
 sphinx==4.3.2
 sphinx-rtd-theme==0.4.3
 sphinx-gallery==0.10.1
@@ -10,11 +10,12 @@ numpy==1.19.5
 scipy==1.7.3
 matplotlib==3.5.3
 
-# PyTorch CPU only (for docs)
---find-links https://download.pytorch.org/whl/torch_stable.html
-torch==1.10.0+cpu
-torchvision==0.11.1+cpu
+# Transformers ecosystem
+transformers==4.27.4
+tokenizers==0.13.3
+accelerate==0.18.0
+sentence-transformers==2.2.2
 
-# Language models (minimal for docs)
+# Language models
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.2.0/en_core_web_sm-3.2.0.tar.gz
 https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.2.0/fr_core_news_sm-3.2.0.tar.gz
