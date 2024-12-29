@@ -43,42 +43,34 @@ jobs:
       shell: bash -l {0}
       run: |
         # Install specific PyTorch version
-        conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 cpuonly -c pytorch
-        conda install pyg==2.3.0 -c pyg
-        conda install -c conda-forge faiss-cpu==1.7.2
-
-    - name: Install transformers dependencies
-      shell: bash -l {0}
-      run: |
-        pip install transformers==4.27.4 \
-                    tokenizers==0.13.3 \
-                    accelerate==0.18.0 \
-                    sentence-transformers==2.2.2
+        conda install pytorch=1.13.1 torchvision=0.14.1 torchaudio=0.13.1 cpuonly -c pytorch
+        conda install pyg -c pyg
+        conda install -c conda-forge faiss-cpu
 
     - name: Install scientific computing dependencies
       shell: bash -l {0}
       run: |
-        conda install numpy==1.24.4 \
-                      pandas==2.0.3 \
-                      scikit-learn==1.3.2 \
-                      scipy==1.10.1 \
-                      networkx==3.1 \
-                      matplotlib==3.7.5 \
-                      seaborn
+        conda install numpy pandas scikit-learn scipy networkx matplotlib seaborn -c conda-forge
+
+    - name: Install transformers dependencies
+      shell: bash -l {0}
+      run: |
+        pip install transformers==4.27.4
+        pip install tokenizers==0.13.3
+        pip install accelerate==0.18.0
+        pip install sentence-transformers==2.2.2
 
     - name: Install NLP dependencies
       shell: bash -l {0}
       run: |
-        pip install spacy==3.7.4 \
-                    gensim==4.3.2
+        pip install spacy gensim
         python -m spacy download en_core_web_lg
         python -m spacy download fr_core_news_lg
 
     - name: Install other dependencies
       shell: bash -l {0}
       run: |
-        pip install dgl==0.6.0 \
-                    pytorch-ignite==0.4.11
+        pip install dgl pytorch-ignite
 
     - name: Run Pylint
       shell: bash -l {0}
