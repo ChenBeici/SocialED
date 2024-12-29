@@ -43,6 +43,5 @@ accelerate==0.18.0
 dgl==0.6.1
 faiss-cpu==1.7.2
 
-# Install order constraints
---no-deps
+# Install package
 -e .
