@@ -37,7 +37,23 @@ extensions = [
 
 bibtex_bibfiles = ['zreferences.bib']
 
-autodoc_mock_imports = ['en_core_web_lg','fr_core_news_lg','dgl.function', 'dgl.dataloading', 'spacy', 'torch.nn', 'torch','transformers','dgl'] 
+autodoc_mock_imports = [
+    'en_core_web_lg',
+    'fr_core_news_lg',
+    'dgl',
+    'dgl.function',
+    'dgl.dataloading',
+    'spacy',
+    'torch',
+    'torch.nn',
+    'torch.cuda',
+    'transformers',
+    'transformers.modeling_bert',
+    'transformers.tokenization_bert',
+    'numpy',
+    'pandas',
+    'scikit-learn'
+]
 
 templates_path = ['_templates']
 source_suffix = '.rst'
