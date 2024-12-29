@@ -6,12 +6,12 @@ sphinx-gallery==0.10.1
 sphinxcontrib-bibtex==2.4.2
 recommonmark==0.7.1
 docutils==0.18.1
-pandas==1.5.3
+pandas==2.0.3
 # Git support
 GitPython==3.1.40
 
 # Core dependencies for docs
-numpy==1.19.5
+numpy==1.20.3
 scipy==1.7.3
 matplotlib==3.5.3
 
