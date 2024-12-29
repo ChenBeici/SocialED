@@ -1,5 +1,4 @@
-# Documentation with fixed docutils version
-docutils==0.17.1
+# Documentation dependencies only (no docutils)
 sphinx==4.3.2
 sphinx-rtd-theme==0.4.3
 sphinx-gallery==0.10.1
