@@ -41,7 +41,13 @@ WMD
    :undoc-members:
    :show-inheritance:
 
+Bert
+-----------------------------
 
+.. automodule:: SocialED.detector.bert
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 SBert
 ------------------------------
