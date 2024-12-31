@@ -14,14 +14,17 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 class BERT:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 dataset,
                  model_name='../model/model_needed/bert-base-uncased',
                  max_length=128,
                  df=None,
                  train_df=None,
                  test_df=None, ):
         self.dataset = dataset
-        self.model_name = model_name
+        if os.path.exists(model_name):
+            self.model_name = model_name
+        else:
+            self.model_name = 'bert-base-uncased'
         self.max_length = max_length
         self.df = df
         self.train_df = train_df
@@ -104,17 +107,13 @@ class BERT:
 
 # Main function
 if __name__ == "__main__":
-    print(torch.version.cuda)
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
+    bert = BERT(dataset)
 
-    bert = BERT()
-
-    # Data preprocessing
     bert.preprocess()
 
-    # Detection
     ground_truths, predictions = bert.detection()   
-
-    # Evaluation
     bert.evaluate(ground_truths, predictions)
 
 

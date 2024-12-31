@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Metrics used to evaluate the outlier detection performance
-"""
-# Author: Yingtong Dou <ytongdou@gmail.com>, Kay Liu <zliu234@uic.edu>
-# License: BSD 2 clause
+"""Evaluation metrics for clustering and classification in social event detection."""
 
-
+import numpy as np
+import torch
 from sklearn import metrics
+from munkres import Munkres
+import networkx as nx
 
 
 
@@ -108,5 +107,4 @@ def eval_acc(ground_truths, predictions):
     """
     acc = metrics.accuracy_score(ground_truths, predictions)
     return acc
-
 

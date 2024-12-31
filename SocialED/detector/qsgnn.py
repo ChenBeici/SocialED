@@ -27,154 +27,55 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-
 class args_define:
     def __init__(self, **kwargs):
-        # Hyper parameters
-        self.finetune_epochs = kwargs.get('finetune_epochs', 1)
-        self.n_epochs = kwargs.get('n_epochs', 5)
-        self.oldnum = kwargs.get('oldnum', 20)
-        self.novelnum = kwargs.get('novelnum', 20)
-        self.n_infer_epochs = kwargs.get('n_infer_epochs', 0)
-        self.window_size = kwargs.get('window_size', 3)
-        self.patience = kwargs.get('patience', 5)
-        self.margin = kwargs.get('margin', 3.0)
-        self.a = kwargs.get('a', 8.0)
-        self.lr = kwargs.get('lr', 1e-3)
-        self.batch_size = kwargs.get('batch_size', 1000)
-        self.n_neighbors = kwargs.get('n_neighbors', 1200)
-        self.word_embedding_dim = kwargs.get('word_embedding_dim', 300)
-        self.hidden_dim = kwargs.get('hidden_dim', 16)
-        self.out_dim = kwargs.get('out_dim', 64)
-        self.num_heads = kwargs.get('num_heads', 4)
-        self.use_residual = kwargs.get('use_residual', True)
-        self.validation_percent = kwargs.get('validation_percent', 0.1)
-        self.test_percent = kwargs.get('test_percent', 0.2)
-        self.use_hardest_neg = kwargs.get('use_hardest_neg', True)
-        self.metrics = kwargs.get('metrics', 'nmi')
-        self.use_cuda = kwargs.get('use_cuda', True)
-        self.add_ort = kwargs.get('add_ort', True)
-        self.gpuid = kwargs.get('gpuid', 0)
-        self.mask_path = kwargs.get('mask_path', None)
-        self.log_interval = kwargs.get('log_interval', 10)
-        self.is_incremental = kwargs.get('is_incremental', True)
-        self.data_path = kwargs.get('data_path', '../model/model_saved/qsgnn/English')
-        self.file_path = kwargs.get('file_path', '../model/model_saved/qsgnn')
-        self.add_pair = kwargs.get('add_pair', True)
-        self.initial_lang = kwargs.get('initial_lang', 'English') # DatasetLoader 
-        self.is_static = kwargs.get('is_static', False)
-        self.graph_lang = kwargs.get('graph_lang', 'English')
-        self.days = kwargs.get('days', 2)
+        # Default arguments
+        defaults = {
+            'finetune_epochs': 1,
+            'n_epochs': 5, 
+            'oldnum': 20,
+            'novelnum': 20,
+            'n_infer_epochs': 0,
+            'window_size': 3,
+            'patience': 5,
+            'margin': 3.0,
+            'a': 8.0,
+            'lr': 1e-3,
+            'batch_size': 1000,
+            'n_neighbors': 1200,
+            'word_embedding_dim': 300,
+            'hidden_dim': 16,
+            'out_dim': 64,
+            'num_heads': 4,
+            'use_residual': True,
+            'validation_percent': 0.1,
+            'test_percent': 0.2,
+            'use_hardest_neg': True,
+            'metrics': 'nmi',
+            'use_cuda': True,
+            'add_ort': True,
+            'gpuid': 0,
+            'mask_path': None,
+            'log_interval': 10,
+            'is_incremental': True,
+            'data_path': '../model/model_saved/qsgnn/English',
+            'file_path': '../model/model_saved/qsgnn',
+            'add_pair': True,
+            'initial_lang': 'English',
+            'is_static': False,
+            'graph_lang': 'English',
+            'days': 2
+        }
 
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'finetune_epochs': self.finetune_epochs,
-            'n_epochs': self.n_epochs,
-            'oldnum': self.oldnum,
-            'novelnum': self.novelnum,
-            'n_infer_epochs': self.n_infer_epochs,
-            'window_size': self.window_size,
-            'patience': self.patience,
-            'margin': self.margin,
-            'a': self.a,
-            'lr': self.lr,
-            'batch_size': self.batch_size,
-            'n_neighbors': self.n_neighbors,
-            'word_embedding_dim': self.word_embedding_dim,
-            'hidden_dim': self.hidden_dim,
-            'out_dim': self.out_dim,
-            'num_heads': self.num_heads,
-            'use_residual': self.use_residual,
-            'validation_percent': self.validation_percent,
-            'test_percent': self.test_percent,
-            'use_hardest_neg': self.use_hardest_neg,
-            'metrics': self.metrics,
-            'use_cuda': self.use_cuda,
-            'add_ort': self.add_ort,
-            'gpuid': self.gpuid,
-            'mask_path': self.mask_path,
-            'log_interval': self.log_interval,
-            'is_incremental': self.is_incremental,
-            'data_path': self.data_path,
-            'file_path': self.file_path,
-            'add_pair': self.add_pair,
-            'initial_lang': self.initial_lang,
-            'is_static': self.is_static,
-            'graph_lang': self.graph_lang,
-            'days': self.days
-        })
+        # Update defaults with any provided kwargs
+        defaults.update(kwargs)
 
+        # Set all attributes
+        for key, value in defaults.items():
+            setattr(self, key, value)
 
-# class args_define:
-#     parser = argparse.ArgumentParser()
-#     # Hyper parameters
-#     parser.add_argument('--finetune_epochs', default=1, type=int,
-#                         help="Number of initial-training/maintenance-training epochs.")
-#     parser.add_argument('--n_epochs', default=5, type=int,
-#                         help="Number of initial-training/maintenance-training epochs.")
-#     parser.add_argument('--oldnum', default=20, type=int,
-#                         help="Number of sampling.")
-#     parser.add_argument('--novelnum', default=20, type=int,
-#                         help="Number of sampling.")
-#     parser.add_argument('--n_infer_epochs', default=0, type=int,
-#                         help="Number of inference epochs.")
-#     parser.add_argument('--window_size', default=3, type=int,
-#                         help="Maintain the model after predicting window_size blocks.")
-#     parser.add_argument('--patience', default=5, type=int,
-#                         help="Early stop if performance did not improve in the last patience epochs.")
-#     parser.add_argument('--margin', default=3., type=float,
-#                         help="Margin for computing triplet losses")
-#     parser.add_argument('--a', default=8., type=float,
-#                         help="Margin for computing pair-wise losses")
-#     parser.add_argument('--lr', default=1e-3, type=float,
-#                         help="Learning rate")
-#     parser.add_argument('--batch_size', default=1000, type=int,
-#                         help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-#     parser.add_argument('--n_neighbors', default=1200, type=int,
-#                         help="Number of neighbors sampled for each node.")
-#     parser.add_argument('--word_embedding_dim', type=int, default=300)
-#     parser.add_argument('--hidden_dim', default=16, type=int,
-#                         help="Hidden dimension")
-#     parser.add_argument('--out_dim', default=64, type=int,
-#                         help="Output dimension of tweet representations")
-#     parser.add_argument('--num_heads', default=4, type=int,
-#                         help="Number of heads in each GAT layer")
-#     parser.add_argument('--use_residual', dest='use_residual', default=True,
-#                         action='store_false',
-#                         help="If true, add residual(skip) connections")
-#
-#     parser.add_argument('--validation_percent', default=0.1, type=float,
-#                         help="Percentage of validation nodes(tweets)")
-#     parser.add_argument('--test_percent', default=0.2, type=float,
-#                         help="Percentage of test nodes(tweets)")
-#     parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=True,
-#                         action='store_true',
-#                         help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-#     parser.add_argument('--metrics', type=str, default='nmi')
-#     parser.add_argument('--use_cuda', dest='use_cuda', default=True,
-#                         action='store_true',
-#                         help="Use cuda")
-#     parser.add_argument('--add_ort', dest='add_ort', type=bool, default=True,
-#                         help="Use orthorgonal constraint")
-#     parser.add_argument('--gpuid', type=int, default=0)
-#     parser.add_argument('--mask_path', default=None,
-#                         type=str, help="File path that contains the training, validation and test masks")
-#     parser.add_argument('--log_interval', default=10, type=int,
-#                         help="Log interval")
-#     parser.add_argument('--is_incremental', default=True, action='store_true')
-#     parser.add_argument('--data_path', default='../model/model_saved/qsgnn/English',
-#                         type=str, help="Path of features, labels and edges")
-#     parser.add_argument('--file_path', default='../model/model_saved/qsgnn',
-#                         type=str, help="default path to save the file")
-#     parser.add_argument('--add_pair', action='store_true', default=True)
-#     parser.add_argument('--initial_lang', type=str, default='English')
-#
-#     parser.add_argument('--is_static', type=bool, default=False)
-#     parser.add_argument('--graph_lang', type=str, default='English')
-#     parser.add_argument('--days', type=int, default=2)
-#
-#     args = parser.parse_args()
-
+        # Store namespace
+        self.args = argparse.Namespace(**defaults)
 
 class Arabic_preprocessor:
     def __init__(self, tokenizer, **cfg):
@@ -224,8 +125,8 @@ class QSGNN:
 
     def preprocess(self):
         preprocessor = Preprocessor(self.args)
-        # preprocessor.generate_initial_features()
-        # preprocessor.construct_graph()
+        preprocessor.generate_initial_features()
+        preprocessor.construct_graph()
 
         self.embedding_save_path = self.args.data_path + '/embeddings'
         os.makedirs(self.embedding_save_path, exist_ok=True)
@@ -1782,27 +1683,6 @@ def pairwise_sample(embeddings, labels=None, model=None):
         return torch.LongTensor(pairs), torch.LongTensor(pair_labels.astype(int)), torch.LongTensor(pair_matrix)
 
     else:
-        # indices = np.arange(0,embeddings.shape[0],1)
-        # pairs = np.array(list(combinations(indices, 2)))
-        # model.eval()
-        # input = torch.cat((embeddings[pairs[:,0]],embeddings[pairs[:,1]]), 1)
-        # input = embeddings[pairs[:, 0]] * embeddings[pairs[:, 1]]
-        # print(input)
-        # out = model(input)
-        # evi = relu_evidence(out)
-        # alpha = evi + 1
-        # print(evi.shape)
-        # _, pseudo_labels = torch.max(alpha, 1)
-        # S = torch.sum(alpha, dim=1, keepdim=True)
-        # u = 2 / S
-
-        # labels = labels.cpu().data.numpy()
-        # indices = np.arange(0, len(labels), 1)
-        # pairs = np.array(list(combinations(indices, 2)))
-        # pair_labels = (labels[pairs[:, 0]] == labels[pairs[:, 1]])
-
-        # return torch.LongTensor(pairs), pseudo_labels, u
-
         pair_matrix = model(embeddings)
         return pair_matrix
     # torch.LongTensor(pair_labels.astype(int))
@@ -1874,9 +1754,9 @@ class AverageNonzeroTripletsMetric(Metric):
 
 
 if __name__ == '__main__':
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012()
     args = args_define().args
-    dataset = DatasetLoader("arabic_twitter").load_data()
-
     qsgnn = QSGNN(args, dataset)
     qsgnn.preprocess()
 

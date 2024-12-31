@@ -49,6 +49,11 @@
    :target: https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml
    :alt: CodeQL
 
+.. |badge_arxiv| image:: https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red
+   :target: https://arxiv.org/abs/2412.13472
+   :alt: arXiv
+
+
 -----
 
 

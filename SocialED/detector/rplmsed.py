@@ -29,14 +29,10 @@ import itertools
 import scipy as sp
 from sklearn.model_selection import train_test_split
 import sys
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-COLUMNS_12 = ["event_id", "tweet_id", "text", "user_id", "created_at", "user_loc", "place_type",
-              "place_full_name", "place_country_code", "hashtags", "user_mentions", "urls",
-              "entities", "words", "filtered_words", "sampled_words"]
-DataItem = namedtuple('DataItem', COLUMNS_12)
+
 
 logging.basicConfig(level=logging.WARN,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -278,6 +274,11 @@ class Preprocessor:
         tw_num = len(data)
         tw_feat_idx = []
         feat_to_idx = {}
+        COLUMNS = [
+            'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
+            'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
+        ]
+        DataItem = namedtuple('DataItem', COLUMNS)
         cols = [DataItem._fields.index(c) for c in cols] if isinstance(cols, list) else [DataItem._fields.index(cols)]
         for i, it in enumerate(data):
             feats = [
@@ -486,7 +487,11 @@ class Preprocessor:
         return block
 
     def split_into_blocks(self, data):
-
+        COLUMNS = [
+            'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
+            'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
+        ]
+        DataItem = namedtuple('DataItem', COLUMNS)
         data = [DataItem(*it) for it in data]
         data = sorted(data, key=lambda it: it.created_at)
         groups = itertools.groupby(data, key=lambda it: it.created_at.timetuple().tm_yday)
@@ -528,7 +533,7 @@ class Preprocessor:
         return data_blocks
 
 
-class RPLM_SED:
+class RPLMSED:
     def __init__(self, args, dataset):
         self.dataset = dataset
 
@@ -1413,13 +1418,12 @@ class PairPfxTuningEncoder(nn.Module):
 
 
 if __name__ == '__main__':
+    from dataset.dataloader import Event2012
+    dataset = Event2012().load_data()
     args = args_define().args
-    dataset = DatasetLoader("maven").load_data()
-    rplmsed = RPLM_SED(args, dataset)
-
-    # rplmsed.preprocess()
+    
+    rplmsed = RPLMSED(args, dataset)
+    rplmsed.preprocess()
     rplmsed.fit()
     predictions, ground_truths = rplmsed.detection()
-
-    # Evaluate model
     rplmsed.evaluate(predictions, ground_truths)

@@ -16,7 +16,7 @@ from dataset.dataloader import DatasetLoader
 
 class WORD2VEC:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 dataset,
                  vector_size=100, 
                  window=5,
                  min_count=1,
@@ -128,19 +128,11 @@ class WORD2VEC:
 
 # Main function
 if __name__ == "__main__":
-    # from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
+    word2vec = WORD2VEC(dataset)
 
-
-    word2vec = WORD2VEC()
-
-    # Data preprocessing
     word2vec.preprocess()
-
-    # Train the model
     word2vec.fit()
-
-    # detection
     ground_truths, predictions = word2vec.detection()
-
-    # Evaluate the model
     word2vec.evaluate(ground_truths, predictions)

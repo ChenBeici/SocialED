@@ -9,13 +9,13 @@ from sklearn import metrics
 from tqdm import tqdm
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
+from dataset.dataloader import Event2012
 
 
 # event_id, filtered_words
 class WMD:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 dataset=Event2012().load_data(),
                  vector_size=100,
                  window=5,
                  min_count=1,
@@ -111,16 +111,10 @@ class WMD:
 
 # Main function
 if __name__ == "__main__":
-    wmd = WMD()
-
-    # Data preprocessing
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
+    wmd = WMD(dataset)
     wmd.preprocess()
-
-    # Train the model
     wmd.fit()
-
-    # Detection
     ground_truths, predictions = wmd.detection()
-
-    # Evaluate
     wmd.evaluate(ground_truths, predictions)

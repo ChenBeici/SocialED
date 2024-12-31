@@ -137,7 +137,6 @@ ADPSemEvent
    :undoc-members:
    :show-inheritance:
 
-
 Module Contents
 ---------------
 

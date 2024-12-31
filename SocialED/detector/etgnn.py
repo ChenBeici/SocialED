@@ -26,66 +26,31 @@ import argparse
 
 class args_define:
     def __init__(self, **kwargs):
-        # Paths
-        self.file_path = kwargs.get('file_path', '../model/model_saved/etgnn/')
-        self.save_path = kwargs.get('save_path', '../model/model_saved/etgnn/Eng_CrisisLexT26/evi1020191139')
+        # Define default values for all parameters
+        defaults = {
+            'file_path': '../model/model_saved/uclsed/',
+            'lang': 'French', 
+            'epoch': 2,
+            'batch_size': 20000,
+            'neighbours_num': 80,
+            'GNN_h_dim': 256,
+            'GNN_out_dim': 256,
+            'E_h_dim': 128,
+            'use_uncertainty': True,
+            'use_cuda': True,
+            'gpuid': 0,
+            'mode': 0,
+            'mse': False,
+            'digamma': True,
+            'log': False
+        }
 
-        # Language
-        self.lang = kwargs.get('lang', 'French')
-        #self.lang = kwargs.get('lang', 'English')
+        # Set attributes using kwargs with defaults
+        for key, default in defaults.items():
+            setattr(self, key, kwargs.get(key, default))
 
-        # Epoch
-        self.epoch = kwargs.get('epoch', 2)
-        #self.epoch = kwargs.get('epoch', 1)
-        # Batch size
-        self.batch_size = kwargs.get('batch_size', 20000)
-
-        # Neighbours number
-        self.neighbours_num = kwargs.get('neighbours_num', 80)
-
-        # GNN dimensions
-        self.GNN_h_dim = kwargs.get('GNN_h_dim', 256)
-        self.GNN_out_dim = kwargs.get('GNN_out_dim', 256)
-
-        # E_h_dim
-        self.E_h_dim = kwargs.get('E_h_dim', 128)
-
-        # Use uncertainty
-        self.use_uncertainty = kwargs.get('use_uncertainty', True)
-
-        # Use CUDA
-        self.use_cuda = kwargs.get('use_cuda', True)
-        
-        # GPU ID
-        self.gpuid = kwargs.get('gpuid', 0)
-
-        # Mode
-        self.mode = kwargs.get('mode', 0)
-
-        # Uncertainty type
-        self.mse = kwargs.get('mse', False)
-        self.digamma = kwargs.get('digamma', True)
-        self.log = kwargs.get('log', False)
-
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'file_path': self.file_path,
-            'save_path': self.save_path,
-            'lang': self.lang,
-            'epoch': self.epoch,
-            'batch_size': self.batch_size,
-            'neighbours_num': self.neighbours_num,
-            'GNN_h_dim': self.GNN_h_dim,
-            'GNN_out_dim': self.GNN_out_dim,
-            'E_h_dim': self.E_h_dim,
-            'use_uncertainty': self.use_uncertainty,
-            'use_cuda': self.use_cuda,
-            'gpuid': self.gpuid,
-            'mode': self.mode,
-            'mse': self.mse,
-            'digamma': self.digamma,
-            'log': self.log
-        })
+        # Create args namespace with all parameters
+        self.args = argparse.Namespace(**{k: getattr(self, k) for k in defaults.keys()})
 
 
 
@@ -104,7 +69,7 @@ class ETGNN:
 
     def preprocess(self):
         preprocessor = Preprocessor(args)
-        # preprocessor.construct_graph(dataset)
+        preprocessor.construct_graph(dataset)
 
     def fit(self):
         parser = argparse.ArgumentParser()
@@ -132,12 +97,21 @@ class ETGNN:
             print(self.save_path)
             os.makedirs(self.save_path, exist_ok=True)
         else:
-            self.save_path = args.save_path
+            self.save_path = '../model/model_saved/uclsed/Eng_CrisisLexT26/'
 
+        if args.use_uncertainty:
+            if args.digamma:
+                criterion = edl_digamma_loss
+            elif args.log:
+                criterion = edl_log_loss
+            elif args.mse:
+                criterion = edl_mse_loss
+            else:
+                parser.error("--uncertainty requires --mse, --log or --digamma.")
+        else:
+            criterion = nn.CrossEntropyLoss()
 
-        criterion = nn.CrossEntropyLoss()
-
-        self.model = ETGNN_model(self.features.shape[1], args.GNN_h_dim, args.GNN_out_dim, args.E_h_dim,
+        self.model = UCLSED_model(self.features.shape[1], args.GNN_h_dim, args.GNN_out_dim, args.E_h_dim,
                                   len(set(self.labels)), self.views)
         self.model = train_model(self.model, self.g_dict, self.views, self.features, self.times, self.labels,
                                  args.epoch, criterion, self.mask_path, self.save_path, args)
@@ -742,9 +716,9 @@ class EDNN(nn.Module):
         return out
 
 
-class ETGNN_model(nn.Module):
+class UCLSED_model(nn.Module):
     def __init__(self, GNN_in_dim, GNN_h_dim, GNN_out_dim, E_h_dim, E_out_dim, views):
-        super(ETGNN_model, self).__init__()
+        super(UCLSED_model, self).__init__()
         self.views = views
         self.GNN = GNN(GNN_in_dim, GNN_h_dim, GNN_out_dim)
         self.EDNNs = nn.ModuleList([EDNN(GNN_out_dim, E_h_dim, E_out_dim) for v in self.views])
@@ -1079,9 +1053,9 @@ def ava_split_data(length, labels, classes):
 
 
 if __name__ == "__main__":
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012()
     args = args_define().args
-    dataset = DatasetLoader("arabic_twitter").load_data()
-
     etgnn = ETGNN(args, dataset)
 
     etgnn.preprocess()

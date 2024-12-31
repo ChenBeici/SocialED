@@ -18,10 +18,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-
-
-#2012 user_id,user_mentions,hashtags,entities,text,event_id
-class HISEvent:
+class HISEvent():
     def __init__(self, dataset):
         self.dataset = dataset
         self.language = dataset.get_dataset_language()
@@ -51,8 +48,6 @@ class HISEvent:
         # Calculate Adjusted Rand Index (ARI)
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
-
-
 
 class Preprocessor:
     def __init__(self, dataset, mode='close'):
@@ -274,8 +269,6 @@ class Preprocessor:
 
         print("Mask generation completed")
 
-
-
 def get_stable_point(path):
     stable_point_path = path + 'stable_point.pkl'
     if not exists(stable_point_path):
@@ -334,9 +327,6 @@ def run_hier_2D_SE_mini_data(save_path, n=300, e_a=True, e_s=True):
     print('n_clusters gt: ', n_clusters)
 
     return labels_true, prediction
-
-
-
 
 def search_stable_points(embeddings, max_num_neighbors=50):
     corr_matrix = np.corrcoef(embeddings)
@@ -772,8 +762,6 @@ def test_vanilla_2D_SE_mini():
     print('communities detected: ', communities)
     return
 
-# utils
-
 def replaceAtUser(text):
     """ Replaces "@user" with "" """
     text = re.sub('@[^\s]+|RT @[^\s]+', '', text)
@@ -813,21 +801,17 @@ def removeEmoticons(text):
         '', text)
     return text
 
-
 def removeNewLines(text):
     text = re.sub('\n', '', text)
     return text
-
 
 def preprocess_sentence(s):
     return removeNewLines(replaceAtUser(
         removeEmoticons(replaceMultiQuestionMark(replaceMultiExclamationMark(removeUnicode(replaceURL(s)))))))
 
-
 def preprocess_french_sentence(s):
     return removeNewLines(
         replaceAtUser(removeEmoticons(replaceMultiQuestionMark(replaceMultiExclamationMark(replaceURL(s))))))
-
 
 def SBERT_embed(s_list, language):
     '''
@@ -896,8 +880,8 @@ def decode(division):
 if __name__ == "__main__":
     from dataset.dataloader_gitee import Event2012
 
-    event2012 = Event2012()
-    hisevent = HISEvent(event2012)
+    dataset = Event2012()
+    hisevent = HISEvent(dataset)
     hisevent.preprocess()
     predictions, ground_truths = hisevent.detection()
     hisevent.evaluate(predictions, ground_truths)

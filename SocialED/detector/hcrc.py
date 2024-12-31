@@ -38,59 +38,31 @@ def currentTime():
 
 class args_define:
     def __init__(self, **kwargs):
-        # Paths
-        self.file_path = kwargs.get('file_path', '../model/model_saved/hcrc/')
-        self.result_path = kwargs.get('result_path', '../model/model_saved/hcrc/res.txt')
+        # Default arguments
+        defaults = {
+            'file_path': '../model/model_saved/hcrc/',
+            'result_path': '../model/model_saved/hcrc/res.txt',
+            'task': 'DRL',
+            'layers': '[256]',
+            'N_pred_hid': 64,
+            'G_pred_hid': 16,
+            'eval_freq': 5,
+            'mad': 0.9,
+            'Ges': 50,
+            'Nes': 2000,
+            'device': 0,
+            'Gepochs': 105,
+            'Nepochs': 100
+        }
 
-        # Task
-        self.task = kwargs.get('task', 'DRL')
+        defaults.update(kwargs)
 
-        # Layers
-        self.layers = kwargs.get('layers', '[256]')
+        # Set all attributes
+        for key, value in defaults.items():
+            setattr(self, key, value)
 
-        # Hidden units
-        self.N_pred_hid = kwargs.get('N_pred_hid', 64)
-        self.G_pred_hid = kwargs.get('G_pred_hid', 16)
-
-        # Evaluation frequency
-        self.eval_freq = kwargs.get('eval_freq', 5)
-
-        # Moving Average Decay
-        self.mad = kwargs.get('mad', 0.9)
-
-        # Learning rates
-        self.Glr = kwargs.get('Glr', 0.0000006)
-        self.Nlr = kwargs.get('Nlr', 0.00001)
-
-        # Early Stopping Criteria
-        self.Ges = kwargs.get('Ges', 50)
-        self.Nes = kwargs.get('Nes', 2000)
-
-        # Device
-        self.device = kwargs.get('device', 0)
-
-        # Epochs
-        self.Gepochs = kwargs.get('Gepochs', 105)
-        self.Nepochs = kwargs.get('Nepochs', 100)
-
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'file_path': self.file_path,
-            'result_path': self.result_path,
-            'task': self.task,
-            'layers': self.layers,
-            'N_pred_hid': self.N_pred_hid,
-            'G_pred_hid': self.G_pred_hid,
-            'eval_freq': self.eval_freq,
-            'mad': self.mad,
-            'Glr': self.Glr,
-            'Nlr': self.Nlr,
-            'Ges': self.Ges,
-            'Nes': self.Nes,
-            'device': self.device,
-            'Gepochs': self.Gepochs,
-            'Nepochs': self.Nepochs
-        })
+        # Store namespace
+        self.args = argparse.Namespace(**defaults)
 
 class HCRC:
     def __init__(self, args, dataset):
@@ -682,7 +654,7 @@ class Node_ModelTrainer(embedder):
         layers = [302] + self.hidden_layers
         self._model = NodeLevel(layers, args)
 
-        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=args.Nlr, weight_decay=1e-5)
+        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=0.00001, weight_decay=1e-5)
         self.train()
         self.all_embeddings = F.normalize(self.all_embeddings, dim=-1, p=2).detach().cpu().numpy()
 
@@ -797,7 +769,7 @@ class Graph_ModelTrainer(embedder):
         # load data
         self._model = GraphLevel(layers, args).to(self._device)
         self._model.to(self._device)
-        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=args.Glr, weight_decay=1e-5)
+        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=0.0000006, weight_decay=1e-5)
 
         self._loader, self.true_label = get_Graph_Dataset(block_num)
         self.train()
@@ -1690,7 +1662,6 @@ def get_Node_Dataset(message_number):
         with open(file_path, 'rb') as f:
             datas = pickle.load(f)
         print("Data loaded successfully.")
-        # 现在你可以使用 data 进行进一步操作
     else:
         print(f"No data file found at {file_path}")
         datas = getData(message_number)
@@ -1748,8 +1719,9 @@ def df_to_t_features(df):
 
 
 if __name__ == "__main__":
+    from dataset.dataloader import Event2012
+    dataset = Event2012().load_data()
     args = args_define().args
-    dataset = DatasetLoader("arabic_twitter").load_data()
     hcrc = HCRC(args, dataset)
 
     predictions, ground_truths = hcrc.detection()  # 进行预测

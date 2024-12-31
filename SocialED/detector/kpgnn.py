@@ -26,140 +26,46 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-"""
-    KPGNN Model
-    Paper: Knowledge-Preserving Incremental Social Event Detection via Heterogeneous GNNs
-    Author: Yuwei Cao et al.
-    github: https://github.com/RingBDStack/KPGNN
-"""
 
 class args_define:
     def __init__(self, **kwargs):
-        # Hyper-parameters
-        self.n_epochs = kwargs.get('n_epochs', 15)
-        self.n_infer_epochs = kwargs.get('n_infer_epochs', 0)
-        self.window_size = kwargs.get('window_size', 3)
-        self.patience = kwargs.get('patience', 5)
-        self.margin = kwargs.get('margin', 3.0)
-        self.lr = kwargs.get('lr', 1e-3)
-        self.batch_size = kwargs.get('batch_size', 200)
-        self.n_neighbors = kwargs.get('n_neighbors', 800)
-        self.hidden_dim = kwargs.get('hidden_dim', 8)
-        self.out_dim = kwargs.get('out_dim', 32)
-        self.num_heads = kwargs.get('num_heads', 4)
-        self.use_residual = kwargs.get('use_residual', True)
-        self.validation_percent = kwargs.get('validation_percent', 0.2)
-        self.use_hardest_neg = kwargs.get('use_hardest_neg', False)
-        self.use_dgi = kwargs.get('use_dgi', False)
-        self.remove_obsolete = kwargs.get('remove_obsolete', 2)
-        self.is_incremental = kwargs.get('is_incremental', False)
+        # Default values for all parameters
+        defaults = {
+            'n_epochs': 15,
+            'n_infer_epochs': 0, 
+            'window_size': 3,
+            'patience': 5,
+            'margin': 3.0,
+            'lr': 1e-3,
+            'batch_size': 200,
+            'n_neighbors': 800,
+            'hidden_dim': 8,
+            'out_dim': 32,
+            'num_heads': 4,
+            'use_residual': True,
+            'validation_percent': 0.2,
+            'use_hardest_neg': False,
+            'use_dgi': False,
+            'remove_obsolete': 2,
+            'is_incremental': False,
+            'use_cuda': False,
+            'data_path': '../model/model_saved/kpgnn/kpgnn_incremental_test',
+            'mask_path': None,
+            'resume_path': None,
+            'resume_point': 0,
+            'resume_current': True,
+            'log_interval': 10
+        }
 
-        # Other arguments
-        self.use_cuda = kwargs.get('use_cuda', False)
-        self.data_path = kwargs.get('data_path', '../model/model_saved/kpgnn/kpgnn_incremental_test')
-        self.mask_path = kwargs.get('mask_path', None)
-        self.resume_path = kwargs.get('resume_path', None)
-        self.resume_point = kwargs.get('resume_point', 0)
-        self.resume_current = kwargs.get('resume_current', True)
-        self.log_interval = kwargs.get('log_interval', 10)
+        # Update defaults with any provided kwargs
+        defaults.update(kwargs)
 
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'n_epochs': self.n_epochs,
-            'n_infer_epochs': self.n_infer_epochs,
-            'window_size': self.window_size,
-            'patience': self.patience,
-            'margin': self.margin,
-            'lr': self.lr,
-            'batch_size': self.batch_size,
-            'n_neighbors': self.n_neighbors,
-            'hidden_dim': self.hidden_dim,
-            'out_dim': self.out_dim,
-            'num_heads': self.num_heads,
-            'use_residual': self.use_residual,
-            'validation_percent': self.validation_percent,
-            'use_hardest_neg': self.use_hardest_neg,
-            'use_dgi': self.use_dgi,
-            'remove_obsolete': self.remove_obsolete,
-            'is_incremental': self.is_incremental,
-            'use_cuda': self.use_cuda,
-            'data_path': self.data_path,
-            'mask_path': self.mask_path,
-            'resume_path': self.resume_path,
-            'resume_point': self.resume_point,
-            'resume_current': self.resume_current,
-            'log_interval': self.log_interval,
-        })
+        # Set all attributes
+        for key, value in defaults.items():
+            setattr(self, key, value)
 
-'''
-class args_define():
-    parser = argparse.ArgumentParser()
-    # Hyper-parameters
-    parser.add_argument('--n_epochs', default=15, type=int,
-                        help="Number of initial-training/maintenance-training epochs.")
-    parser.add_argument('--n_infer_epochs', default=0, type=int,
-                        help="Number of inference epochs.")
-    parser.add_argument('--window_size', default=3, type=int,
-                        help="Maintain the model after predicting window_size blocks.")
-    parser.add_argument('--patience', default=5, type=int,
-                        help="Early stop if performance did not improve in the last patience epochs.")
-    parser.add_argument('--margin', default=3., type=float,
-                        help="Margin for computing triplet losses")
-    parser.add_argument('--lr', default=1e-3, type=float,
-                        help="Learning rate")
-    parser.add_argument('--batch_size', default=200, type=int,
-                        help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-    parser.add_argument('--n_neighbors', default=800, type=int,
-                        help="Number of neighbors sampled for each node.")
-    parser.add_argument('--hidden_dim', default=8, type=int,
-                        help="Hidden dimension")
-    parser.add_argument('--out_dim', default=32, type=int,
-                        help="Output dimension of tweet representations")
-    parser.add_argument('--num_heads', default=4, type=int,
-                        help="Number of heads in each GAT layer")
-    parser.add_argument('--use_residual', dest='use_residual', default=True,
-                        action='store_false',
-                        help="If true, add residual(skip) connections")
-    parser.add_argument('--validation_percent', default=0.2, type=float,
-                        help="Percentage of validation nodes(tweets)")
-    parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False,
-                        action='store_true',
-                        help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-    parser.add_argument('--use_dgi', dest='use_dgi', default=False,
-                        action='store_true',
-                        help="If true, add a DGI term to the loss. Otherwise use triplet loss only")
-    parser.add_argument('--remove_obsolete', default=2, type=int,
-                        help="If 0, adopt the All Message Strategy: keep inseting new message blocks and never remove;\n" +
-                             "if 1, adopt the Relevant Message Strategy: remove obsolete training nodes (that are not connected to the new messages arrived during the last window) during maintenance;\n" +
-                             "if 2, adopt the Latest Message Strategy: during each prediction, use only the new data to construct message graph, during each maintenance, use only the last message block arrived during the last window for continue training.\n" +
-                             "See Section 4.4 of the paper for detailed explanations of these strategies. Note the message graphs for 0/1 and 2 need to be constructed differently, see the head comment of custom_message_graph.py")
-    parser.add_argument('--is_incremental', action='store_true', default=False,
-                        help="static or incremental")
-    # Other arguments
-    parser.add_argument('--use_cuda', dest='use_cuda', default=False,
-                        action='store_true',
-                        help="Use cuda")
-    parser.add_argument('--data_path', default='../model/model_saved/kpgnn/kpgnn_incremental_test',
-                        # default='./incremental_0808/',
-                        type=str, help="Path of features, labels and edges")
-    # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-    parser.add_argument('--mask_path', default=None,
-                        type=str, help="File path that contains the training, validation and test masks")
-    # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-    parser.add_argument('--resume_path', default=None,
-                        type=str,
-                        help="File path that contains the partially performed experiment that needs to be resume.")
-    parser.add_argument('--resume_point', default=0, type=int,
-                        help="The block model to be loaded.")
-    parser.add_argument('--resume_current', dest='resume_current', default=True,
-                        action='store_false',
-                        help="If true, continue to train the resumed model of the current block(to resume a partally trained initial/mantenance block);\
-                            If false, start the next(infer/predict) block from scratch;")
-    parser.add_argument('--log_interval', default=10, type=int,
-                        help="Log interval")
-
-    args = parser.parse_args()
-'''
+        # Store all arguments in args namespace
+        self.args = argparse.Namespace(**defaults)
 
 class KPGNN():
     def __init__(self, args, dataset):
@@ -176,7 +82,7 @@ class KPGNN():
 
     def preprocess(self):
         preprocessor = Preprocessor(self.args, self.dataset)
-        # preprocessor.generate_initial_features(self.dataset)
+        preprocessor.generate_initial_features(self.dataset)
         preprocessor.custom_message_graph(self.dataset)
 
     def fit(self):
@@ -231,10 +137,8 @@ class KPGNN():
                                                                                                       self.loss_fn_dgi)
 
     def detection(self):
-
         train_i = 0
         if self.args.is_incremental:
-
             # Initialize the model, train_indices and indices_to_remove to avoid errors
             if self.args.resume_path is not None:
                 self.model = None
@@ -323,7 +227,6 @@ class KPGNN():
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
-
 
 class Preprocessor:
     def __init__(self, args, dataset):
@@ -834,7 +737,6 @@ class Preprocessor:
 
         return message, data_split, all_graph_mins
 
-
 class KPGNN_model():
     def __init__(self):
         pass
@@ -1335,7 +1237,6 @@ class KPGNN_model():
             return None, indices_to_remove, model
         return train_indices, indices_to_remove, model
 
-
 def graph_statistics(G, save_path):
     message = '\nGraph statistics:\n'
 
@@ -1357,7 +1258,6 @@ def graph_statistics(G, save_path):
         f.write(message)
 
     return num_isolated_nodes
-
 
 def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_path=None, num_indices_to_remove=0):
     """
@@ -1447,8 +1347,6 @@ def generateMasks(length, data_split, train_i, i, validation_percent=0.2, save_p
                 test_indices = torch.load(save_path + '/test_indices.pt')
             return test_indices
 
-
-# Compute the representations of all the nodes in g using model
 def extract_embeddings(g, model, num_all_samples, labels):
     args = args_define().args
     sampler = MultiLayerNeighborSampler([1000, 1000])
@@ -1482,7 +1380,6 @@ def extract_embeddings(g, model, num_all_samples, labels):
 
     return extract_nids, extract_features, extract_labels
 
-
 def save_embeddings(extract_nids, extract_features, extract_labels, extract_train_tags, path, counter):
     np.savetxt(path + '/features_' + str(counter) + '.tsv', extract_features, delimiter='\t')
     np.savetxt(path + '/labels_' + str(counter) + '.tsv', extract_labels, fmt='%i', delimiter='\t')
@@ -1493,11 +1390,9 @@ def save_embeddings(extract_nids, extract_features, extract_labels, extract_trai
     print("Embeddings after inference epoch " + str(counter) + " saved.")
     print()
 
-
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
-
 
 def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
     # Extract the features and labels of the test tweets
@@ -1531,7 +1426,6 @@ def run_kmeans(extract_features, extract_labels, indices, isoPath=None):
 
     # Return number of test tweets, number of classes covered by the test tweets, and kMeans cluatering NMI
     return (n_test_tweets, n_classes, nmi)
-
 
 def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolated_nodes, save_path, is_validation=True):
     message = ''
@@ -1570,7 +1464,6 @@ def evaluate_model(extract_features, extract_labels, indices, epoch, num_isolate
 
     return nmi
 
-
 class Metric:
     def __init__(self):
         pass
@@ -1586,7 +1479,6 @@ class Metric:
 
     def name(self):
         raise NotImplementedError
-
 
 class AccumulatedAccuracyMetric(Metric):
     """
@@ -1613,7 +1505,6 @@ class AccumulatedAccuracyMetric(Metric):
     def name(self):
         return 'Accuracy'
 
-
 class AverageNonzeroTripletsMetric(Metric):
     '''
     Counts average number of nonzero triplets found in minibatches
@@ -1635,8 +1526,6 @@ class AverageNonzeroTripletsMetric(Metric):
     def name(self):
         return 'Average nonzero triplets'
 
-
-# layer
 class GATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, use_residual=False):
         super(GATLayer, self).__init__()
@@ -1681,7 +1570,6 @@ class GATLayer(nn.Module):
         else:
             return block.dstdata['h']
 
-
 class MultiHeadGATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, num_heads, merge='cat', use_residual=False):
         super(MultiHeadGATLayer, self).__init__()
@@ -1696,7 +1584,6 @@ class MultiHeadGATLayer(nn.Module):
             return torch.cat(head_outs, dim=1)
         else:
             return torch.mean(torch.stack(head_outs), dim=0)
-
 
 class GAT(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
@@ -1715,15 +1602,12 @@ class GAT(nn.Module):
 
         return h
 
-
-# Applies an average on seq, of shape (nodes, features)
 class AvgReadout(nn.Module):
     def __init__(self):
         super(AvgReadout, self).__init__()
 
     def forward(self, seq):
         return torch.mean(seq, 0)
-
 
 class Discriminator(nn.Module):
     def __init__(self, n_h):
@@ -1751,7 +1635,6 @@ class Discriminator(nn.Module):
         # print("testing, shape of logits: ", logits.size())
         return logits
 
-
 class DGI(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, num_heads, use_residual=False):
         super(DGI, self).__init__()
@@ -1772,7 +1655,6 @@ class DGI(nn.Module):
     def embed(self, nf):
         h_1 = self.gat(nf, False)
         return h_1.detach()
-
 
 class OnlineTripletLoss(nn.Module):
     """
@@ -1799,12 +1681,10 @@ class OnlineTripletLoss(nn.Module):
 
         return losses.mean(), len(triplets)
 
-
 def pdist(vectors):
     distance_matrix = -2 * vectors.mm(torch.t(vectors)) + vectors.pow(2).sum(dim=1).view(1, -1) + vectors.pow(2).sum(
         dim=1).view(-1, 1)
     return distance_matrix
-
 
 class TripletSelector:
     """
@@ -1817,7 +1697,6 @@ class TripletSelector:
 
     def get_triplets(self, embeddings, labels):
         raise NotImplementedError
-
 
 class FunctionNegativeTripletSelector(TripletSelector):
     """
@@ -1868,29 +1747,22 @@ class FunctionNegativeTripletSelector(TripletSelector):
 
         return torch.LongTensor(triplets)
 
-
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
-
 
 def hardest_negative(loss_values):
     hard_negative = np.argmax(loss_values)
     return hard_negative if loss_values[hard_negative] > 0 else None
 
-
 def HardestNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                               negative_selection_fn=hardest_negative,
                                                                                               cpu=cpu)
-
 
 def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTripletSelector(margin=margin,
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
-
-# utils
-# Dataset
 class SocialDataset(Dataset):
     def __init__(self, path, index):
         self.features = np.load(path + '/' + str(index) + '/features.npy')
@@ -1923,15 +1795,12 @@ class SocialDataset(Dataset):
 
 
 if __name__ == '__main__':
-    # from data_sets import Event2012_Dataset, Event2018_Dataset, MAVEN_Dataset, Arabic_Dataset
+    from dataset.dataloader import Event2012
+    dataset = Event2012().load_data()
 
     args = args_define().args
-    dataset = DatasetLoader("arabic_twitter").load_data()
     kpgnn = KPGNN(args, dataset)
-
     kpgnn.preprocess()
     kpgnn.fit()
     predictions, ground_truths = kpgnn.detection()
-
-    # Evaluate model
     kpgnn.evaluate(predictions, ground_truths)

@@ -10,8 +10,7 @@ import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
-# event_id, filtered_words
-# Setup logging
+from huggingface_hub import hf_hub_download
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 
@@ -33,6 +32,7 @@ class GloVe:
         Load GloVe pre-trained word vectors.
         """
         embeddings_index = {}
+
         with open(self.model, 'r', encoding='utf8') as f:
             for line in f:
                 values = line.split()
@@ -136,7 +136,8 @@ class GloVe:
 
 # Main function
 if __name__ == "__main__":
-    dataset = DatasetLoader("arabic_twitter").load_data()
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
 
     glove = GloVe(dataset)
 

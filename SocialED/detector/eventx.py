@@ -10,26 +10,18 @@ from sklearn.metrics.pairwise import linear_kernel
 import random
 from sklearn import metrics
 from collections import Counter
-from statistics import mean
 import os
-import json
 import pickle
-import time
-import torch
-import argparse
 from sklearn.model_selection import train_test_split
 import logging
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
-# Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 
 class EventX:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
-                 mask_path='../model/model_saved/eventX/split_indices/test_indices_2048.npy',
+                 dataset,
                  file_path='../model/model_saved/eventX/',
                  num_repeats=5,
                  min_cooccur_time=2,
@@ -37,7 +29,7 @@ class EventX:
                  max_kw_num=3):
         self.dataset = dataset
         self.file_path = file_path
-        self.mask_path = mask_path
+        self.mask_path = None
         self.num_repeats = num_repeats
         self.min_cooccur_time = min_cooccur_time
         self.min_prob = min_prob
@@ -47,7 +39,7 @@ class EventX:
     def preprocess(self):
 
         self.split()
-
+        self.mask_path = '../model/model_saved/eventX/split_indices/test_indices.npy'
         df = self.dataset
         logging.info("Loaded all_df_words_ents_mid.")
 
@@ -76,14 +68,14 @@ class EventX:
         test_data, val_data = train_test_split(temp_data, test_size=test_size, random_state=42)
 
         os.makedirs(self.file_path + '/split_indices/', exist_ok=True)
-        np.save(self.file_path + '/split_indices/train_indices_7170.npy', train_data.index.to_numpy())
-        np.save(self.file_path + '/split_indices/test_indices_2048.npy', test_data.index.to_numpy())
-        np.save(self.file_path + '/split_indices/val_indices_1024.npy', val_data.index.to_numpy())
+        np.save(self.file_path + '/split_indices/train_indices.npy', train_data.index.to_numpy())
+        np.save(self.file_path + '/split_indices/test_indices.npy', test_data.index.to_numpy())
+        np.save(self.file_path + '/split_indices/val_indices.npy', val_data.index.to_numpy())
 
         os.makedirs(self.file_path + '/split_data/', exist_ok=True)
-        train_data.to_numpy().dump(self.file_path + '/split_data/train_data_7170.npy')
-        test_data.to_numpy().dump(self.file_path + '/split_data/test_data_2048.npy')
-        val_data.to_numpy().dump(self.file_path + '/split_data/val_data_1024.npy')
+        train_data.to_numpy().dump(self.file_path + '/split_data/train_data.npy')
+        test_data.to_numpy().dump(self.file_path + '/split_data/test_data.npy')
+        val_data.to_numpy().dump(self.file_path + '/split_data/val_data.npy')
 
         self.train_df = train_data
         self.test_df = test_data
@@ -300,29 +292,16 @@ def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num=3):
         return
 
 
-def check_class_sizes(ground_truths, predictions):
-    # distinct_true_labels = list(Counter(ground_truths).keys()) # equals to list(set(ground_truths))
-    count_true_labels = list(Counter(ground_truths).values())  # counts the elements' frequency
-    ave_true_size = mean(count_true_labels)
 
-    distinct_predictions = list(Counter(predictions).keys())  # equals to list(set(ground_truths))
-    count_predictions = list(Counter(predictions).values())  # counts the elements' frequency
-
-    large_classes = [distinct_predictions[i] for i, count in enumerate(count_predictions) if count > ave_true_size]
-
-    return large_classes
 
 
 if __name__ == "__main__":
-    #eventx = EventX(dataset)
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
 
-    eventx = EventX()
+    eventx = EventX(dataset)
     # Data preprocessing
     eventx.preprocess()
 
-    # Detect events
     predictions, ground_truths = eventx.detection()
-    # print(predictions)
-
-    # Evaluate the model
     eventx.evaluate(predictions, ground_truths)

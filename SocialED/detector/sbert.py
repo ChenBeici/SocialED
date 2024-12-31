@@ -1,4 +1,3 @@
-import argparse
 import os
 import pandas as pd
 import numpy as np
@@ -20,7 +19,10 @@ class SBERT:
                  train_df=None,
                  test_df=None, ):
         self.dataset = dataset
-        self.model_name = model_name
+        if os.path.exists(model_name):
+            self.model_name = model_name
+        else:
+            self.model_name = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
         self.df = df
         self.train_df = train_df
         self.test_df = test_df
@@ -89,13 +91,10 @@ class SBERT:
 
 # Main function
 if __name__ == "__main__":
-    sbert = SBERT()
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
+    sbert = SBERT(dataset)
 
-    # Data preprocessing
     sbert.preprocess()
-
-    # Detection
     ground_truths, predictions = sbert.detection()
-
-    # Evaluation
     sbert.evaluate(ground_truths, predictions)

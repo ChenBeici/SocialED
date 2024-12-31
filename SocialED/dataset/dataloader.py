@@ -350,6 +350,139 @@ class KBP(DatasetLoader):
         print("KBP dataset loaded successfully.")
         return df
 
+class Arabic_100(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='Arabic_100', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  # 调试信息
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  # 调试信息
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("Arabic_100 dataset loaded successfully.")
+        return df
+
+class Event2012_100(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='Event2012_100', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  # 调试信息
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  # 调试信息
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("Event2012_100 dataset loaded successfully.")
+        return df
+
+class Event2018_100(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='Event2018_100', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  # 调试信息
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  # 调试信息
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("Event2018_100 dataset loaded successfully.")
+        return df
+
+class Mix_Data(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='Mix_Data', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  # 调试信息
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  # 调试信息
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("Mix_Data dataset loaded successfully.")
+        return df
+
+class CrisisLexT6(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='CrisisLexT6', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  # 调试信息
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  # 调试信息
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("CrisisLexT6 dataset loaded successfully.")
+        return df
+
+
+
+
 if __name__ == "__main__":
     # Test MAVEN dataset
     #maven = MAVEN()

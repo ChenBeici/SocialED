@@ -53,7 +53,6 @@ class ADPSEMEvent():
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
-
 class Preprocessor:
     def __init__(self, dataset, mode='close'):
         """Initialize preprocessor
@@ -274,8 +273,6 @@ class Preprocessor:
 
         print("Mask generation completed")
 
-
-
 def get_stable_point(path, if_updata, epsilon):
     stable_point_path = path + f'stable_point_{epsilon}.pkl'
     if not exists(stable_point_path) or if_updata == True:
@@ -294,8 +291,6 @@ def get_stable_point(path, if_updata, epsilon):
     return stable_points, Sensitivity
 
 def run_hier_2D_SE_mini_open_set(save_path, n=400, e_a=True, e_s=True, test_with_one_block=True, epsilon=0.2):
-
-    
     if test_with_one_block:
         blocks = [16]
     else:
@@ -415,8 +410,6 @@ def run_hier_2D_SE_mini_closed_set(save_path, n=300, e_a=True, e_s=True, epsilon
         
     return labels_true, prediction
 
-
-# =====================================================================================================
 def create_process_open_set(epsilon):
     target = run_hier_2D_SE_mini_open_set
     kwargs = {
@@ -454,8 +447,6 @@ def run_processes(epsilons, dataset_name, mode='close'):
     for process in processes:
         process.join()
     print("All processes have completed their tasks.")
-
-
 
 def make_symmetric(matrix):
     return np.triu(matrix) + np.triu(matrix, 1).T
@@ -524,7 +515,6 @@ def search_stable_points(embeddings, epsilon, path, max_num_neighbors = 200):
 
     return stable_indices[0]+1, index + 1, s # first stable point, global stable point
 
-
 def get_graph_edges(attributes):
     attr_nodes_dict = {}
     for i, l in enumerate(attributes):
@@ -541,7 +531,6 @@ def get_graph_edges(attributes):
     for l in attr_nodes_dict.values():
         graph_edges += list(combinations(l, 2))
     return list(set(graph_edges))
-
 
 def get_knn_edges(epsilon, path, default_num_neighbors):
     # corr_matrix = np.corrcoef(embeddings)
@@ -582,7 +571,6 @@ def get_subgraphs_edges(clusters, graph_splits, weighted_global_edges):
         all_subgraphs_edges.append(subgraph_edges)
     return all_subgraphs_edges
 
-
 def get_best_egde(adj_matrix_, subgraphs_, all_subgraphs):
     adj_matrix = adj_matrix_.copy()
     
@@ -618,7 +606,6 @@ def get_best_node(adj_matrix_, subgraphs_, all_subgraphs):
     else:
         print("There are no edges connected to the current subgraph")
         return -1, -1
-
 
 def get_subgraphs(adj_matrix, division, n, k_max):
     merged_rows_matrix = np.vstack([ adj_matrix[np.array(ls_)-1].sum(axis=0).tolist() for ls_ in division ])
@@ -670,7 +657,6 @@ def get_subgraphs(adj_matrix, division, n, k_max):
         new_division.append(new_division_)
         
     return new_division
-
 
 def hier_2D_SE_mini(weighted_global_edges, n_messages, n = 100):
     '''
@@ -738,7 +724,6 @@ def hier_2D_SE_mini(weighted_global_edges, n_messages, n = 100):
         if clusters == last_clusters:
             n *= 2
     return clusters
-
 
 class SE:
     def __init__(self, graph: nx.Graph):
@@ -1033,7 +1018,6 @@ def test_vanilla_2D_SE_mini():
     print('communities detected: ', communities)
     return
 
-
 def replaceAtUser(text):
     """ Replaces "@user" with "" """
     text = re.sub('@[^\s]+|RT @[^\s]+','',text)
@@ -1075,7 +1059,6 @@ def preprocess_sentence(s):
 
 def preprocess_french_sentence(s):
     return removeNewLines(replaceAtUser(removeEmoticons(replaceMultiQuestionMark(replaceMultiExclamationMark(replaceURL(s))))))
-
 
 def SBERT_embed(s_list, language):
     '''
@@ -1123,8 +1106,6 @@ def SBERT_embed(s_list, language):
     
     return embeddings.cpu()
 
-
-
 def evaluate_labels(labels_true, labels_pred):
     nmi = metrics.normalized_mutual_info_score(labels_true, labels_pred)
     ami = metrics.adjusted_mutual_info_score(labels_true, labels_pred)
@@ -1139,9 +1120,8 @@ def decode(division):
     prediction_dict_sorted = dict(sorted(prediction_dict.items()))
     return list(prediction_dict_sorted.values())
 
-
 if __name__ == "__main__":
-    from dataset.dataloader_gitee import Event2012
+    from dataset.dataloader import Event2012
 
     event2012 = Event2012()
     adpsemevent = ADPSEMEvent(event2012)

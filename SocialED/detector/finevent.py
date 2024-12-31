@@ -33,135 +33,56 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-
 class args_define:
     def __init__(self, **kwargs):
-        # Hyper-parameters
-        self.n_epochs = kwargs.get('n_epochs', 1)
-        self.window_size = kwargs.get('window_size', 3)
-        self.patience = kwargs.get('patience', 5)
-        self.margin = kwargs.get('margin', 3.0)
-        self.lr = kwargs.get('lr', 1e-3)
-        self.batch_size = kwargs.get('batch_size', 50)
-        #self.batch_size = kwargs.get('batch_size', 5)
-        self.hidden_dim = kwargs.get('hidden_dim', 128)
-        self.out_dim = kwargs.get('out_dim', 64)
-        self.heads = kwargs.get('heads', 4)
-        self.validation_percent = kwargs.get('validation_percent', 0.2)
-        self.use_hardest_neg = kwargs.get('use_hardest_neg', False)
-        self.is_shared = kwargs.get('is_shared', False)
-        self.inter_opt = kwargs.get('inter_opt', 'cat_w_avg')
-        self.is_initial = kwargs.get('is_initial', True)
-        self.sampler = kwargs.get('sampler', 'RL_sampler')
-        self.cluster_type = kwargs.get('cluster_type', 'kmeans')
+        # Default values for all parameters
+        defaults = {
+            # Hyper-parameters
+            'n_epochs': 1,
+            'window_size': 3,
+            'patience': 5,
+            'margin': 3.0,
+            'lr': 1e-3,
+            'batch_size': 50,
+            'hidden_dim': 128,
+            'out_dim': 64,
+            'heads': 4,
+            'validation_percent': 0.2,
+            'use_hardest_neg': False,
+            'is_shared': False,
+            'inter_opt': 'cat_w_avg',
+            'is_initial': True,
+            'sampler': 'RL_sampler',
+            'cluster_type': 'kmeans',
 
-        # RL-0
-        self.threshold_start0 = kwargs.get('threshold_start0', [[0.2], [0.2], [0.2]])
-        self.RL_step0 = kwargs.get('RL_step0', 0.02)
-        self.RL_start0 = kwargs.get('RL_start0', 0)
+            # RL-0
+            'threshold_start0': [[0.2], [0.2], [0.2]],
+            'RL_step0': 0.02,
+            'RL_start0': 0,
 
-        # RL-1
-        self.eps_start = kwargs.get('eps_start', 0.001)
-        self.eps_step = kwargs.get('eps_step', 0.02)
-        self.min_Pts_start = kwargs.get('min_Pts_start', 2)
-        self.min_Pts_step = kwargs.get('min_Pts_step', 1)
+            # RL-1 
+            'eps_start': 0.001,
+            'eps_step': 0.02,
+            'min_Pts_start': 2,
+            'min_Pts_step': 1,
 
-        # Other arguments
-        self.use_cuda = kwargs.get('use_cuda', True)
-        self.data_path = kwargs.get('data_path', '../model/model_saved/finevent/incremental_test/')
-        self.file_path = kwargs.get('file_path', '../model/model_saved/finevent/')
-        self.mask_path = kwargs.get('mask_path', None)
-        self.log_interval = kwargs.get('log_interval', 10)
+            # Other arguments
+            'use_cuda': True,
+            'data_path': '../model/model_saved/finevent/incremental_test/',
+            'file_path': '../model/model_saved/finevent/',
+            'mask_path': None,
+            'log_interval': 10
+        }
 
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'n_epochs': self.n_epochs,
-            'window_size': self.window_size,
-            'patience': self.patience,
-            'margin': self.margin,
-            'lr': self.lr,
-            'batch_size': self.batch_size,
-            'hidden_dim': self.hidden_dim,
-            'out_dim': self.out_dim,
-            'heads': self.heads,
-            'validation_percent': self.validation_percent,
-            'use_hardest_neg': self.use_hardest_neg,
-            'is_shared': self.is_shared,
-            'inter_opt': self.inter_opt,
-            'is_initial': self.is_initial,
-            'sampler': self.sampler,
-            'cluster_type': self.cluster_type,
-            'threshold_start0': self.threshold_start0,
-            'RL_step0': self.RL_step0,
-            'RL_start0': self.RL_start0,
-            'eps_start': self.eps_start,
-            'eps_step': self.eps_step,
-            'min_Pts_start': self.min_Pts_start,
-            'min_Pts_step': self.min_Pts_step,
-            'use_cuda': self.use_cuda,
-            'data_path': self.data_path,
-            'file_path': self.file_path,
-            'mask_path': self.mask_path,
-            'log_interval': self.log_interval
-        })
+        # Update defaults with any provided kwargs
+        defaults.update(kwargs)
 
+        # Set all attributes
+        for key, value in defaults.items():
+            setattr(self, key, value)
 
-# class args_define:
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--n_epochs', default=5, type=int,
-#                         help="Number of initial-training/maintenance-training epochs.")
-#     parser.add_argument('--window_size', default=3, type=int,
-#                         help="Maintain the model after predicting window_size blocks.")
-#     parser.add_argument('--patience', default=5, type=int,
-#                         help="Early stop if performance did not improve in the last patience epochs.")
-#     parser.add_argument('--margin', default=3., type=float, help="Margin for computing triplet losses")
-#     parser.add_argument('--lr', default=1e-3, type=float, help="Learning rate")
-#     parser.add_argument('--batch_size', default=50, type=int,
-#                         help="Batch size (number of nodes sampled to compute triplet loss in each batch)")
-#     parser.add_argument('--hidden_dim', default=128, type=int, help="Hidden dimension")
-#     parser.add_argument('--out_dim', default=64, type=int, help="Output dimension of tweet representations")
-#     parser.add_argument('--heads', default=4, type=int, help="Number of heads used in GAT")
-#     parser.add_argument('--validation_percent', default=0.2, type=float, help="Percentage of validation nodes(tweets)")
-#     parser.add_argument('--use_hardest_neg', dest='use_hardest_neg', default=False, action='store_true',
-#                         help="If true, use hardest negative messages to form triplets. Otherwise use random ones")
-#     parser.add_argument('--is_shared', default=False)
-#     parser.add_argument('--inter_opt', default='cat_w_avg')
-#     parser.add_argument('--is_initial', default=True)
-#     parser.add_argument('--sampler', default='RL_sampler')
-#     parser.add_argument('--cluster_type', default='kmeans', help="Types of clustering algorithms")  # dbscan
-#
-#     # RL-0
-#     parser.add_argument('--threshold_start0', default=[[0.2], [0.2], [0.2]], type=float,
-#                         help="The initial value of the filter threshold for state1 or state3")
-#     parser.add_argument('--RL_step0', default=0.02, type=float,
-#                         help="The step size of RL for state1 or state3")
-#     parser.add_argument('--RL_start0', default=0, type=int,
-#                         help="The starting epoch of RL for state1 or state3")
-#
-#     # RL-1
-#     parser.add_argument('--eps_start', default=0.001, type=float,
-#                         help="The initial value of the eps for state2")
-#     parser.add_argument('--eps_step', default=0.02, type=float,
-#                         help="The step size of eps for state2")
-#     parser.add_argument('--min_Pts_start', default=2, type=int,
-#                         help="The initial value of the min_Pts for state2")
-#     parser.add_argument('--min_Pts_step', default=1, type=int,
-#                         help="The step size of min_Pts for state2")
-#
-#     # other arguments
-#     parser.add_argument('--use_cuda', dest='use_cuda', default=True,
-#                         action='store_true', help="Use cuda")
-#     parser.add_argument('--data_path', default='../model_saved/finevent/incremental_test/', type=str,
-#                         help="Path of features, labels and edges")
-#     parser.add_argument('--file_path', default='../model_saved/finevent/', type=str,
-#                         help="Path of files to save")
-#     # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-#     parser.add_argument('--mask_path', default=None, type=str,
-#                         help="File path that contains the training, validation and test masks")
-#     # format: './incremental_0808/incremental_graphs_0808/embeddings_XXXX'
-#     parser.add_argument('--log_interval', default=10, type=int,
-#                         help="Log interval")
-#     args = parser.parse_args()
+        # Store all arguments in Namespace
+        self.args = argparse.Namespace(**defaults)
 
 
 class Preprocessor:
@@ -612,16 +533,11 @@ class FinEvent:
 
     def preprocess(self):
         preprocessor = Preprocessor()
-        # preprocessor.generate_initial_features(self.dataset)
+        preprocessor.generate_initial_features(self.dataset)
         preprocessor.construct_graph(self.dataset)
         preprocessor.save_edge_index()
 
     def fit(self):
-
-        # check CUDA
-        print('Using CUDA:', torch.cuda.is_available())
-
-        # create working path
         embedding_save_path = args.data_path + '/embeddings'
         os.makedirs(embedding_save_path, exist_ok=True)
         print('embedding save path: ', embedding_save_path)
@@ -634,13 +550,9 @@ class FinEvent:
         print('Intra Agg Mode:', args.is_shared)
         print('Inter Agg Mode:', args.inter_opt)
         print('Reserve node config?', args.is_initial)
-        # load number of messages in each bl ocks
-        # e.g. data_split = [  500  ,   100, ...,  100]
-        #                    block_0  block_1    block_n
+
         data_split = np.load(args.data_path + '/data_split.npy')
 
-        # define loss function
-        # contrastive loss in our paper
         if args.use_hardest_neg:
             loss_fn = OnlineTripletLoss(args.margin, HardestNegativeTripletSelector(args.margin))
         else:
@@ -697,7 +609,6 @@ class FinEvent:
         # Load detection data
         print("Loading detection data...")
         relation_ids = ['entity', 'userid', 'word']
-        # homo_data = create_homodataset(args.data_path, [0, 0], args.validation_percent)
         homo_data = create_offline_homodataset(args.data_path, [0, 0])
         multi_r_data = create_multi_relational_graph(args.data_path, relation_ids, [0, 0])
         print("detection data loaded. Time elapsed: {:.2f} seconds".format(time() - start_time))
@@ -767,6 +678,7 @@ class FinEvent:
 
         print("Detection complete. Total time elapsed: {:.2f} seconds".format(time() - start_time))
         return ground_truths, predictions
+
 
     def evaluate(self, predictions, ground_truths):
         ars = metrics.adjusted_rand_score(ground_truths, predictions)
@@ -1782,12 +1694,6 @@ class GAT(nn.Module):
         self.layers = ModuleList([self.GAT1, self.GAT2])
         self.norm = BatchNorm1d(heads * hid_dim)
 
-        # or
-        # self.GAT1 = GATConv(in_channels=in_dim, out_channels=hid_dim, heads=heads, add_self_loops=False)
-        # self.GAT2 = GATConv(in_channels=hid_dim * heads, out_channels=out_dim, heads=heads, add_self_loops=False)
-        # self.layers = torch.nn.ModuleList([self.GAT1, self.GAT2])
-        # see Intra_AGG.forward()
-
     def forward(self, x, adjs, device):
         for i, (edge_index, _, size) in enumerate(adjs):
             # x: Tensor, edge_index: Tensor
@@ -1852,10 +1758,7 @@ class Inter_AGG(nn.Module):
             features = features.sum(dim=1)
         elif inter_opt == 'add_w_avg':
             features = torch.mul(features, thresholds).sum(dim=1)
-        # elif inter_opt == 'multi_avg':
-        # use thresholds as the attention and remain multi-heads in last layer
-        # of GAT will improve the performance
-        # features = torch.mul(features, thresholds).sum(dim=1)
+
 
         return features
 
@@ -2131,14 +2034,12 @@ def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTri
 
 
 if __name__ == '__main__':
+    from dataset.dataloader import Event2012
+    dataset = Event2012().load_data()
     args = args_define().args
-    #dataset = DatasetLoader("arabic_twitter").load_data()
-    dataset = DatasetLoader("maven").load_data()
-    finevent = FinEvent(args, dataset)
 
-    # finevent.preprocess()
+    finevent = FinEvent(args, dataset)
+    finevent.preprocess()
     finevent.fit()
     predictions, ground_truths = finevent.detection()
-
-    # Evaluate model
     finevent.evaluate(predictions, ground_truths)

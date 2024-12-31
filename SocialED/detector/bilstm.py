@@ -521,16 +521,14 @@ def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTri
 
 
 if __name__ == "__main__":
-    dataset = DatasetLoader("maven").load_data()
+    from dataset.dataloader_gitee import Event2012
+    dataset = Event2012().load_data()
 
     bilstm = BiLSTM(dataset)
 
-    # Data preprocessing
     bilstm.preprocess()
 
     bilstm.fit()
-    # Detection
     ground_truths, predictions = bilstm.detection()
 
-    # Evaluate the model
     bilstm.evaluate(ground_truths, predictions)

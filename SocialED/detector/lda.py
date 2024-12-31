@@ -10,11 +10,11 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
+from dataset.dataloader import Event2012
 
 class LDA:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 dataset=Event2012().load_data(),
                  num_topics=50,
                  passes=20,
                  iterations=50,
@@ -161,18 +161,11 @@ class LDA:
 
 # Main function
 if __name__ == "__main__":
-    dataset = DatasetLoader("maven").load_data()
+    from dataset.dataloader_gitee import Event2012
 
+    dataset = Event2012().load_data()
     lda = LDA(dataset)
-
-    # Data preprocessing
     lda.preprocess()
-
-    # Train the LDA model
     lda.fit()
-
-    # detection
     ground_truths, predictions = lda.detection()
-
-    # Evaluate the model
     lda.evaluate(ground_truths, predictions)
