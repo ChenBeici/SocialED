@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
-import numpy as np
-import os
-os.environ["NUMPY_EXPERIMENTAL_ARRAY_FUNCTION"] = "0"
-
 import logging
 import argparse
 import gc
@@ -18,7 +14,9 @@ from transformers import AutoTokenizer, AutoModel, AutoConfig
 from collections import namedtuple, OrderedDict, Counter
 from typing import Any, List
 import math
+import os
 import random
+import numpy as np
 import torch
 from torch import nn
 from sklearn import metrics, manifold
@@ -33,6 +31,8 @@ from sklearn.model_selection import train_test_split
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
+
+
 
 logging.basicConfig(level=logging.WARN,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -488,48 +488,28 @@ class Preprocessor:
 
 
 class RPLMSED:
-    """RPLMSED (Representation Learning-based Pre-trained Language Model for Social Event Detection) class.
-    
-    This class implements event detection using pre-trained language models and representation learning.
-    """
-    
     def __init__(self, args, dataset):
-        """Initialize RPLMSED model.
-        
-        Args:
-            args: Configuration arguments
-            dataset: Input dataset
-        """
         self.dataset = dataset
-        self.args = args
-        self.model = None
 
     def preprocess(self):
-        """Preprocess the input dataset."""
         preprocessor = Preprocessor()
         preprocessor.preprocess(self.dataset)
 
     def fit(self):
-        """Train the model."""
         torch.manual_seed(2357)
-        self.args.model_name = os.path.basename(os.path.normpath(self.args.plm_path))
-        dataset_name = os.path.basename(self.args.dataset)
-        self.args.dataset_name = dataset_name.replace(".npy", "")
+        args.model_name = os.path.basename(os.path.normpath(args.plm_path))
+        dataset_name = os.path.basename(args.dataset)
+        args.dataset_name = dataset_name.replace(".npy", "")
 
-        if 'cuda' in self.args.device:
+        if 'cuda' in args.device:
             torch.cuda.manual_seed(2357)
 
-        tokenizer = AutoTokenizer.from_pretrained(self.args.plm_path)
-        data_blocks = load_data_blocks(self.args.dataset, self.args, tokenizer)
-        self.model = start_run(self.args, data_blocks)
+        tokenizer = AutoTokenizer.from_pretrained(args.plm_path)
+        data_blocks = load_data_blocks(args.dataset, args, tokenizer)
+        self.model = start_run(args, data_blocks)
 
     def detection(self):
-        """Perform event detection on test data.
-        
-        Returns:
-            tuple: (predictions, ground_truths)
-        """
-        blk = torch.load(f'{self.args.file_path}cache/cache_long_tail/roberta-large-twitter12.npy')
+        blk = torch.load(f'{args.file_path}cache/cache_long_tail/roberta-large-twitter12.npy')
         test = blk['test']
 
         msg_tags = np.array(test['tw_to_ev'], dtype=np.int32)
@@ -551,15 +531,6 @@ class RPLMSED:
         return predictions, ground_truths
 
     def evaluate(self, predictions, ground_truths):
-        """Evaluate detection results.
-        
-        Args:
-            predictions: Model predictions
-            ground_truths: Ground truth labels
-            
-        Returns:
-            tuple: (ars, ami, nmi) evaluation metrics
-        """
         ars = metrics.adjusted_rand_score(ground_truths, predictions)
 
         # Calculate Adjusted Mutual Information (AMI)
@@ -1365,8 +1336,10 @@ class PairPfxTuningEncoder(nn.Module):
         # embed= txt_emb #
         att_msk = ext_msk[:, None, None, :]
         att_msk = (1.0 - att_msk.float()) * torch.finfo(torch.float).min
+        plm_oupt = self.plm.encoder(embed, att_msk, output_hidden_states=True)
 
-        hidden = self.plm.encoder(embed, att_msk, output_hidden_states=True)['last_hidden_state']
+        hidden = plm_oupt['last_hidden_state']
+        # if self.ctx_att is not None:
         hidden = torch.tanh(self.linear(hidden))
 
         pmt_feat = hidden[:, :pmt_len, ...]
