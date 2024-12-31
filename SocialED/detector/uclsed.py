@@ -1053,12 +1053,12 @@ def ava_split_data(length, labels, classes):
 
 
 if __name__ == "__main__":
-    from dataset.dataloader_gitee import Event2012
+    from dataset.dataloader import Event2012
     dataset = Event2012()
     args = args_define().args
 
     uclsed = UCLSED(args, dataset)
     uclsed.preprocess()
     uclsed.fit()
-    predictions, ground_truths = uclsed.detection()  # 进行预测
-    results = uclsed.evaluate(predictions, ground_truths)  # 评估模型
+    predictions, ground_truths = uclsed.detection()  
+    results = uclsed.evaluate(predictions, ground_truths) 

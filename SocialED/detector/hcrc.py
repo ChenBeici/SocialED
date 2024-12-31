@@ -1724,5 +1724,5 @@ if __name__ == "__main__":
     args = args_define().args
     hcrc = HCRC(args, dataset)
 
-    predictions, ground_truths = hcrc.detection()  # 进行预测
-    results = hcrc.evaluate(predictions, ground_truths)  # 评估模型
+    predictions, ground_truths = hcrc.detection()  
+    results = hcrc.evaluate(predictions, ground_truths)  

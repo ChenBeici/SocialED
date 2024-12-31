@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 class SBERT:
     def __init__(self,
-                 dataset=DatasetLoader("arabic_twitter").load_data(),
+                 dataset,
                  model_name='../model/model_needed/paraphrase-MiniLM-L6-v2',
                  df=None,
                  train_df=None,
@@ -91,7 +91,7 @@ class SBERT:
 
 # Main function
 if __name__ == "__main__":
-    from dataset.dataloader_gitee import Event2012
+    from dataset.dataloader import Event2012
     dataset = Event2012().load_data()
     sbert = SBERT(dataset)
 

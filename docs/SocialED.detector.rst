@@ -137,10 +137,10 @@ ADPSemEvent
    :undoc-members:
    :show-inheritance:
 
-Module Contents
----------------
+Hypersed
+---------------------------------
 
-.. automodule:: SocialED.detector
+.. automodule:: SocialED.detector.hypersed
    :members:
    :undoc-members:
    :show-inheritance:

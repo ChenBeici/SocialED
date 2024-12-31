@@ -2,11 +2,8 @@
 """Loss functions and metrics for training social event detection models."""
 
 import torch.nn as nn
-import numpy as np
 import torch.nn.functional as F
 import torch
-from itertools import combinations
-
 
 def common_loss(emb1, emb2):
     """Calculate common loss between two embeddings.
@@ -196,8 +193,6 @@ def edl_loss(func, y, true_labels, alpha, epoch_num, num_classes, annealing_step
     )
 
     _, pred_label = torch.max(alpha, 1)
-    true_indices = torch.where(pred_label == true_labels)
-    false_indices = torch.where(pred_label != true_labels)
     kl_alpha = (alpha - 1) * (1 - y) + 1
     kl_div = annealing_coef * kl_divergence(kl_alpha, num_classes, device=device)
     print("kl_div:",1*torch.mean(kl_div))

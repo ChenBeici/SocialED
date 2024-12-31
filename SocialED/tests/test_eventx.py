@@ -5,8 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
 import numpy as np
 import pandas as pd
-from sklearn import metrics
-from dataset.dataloader import DatasetLoader
 from detector.eventx import *
 
 # 创建一个示例数据集

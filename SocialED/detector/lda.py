@@ -161,7 +161,7 @@ class LDA:
 
 # Main function
 if __name__ == "__main__":
-    from dataset.dataloader_gitee import Event2012
+    from dataset.dataloader import Event2012
 
     dataset = Event2012().load_data()
     lda = LDA(dataset)

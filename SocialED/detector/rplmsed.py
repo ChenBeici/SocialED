@@ -99,52 +99,6 @@ class args_define:
         })
 
 
-# class args_define():
-#     def list_of_ints(arg):
-#         return list(map(int, arg.split(',')))
-#
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--dataset', type=str, default='../model/model_saved/rplmsed/cache/twitter12.npy')
-#     parser.add_argument('--plm_path', type=str, default='../model/model_needed/base_plm_model/roberta-large')
-#     parser.add_argument('--file_path', type=str, default='../model/model_saved/rplmsed/')
-#     parser.add_argument('--plm_tuning', action='store_true')
-#     parser.add_argument('--use_ctx_att', action='store_true')
-#     # parser.add_argument('--offline', action='store_true')
-#     parser.add_argument('--offline', type=bool, default=True)
-#     parser.add_argument('--ctx_att_head_num', type=int, default=2)
-#     parser.add_argument("--pmt_feats", type=list_of_ints, default=(0, 1, 2, 4),
-#                         help="(entities, hashtags, user, words, time)")
-#
-#     parser.add_argument("--batch_size", type=int, default=128, help="Batch size for training")
-#     parser.add_argument("--lmda1", type=float, default=0.010)
-#     parser.add_argument("--lmda2", type=float, default=0.005)
-#     parser.add_argument("--tao", type=float, default=0.90)
-#
-#     parser.add_argument("--optimizer", type=str, default='Adam', help="Optimizer, Adam, AdamW or SGD")
-#     parser.add_argument("--lr", type=float, default=2e-5, help="Learning rate")
-#     parser.add_argument("--weight_decay", type=float, default=1e-5, help="weight decay")
-#     parser.add_argument("--momentum", type=float, default=0.9, help="momentum for SGD optimizer")
-#     parser.add_argument("--step_lr_gamma", type=float, default=0.98, help="gamma for step learning rate schedule")
-#
-#     parser.add_argument("--max_epochs", type=int, default=1, help="Number of training epochs")
-#     # ablation_ckpt  ablation_Eva_datas
-#     parser.add_argument('--ckpt_path', type=str, default='../model/model_saved/rplmsed/ckpt/',
-#                         help='path to checkpoint files')
-#     parser.add_argument("--eva_data", type=str, default="../model/model_saved/rplmsed/Eva_data/",
-#                         help="path to Evaluate_datas")
-#
-#     parser.add_argument("--early_stop_patience", type=int, default=2)
-#     parser.add_argument("--early_stop_monitor", type=str, default='loss', help='loss')
-#
-#     parser.add_argument("--SAMPLE_NUM_TWEET", type=int, default=60)
-#     parser.add_argument("--WINDOW_SIZE", type=int, default=3)
-#
-#     parser.add_argument("--device", type=str,
-#                         default="cuda:0" if torch.cuda.is_available() else "cpu",
-#                         help="Device (cuda or cpu)")
-#
-#     args = parser.parse_args()
-
 
 class Preprocessor:
     args = args_define().args
@@ -152,7 +106,7 @@ class Preprocessor:
     def __init__(self):
         pass
 
-    def twitter12_process(self, dataset):
+    def preprocess(self, dataset):
         os.makedirs('../model/model_saved/rplmsed/cache', exist_ok=True)
         print(f"load data  ... ")
         df = dataset
@@ -539,7 +493,7 @@ class RPLMSED:
 
     def preprocess(self):
         preprocessor = Preprocessor()
-        preprocessor.twitter12_process(self.dataset)
+        preprocessor.preprocess(self.dataset)
 
     def fit(self):
         torch.manual_seed(2357)

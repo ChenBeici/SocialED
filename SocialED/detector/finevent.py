@@ -31,7 +31,6 @@ import json
 import torch.optim as optim
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
 
 class args_define:
     def __init__(self, **kwargs):

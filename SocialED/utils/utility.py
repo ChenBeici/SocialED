@@ -9,7 +9,6 @@ import warnings
 from itertools import combinations
 from datetime import datetime
 import numpy as np
-from .metrics.metric import *
 
 def tokenize_text(text, max_length=512):
     """Tokenize text for social event detection tasks.
