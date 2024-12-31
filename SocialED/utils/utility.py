@@ -1,29 +1,15 @@
 # -*- coding: utf-8 -*-
 """A set of utility functions to support social event detection tasks."""
 
-
 import torch
 import torch.nn.functional as F
 import numpy as np
-import os
-from sklearn.cluster import KMeans
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_mutual_info_score, adjusted_rand_score
 import warnings
-from importlib import import_module
-import torch.nn as nn
 from itertools import combinations
-from scipy import sparse
-from torch.utils.data import Dataset
-import pandas as pd
 from datetime import datetime
-import networkx as nx
-import dgl
-import re
 import numpy as np
 from .metrics.metric import *
-
-
 
 def tokenize_text(text, max_length=512):
     """Tokenize text for social event detection tasks.
@@ -51,7 +37,6 @@ def tokenize_text(text, max_length=512):
         tokens = tokens[:max_length]
         
     return tokens
-
 
 def pprint(params, offset=0, printer=repr):
     """Pretty print the dictionary 'params'.
@@ -100,8 +85,6 @@ def pprint(params, offset=0, printer=repr):
     lines = '\n'.join(l.rstrip(' ') for l in lines.split('\n'))
     return lines
 
-
-
 def validate_device(gpu_id):
     """Validate the input GPU ID is valid on the given environment.
     If no GPU is presented, return 'cpu'.
@@ -138,8 +121,6 @@ def validate_device(gpu_id):
 
     return device
 
-
-
 def check_parameter(value, lower, upper, param_name, include_left=True, include_right=True):
     """Check if a parameter value is within specified bounds.
 
@@ -172,67 +153,6 @@ def check_parameter(value, lower, upper, param_name, include_left=True, include_
             raise ValueError(f"{param_name} must be less than or equal to {upper}")
     return True
 
-
-def generateMasks(length, data_split, train_i, i, validation_percent=0.1, test_percent=0.2, save_path=None):
-    """Generate train/validation/test masks for splitting data.
-
-    Parameters
-    ----------
-    length : int
-        Total number of samples
-    data_split : list
-        List containing number of samples in each split
-    train_i : int
-        Index of training split
-    i : int
-        Current split index
-    validation_percent : float, optional (default=0.1)
-        Percentage of data to use for validation
-    test_percent : float, optional (default=0.2) 
-        Percentage of data to use for testing
-    save_path : str, optional (default=None)
-        Path to save the generated masks
-
-    Returns
-    -------
-    train_indices : torch.Tensor
-        Indices for training set
-    validation_indices : torch.Tensor
-        Indices for validation set  
-    test_indices : torch.Tensor
-        Indices for test set
-    """
-    # verify total number of nodes
-    assert length == data_split[i]
-    if train_i == i:
-        # randomly shuffle the graph indices
-        train_indices = torch.randperm(length)
-        # get total number of validation indices
-        n_validation_samples = int(length * validation_percent)
-        # sample n_validation_samples validation indices and use the rest as training indices
-        validation_indices = train_indices[:n_validation_samples]
-        n_test_samples = n_validation_samples + int(length * test_percent)
-        test_indices = train_indices[n_validation_samples:n_test_samples]
-        train_indices = train_indices[n_test_samples:]
-
-        if save_path is not None:
-            torch.save(validation_indices, save_path + '/validation_indices.pt')
-            torch.save(train_indices, save_path + '/train_indices.pt')
-            torch.save(test_indices, save_path + '/test_indices.pt')
-            validation_indices = torch.load(save_path + '/validation_indices.pt')
-            train_indices = torch.load(save_path + '/train_indices.pt')
-            test_indices = torch.load(save_path + '/test_indices.pt')
-        return train_indices, validation_indices, test_indices
-    # If is in inference(prediction) epochs, generate test indices
-    else:
-        test_indices = torch.range(0, (data_split[i] - 1), dtype=torch.long)
-        if save_path is not None:
-            torch.save(test_indices, save_path + '/test_indices.pt')
-            test_indices = torch.load(save_path + '/test_indices.pt')
-        return test_indices
-
-
-
 def currentTime():
     """Get current time as formatted string.
     
@@ -242,45 +162,7 @@ def currentTime():
         Current time in format 'YYYY-MM-DD HH:MM:SS'
     """
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-
-class EMA:  #Exponential Moving Average
-    def __init__(self, beta, epochs):
-        super().__init__()
-        self.beta = beta
-        self.step = 0
-        self.total_steps = epochs
-
-    def update_average(self, old, new):
-        if old is None:
-            return new
-        return old * self.beta + (1 - self.beta) * new
-
-def get_task(strs):
-    tasks = ["DRL","random","semi-supervised","traditional"]
-    if len(strs) == 1:
-        return "DRL"
-    if ("--task" in strs) and len(strs) == 2:
-        return "DRL"
-    if ("--task" not in strs) or len(strs)!=3:
-        return False
-    elif strs[-1] not in tasks:
-        return False
-    else:
-        return strs[-1]
-
-def init_weights(m):
-    """Initialize model weights using Xavier initialization.
     
-    Parameters
-    ----------
-    m : torch.nn.Module
-        Neural network module to initialize
-    """
-    if type(m) == nn.Linear:
-        torch.nn.init.xavier_uniform_(m.weight)
-        m.bias.data.fill_(0.01)
-        
 def sim(z1, z2):
     """Compute cosine similarity between two sets of vectors.
     
@@ -300,37 +182,6 @@ def sim(z1, z2):
     z2 = F.normalize(z2)
     return torch.mm(z1, z2.t())
 
-def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
-
-
-def relu_evidence(y):
-    return F.relu(y)
-
-def exp_evidence(y):
-    return torch.exp(torch.clamp(y, -10, 10))
-
-def softplus_evidence(y):
-    return F.softplus(y)
-
-def kl_divergence(alpha, num_classes, device):
-    ones = torch.ones([1, num_classes], dtype=torch.float32, device=device)
-    sum_alpha = torch.sum(alpha, dim=1, keepdim=True)
-    first_term = (
-        torch.lgamma(sum_alpha)
-        - torch.lgamma(alpha).sum(dim=1, keepdim=True)
-        + torch.lgamma(ones).sum(dim=1, keepdim=True)
-        - torch.lgamma(ones.sum(dim=1, keepdim=True))
-    )
-    second_term = (
-        (alpha - ones)
-        .mul(torch.digamma(alpha) - torch.digamma(sum_alpha))
-        .sum(dim=1, keepdim=True)
-    )
-    kl = first_term + second_term
-    return kl
-
 def pairwise_sample(embeddings, labels=None, model=None):
     if model == None:
         labels = labels.cpu().data.numpy()
@@ -349,81 +200,51 @@ def pairwise_sample(embeddings, labels=None, model=None):
         pair_matrix = model(embeddings)
         return pair_matrix
 
-def replaceAtUser(text):
-    """ Replaces "@user" with "" """
-    text = re.sub('@[^\s]+|RT @[^\s]+','',text)
-    return text
-
-def removeUnicode(text):
-    """ Removes unicode strings like "\u002c" and "x96" """
-    text = re.sub(r'(\\u[0-9A-Fa-f]+)',r'', text)       
-    text = re.sub(r'[^\x00-\x7f]',r'',text)
-    return text
-
-def replaceURL(text):
-    """ Replaces url address with "url" """
-    text = re.sub('((www\.[^\s]+)|(https?://[^\s]+))','url',text)
-    text = re.sub(r'#([^\s]+)', r'\1', text)
-    return text
-
-def replaceMultiExclamationMark(text):
-    """ Replaces repetitions of exlamation marks """
-    text = re.sub(r"(\!)\1+", '!', text)
-    return text
-
-def replaceMultiQuestionMark(text):
-    """ Replaces repetitions of question marks """
-    text = re.sub(r"(\?)\1+", '?', text)
-    return text
-
-def removeEmoticons(text):
-    """ Removes emoticons from text """
-    text = re.sub(':\)|;\)|:-\)|\(-:|:-D|=D|:P|xD|X-p|\^\^|:-*|\^\.\^|\^\-\^|\^\_\^|\,-\)|\)-:|:\'\(|:\(|:-\(|:\S|T\.T|\.\_\.|:<|:-\S|:-<|\*\-\*|:O|=O|=\-O|O\.o|XO|O\_O|:-\@|=/|:/|X\-\(|>\.<|>=\(|D:', '', text)
-    return text
-
-def removeNewLines(text):
-    text = re.sub('\n', '', text)
-    return text
-
-def preprocess_sentence(s):
-    return removeNewLines(replaceAtUser(removeEmoticons(replaceMultiQuestionMark(replaceMultiExclamationMark(removeUnicode(replaceURL(s)))))))
-
-def preprocess_french_sentence(s):
-    return removeNewLines(replaceAtUser(removeEmoticons(replaceMultiQuestionMark(replaceMultiExclamationMark(replaceURL(s))))))
-
-def SBERT_embed(s_list, language = 'English'):
+def SBERT_embed(s_list, language):
     '''
     Use Sentence-BERT to embed sentences.
     s_list: a list of sentences/ tokens to be embedded.
+    language: the language of the sentences ('English', 'French', 'Arabic').
     output: the embeddings of the sentences/ tokens.
     '''
-    if language == 'English':
-        model = SentenceTransformer('all-MiniLM-L6-v2') # for English
-    elif language == 'French':
-        import os
-        model = SentenceTransformer('SBERT',trust_remote_code=True) # for French:distiluse-base-multilingual-cased-v1
-    embeddings = model.encode(s_list, convert_to_tensor = True, normalize_embeddings = True)
+    # Model paths or names for each language
+    model_map = {
+        'English': '../model/model_needed/all-MiniLM-L6-v2',
+        'French': '../model/model_needed/distiluse-base-multilingual-cased-v1',
+        'Arabic': '../model/model_needed/paraphrase-multilingual-mpnet-base-v2'
+    }
+
+    # Default model for Hugging Face
+    hf_model_map = {
+        'English': 'sentence-transformers/all-MiniLM-L6-v2',
+        'French': 'sentence-transformers/distiluse-base-multilingual-cased-v1',
+        'Arabic': 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
+    }
+
+    # Print language and model being used
+    print(f"Embedding sentences in language: {language}")
+    
+    # Determine model path
+    model_path = model_map.get(language)
+    if not model_path:
+        raise ValueError(f"Unsupported language: {language}. Supported languages are: {', '.join(model_map.keys())}")
+
+    print(f"Using model: {model_path}")
+
+    # Load the model, downloading if necessary
+    try:
+        model = SentenceTransformer(model_path)
+        print(f"Successfully loaded model from local path: {model_path}")
+    except Exception as e:
+        print(f"Model {model_path} not found locally. Attempting to download from Hugging Face...")
+        model = SentenceTransformer(hf_model_map[language])
+        print(f"Model downloaded from Hugging Face: {hf_model_map[language]}")
+
+    # Compute embeddings
+    embeddings = model.encode(s_list, convert_to_tensor=True, normalize_embeddings=True)
+    print(f"Computed embeddings for {len(s_list)} sentences/tokens.")
+    
     return embeddings.cpu()
-
-def evaluate_metrics(labels_true, labels_pred):
-    nmi = normalized_mutual_info_score(labels_true, labels_pred)
-    ami = adjusted_mutual_info_score(labels_true, labels_pred)
-    ari = adjusted_rand_score(labels_true, labels_pred)
-    return nmi, ami, ari
-
-def decode(division):
-    if type(division) is dict:
-        prediction_dict = {m: event for event, messages in division.items() for m in messages}
-    elif type(division) is list:
-        prediction_dict = {m: event for event, messages in enumerate(division) for m in messages}
-    prediction_dict_sorted = dict(sorted(prediction_dict.items()))
-    return list(prediction_dict_sorted.values())
-
-def make_onehot(input, classes):
-    input = torch.LongTensor(input).unsqueeze(1)
-    result = torch.zeros(len(input),classes).long()
-    result.scatter_(dim=1,index=input.long(),src=torch.ones(len(input),classes).long())
-    return result
 
 def DS_Combin(alpha, classes):
     """
@@ -482,8 +303,6 @@ def DS_Combin(alpha, classes):
             alpha_a,u_a = DS_Combin_two(alpha_a, alpha[v + 1], classes)
     return alpha_a,u_a
 
-
-
 def graph_statistics(G, save_path):
     message = '\nGraph statistics:\n'
     num_nodes = G.number_of_nodes()
@@ -502,106 +321,5 @@ def graph_statistics(G, save_path):
     with open(save_path + "/graph_statistics.txt", "w") as f:
         f.write(message)
     return num_isolated_nodes
-
-
-def get_dgl_data(dataset, views):
-    g_dict = {}
-    path = "../data/{}/".format(dataset)
-    features = torch.FloatTensor(np.load(path + "features.npy"))
-    times = np.load(path + "time.npy")
-    times = torch.FloatTensor(((times - times.min()).astype('timedelta64[D]') / np.timedelta64(1, 'D')))
-    labels = np.load(path + "label.npy")
-    for v in views:
-        if v == "h":
-            matrix = sparse.load_npz(path + "s_tweet_tweet_matrix_{}.npz".format(v))
-        else:
-            matrix = sparse.load_npz(path+"s_tweet_tweet_matrix_{}.npz".format(v))
-        g = dgl.DGLGraph(matrix, readonly=True)
-        save_path_v = path + v
-        if not os.path.exists(save_path_v):
-            os.mkdir(save_path_v)
-        num_isolated_nodes = graph_statistics(g, save_path_v)
-        g.set_n_initializer(dgl.init.zero_initializer)
-        g.readonly(readonly_state=True)
-        g_dict[v] = g
-    return g_dict, times, features, labels
-
-def ava_split_data(length, labels, classes):
-    indices = torch.randperm(length)
-    labels = torch.LongTensor(labels[indices])
-
-    train_indices = []
-    test_indices = []
-    val_indices = []
-
-    for l in range(classes):
-        l_indices = torch.LongTensor(np.where(labels.numpy() == l)[0].reshape(-1))
-        val_indices.append(l_indices[:20].reshape(-1,1))
-        test_indices.append(l_indices[20:50].reshape(-1,1))
-        train_indices.append(l_indices[50:].reshape(-1,1))
-
-    val_indices = indices[torch.cat(val_indices,dim=0).reshape(-1)]
-    test_indices = indices[torch.cat(test_indices,dim=0).reshape(-1)]
-    train_indices = indices[torch.cat(train_indices,dim=0).reshape(-1)]
-    print(train_indices.shape,val_indices.shape,test_indices.shape)
-    print(train_indices)
-    return train_indices, val_indices, test_indices
-
-
-def semi_loss(z1, z2):
-    f = lambda x: torch.exp(x / 0.05)
-    refl_sim = f(sim(z1, z1))
-    between_sim = f(sim(z1, z2))
-
-    return -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-
-def get_loss(h1, h2):
-    l1 = semi_loss(h1, h2)
-    l2 = semi_loss(h2, h1)
-
-    ret = (l1 + l2) * 0.5
-    ret = ret.mean()
-
-    return ret
-
-def update_moving_average(ema_updater, ma_model, current_model):
-    for current_params, ma_params in zip(current_model.parameters(), ma_model.parameters()):
-        old_weight, up_weight = ma_params.data, current_params.data
-        ma_params.data = ema_updater.update_average(old_weight, up_weight)
-
-
-def set_requires_grad(model, val):
-    #set require_grad
-    for p in model.parameters():
-        p.requires_grad = val
-
-def enumerateConfig(args):
-    args_names = []
-    args_vals = []
-    for arg in vars(args):
-        args_names.append(arg)
-        args_vals.append(getattr(args, arg))
-
-    return args_names, args_vals
-
-
-def config2string(args):
-    args_names, args_vals = enumerateConfig(args)
-    st = ''
-    for name, val in zip(args_names, args_vals):
-        if val == False:
-            continue
-        if name not in ['device','root','epochs','isAnneal','dropout','warmup_step','clus_num_iters']:
-            st_ = "{}_{}_".format(name, val)
-            st += st_
-
-    return st[:-1]
-
-
-def printConfig(args): 
-    args_names, args_vals = enumerateConfig(args)
-    print(args_names)
-    print(args_vals)
-
 
 

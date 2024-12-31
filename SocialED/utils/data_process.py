@@ -4,19 +4,10 @@
 import numpy as np
 import torch
 import os
-from sklearn.preprocessing import normalize
-import pandas as pd
 import en_core_web_lg
 from datetime import datetime
-from torch.utils.data import Dataset
-from scipy import sparse
-import networkx as nx
-from dgl.data.utils import save_graphs
-from dgl.data.utils import load_graphs
 from collections import Counter
-from time import time
 import requests
-from tqdm import tqdm
 from statistics import mean
 
 def construct_graph(df, G=None):
@@ -92,9 +83,7 @@ def load_data(name, cache_dir=None):
     data : numpy.ndarray
         The loaded dataset.
 
-
     """
-
     if cache_dir is None:
         cache_dir = os.path.join(os.path.expanduser('~'), '.socialed/data')
     file_path = os.path.join(cache_dir, name + '.npy')
@@ -143,14 +132,11 @@ def documents_to_features(df):
     features = df.filtered_words.apply(lambda x: nlp(' '.join(x)).vector).values
     return np.stack(features, axis=0)
 
-
 def extract_time_feature(t_str):
     t = datetime.fromisoformat(str(t_str))
     OLE_TIME_ZERO = datetime(1899, 12, 30)
     delta = t - OLE_TIME_ZERO
     return [(float(delta.days) / 100000.), (float(delta.seconds) / 86400)]  # 86,400 seconds in day
-
-
 
 def get_word2id_emb(wordpath,embpath):
     word2id = {}
@@ -160,25 +146,6 @@ def get_word2id_emb(wordpath,embpath):
     embeddings = np.load(embpath)
     return word2id,embeddings
 
-  
-def nonlinear_transform_features(wordpath,embpath,df):
-    word2id,embeddings = get_word2id_emb(wordpath,embpath)
-    features = df.filtered_words.apply(lambda x: [embeddings[word2id[w]] for w in x])
-    f_list = []
-    for f in features:
-        if len(f) != 0:
-            f_list.append(np.mean(f, axis=0))
-        else:
-            f_list.append(np.zeros((300)))
-    features = np.stack(f_list, axis=0)
-    print(features.shape)
-    return features
-
-
-def getlinear_transform_features(features,src,tgt):
-    W = torch.load("../datasets/LinearTranWeight/spacy_{}_{}/best_mapping.pth".format(src,tgt))
-    features = np.matmul(features,W)
-    return features
 
 def df_to_t_features(df):
     t_features = np.asarray([extract_time_feature(t_str) for t_str in df['created_at']])

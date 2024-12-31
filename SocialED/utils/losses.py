@@ -135,6 +135,7 @@ class OnlineTripletLoss(nn.Module):
             return losses.mean(), len(triplets)
 
 
+
 def kl_divergence(alpha, num_classes, device):
     """Compute KL divergence for Dirichlet distributions.
     
@@ -167,7 +168,6 @@ def kl_divergence(alpha, num_classes, device):
     )
     kl = first_term + second_term
     return kl
-
 
 def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     y = y.to(device)

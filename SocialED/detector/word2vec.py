@@ -22,8 +22,7 @@ class WORD2VEC:
                  min_count=1,
                  sg=1,
                  file_path='../model/model_saved/Word2vec/word2vec_model.model'):
-        # print("ASDASd")
-        # exit()
+
         self.dataset = dataset
         self.vector_size = vector_size
         self.window = window
