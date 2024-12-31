@@ -5,7 +5,7 @@ from .bilstm import BiLSTM
 from .word2vec import WORD2VEC
 from .glove import GloVe
 from .wmd import WMD
-from .bert import BERT
+from .bertmodel import BERT
 from .sbert import SBERT
 from .eventx import EventX
 from .clkd import CLKD
