@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 import numpy as np
-import numpy
-numpy._import_array()
+import os
+os.environ["NUMPY_EXPERIMENTAL_ARRAY_FUNCTION"] = "0"
+
 import logging
 import argparse
 import gc
@@ -17,7 +18,6 @@ from transformers import AutoTokenizer, AutoModel, AutoConfig
 from collections import namedtuple, OrderedDict, Counter
 from typing import Any, List
 import math
-import os
 import random
 import torch
 from torch import nn
@@ -34,7 +34,8 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-
+# Initialize numpy array support
+multiarray.import_array()
 
 logging.basicConfig(level=logging.WARN,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s",
