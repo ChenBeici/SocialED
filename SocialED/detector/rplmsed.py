@@ -34,9 +34,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-# Initialize numpy array support
-multiarray.import_array()
-
 logging.basicConfig(level=logging.WARN,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s",
                     datefmt='%Y-%m-%d  %H:%M:%S %a')

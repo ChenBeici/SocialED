@@ -1,5 +1,9 @@
 # __init__.py
 
+import numpy as np
+from numpy.core import numeric
+numeric.set_module('numpy')
+
 from .lda import LDA
 from .bilstm import BiLSTM
 from .word2vec import WORD2VEC
