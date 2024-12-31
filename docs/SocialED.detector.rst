@@ -44,7 +44,7 @@ WMD
 Bert
 -----------------------------
 
-.. automodule:: SocialED.detector.bert
+.. automodule:: SocialED.detector.bertmodel
    :members:
    :undoc-members:
    :show-inheritance:
@@ -129,7 +129,7 @@ HISEvent
    :undoc-members:
    :show-inheritance:
 
-ADPSemEvent
+ADPSEMEvent
 ---------------------------------
 
 .. automodule:: SocialED.detector.adpsemevent
