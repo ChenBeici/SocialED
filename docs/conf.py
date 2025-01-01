@@ -5,8 +5,22 @@ import sys
 from os.path import dirname, abspath
 
 # 将 SocialED 项目的根目录添加到 sys.path
-sys.path.insert(0, abspath('..'))
+sys.path.insert(0, abspath('../'))
 root_dir = dirname(dirname(abspath(__file__)))
+
+class MockSpacy:
+    def load(self, *args, **kwargs):
+        return self
+    
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def __getattr__(self, name):
+        return self
+
+sys.modules['spacy'] = MockSpacy()
+sys.modules['en_core_web_lg'] = MockSpacy()
+
 
 # -- Project information -----------------------------------------------------
 
@@ -14,44 +28,83 @@ project = 'SocialED'
 copyright = '2024 beici'
 author = 'beici'
 
-version_path = os.path.join(root_dir, 'SocialED', 'version.py')
-exec(open(version_path).read())
-version = __version__
-release = __version__
+# 如果您有版本信息，可以使用以下代码获取版本号
+# version_path = os.path.join(root_dir, 'SocialED', 'version.py')
+# exec(open(version_path).read())
+# version = __version__
+# release = __version__
 
 # -- General configuration ---------------------------------------------------
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage',
-    "sphinx.ext.mathjax",
-    'sphinx.ext.viewcode',
-    'sphinxcontrib.bibtex',
     'sphinx.ext.napoleon',
-    'sphinx_gallery.gen_gallery'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
 ]
 
 bibtex_bibfiles = ['zreferences.bib']
 
 autodoc_mock_imports = [
-    'en_core_web_lg',
-    'fr_core_news_lg',
-    'dgl',
-    'dgl.function',
-    'dgl.dataloading',
-    'spacy',
-    'torch',
-    'torch.nn',
-    'torch.cuda',
-    'transformers',
-    'transformers.modeling_bert',
-    'transformers.tokenization_bert',
+    # 'en_core_web_lg',
+    # 'fr_core_news_lg',
+    # 'dgl',
+    # 'dgl.function',
+    # 'dgl.dataloading',
+    # 'spacy',
+    # 'torch',
+    # 'torch.nn',
+    # 'torch.cuda',
+    # 'transformers',
+    # 'transformers.modeling_bert',
+    # 'transformers.tokenization_bert',
+    # 'numpy',
+    # 'pandas',
+    # 'scikit-learn'
     'numpy',
+    'torch',
     'pandas',
-    'scikit-learn'
+    'sklearn',
+    'scipy',
+    'networkx',
+    'spacy',
+    'thinc',
+    'gensim',
+    'transformers',
+    'nltk',
+    'tensorflow',
+    'keras',
+    'matplotlib',
+    'seaborn',
+    'tqdm',
+    'cupy',
+    'dgl',
+    'torch_geometric',
+    'torch_scatter',
+    'torch_sparse',
+    'torch_cluster',
+    'torch_spline_conv',
+    'tokenizers',
+    'sentence_transformers',
+    'allennlp',
+    'overrides',
+    'faiss',
+    'numba',
+    'cudf',
+    'cugraph',
+    'cucim',
+    'en_core_web_lg',
+    'ignite',
+    'ignite.distributed',
+    'ignite.distributed.auto',
+    'ignite.distributed.utils',
+    'ignite.distributed.comp_models',
+    'ignite.engine',
+    'ignite.metrics',
+    'packaging',
+    'packaging.version',
+    'hdbscan',
 ]
 
 templates_path = ['_templates']
@@ -87,19 +140,24 @@ texinfo_documents = [
 ]
 
 # -- Extension configuration -------------------------------------------------
-from sphinx_gallery.sorting import FileNameSortKey
+# from sphinx_gallery.sorting import FileNameSortKey
 
 html_static_path = []
 
 
 
-sphinx_gallery_conf = {
-    'examples_dirs': 'examples/',   # Path to your example scripts
-    'gallery_dirs': 'tutorials/',
-    'within_subsection_order': FileNameSortKey,
-    'filename_pattern': '.py',
-    'download_all_examples': False,
-}
+# sphinx_gallery_conf = {
+#     'examples_dirs': 'examples/',   # Path to your example scripts
+#     'gallery_dirs': 'tutorials/',
+#     'within_subsection_order': FileNameSortKey,
+#     'filename_pattern': '.py',
+#     'download_all_examples': False,
+# }
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = True
 
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
@@ -111,3 +169,9 @@ intersphinx_mapping = {
     'torch': ("https://pytorch.org/docs/master", None),
     'torch_geometric': ("https://pytorch-geometric.readthedocs.io/en/latest", None),
 }
+
+
+# 添加类型提示支持
+set_type_checking_flag = True
+always_document_param_types = True
+

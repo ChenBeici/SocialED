@@ -11,6 +11,10 @@
 ----
 
 
+.. raw:: html
+
+   <div style="text-align: center;">
+
 |badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
 
 .. |badge_pypi| image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
@@ -52,6 +56,10 @@
 .. |badge_arxiv| image:: https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red
    :target: https://arxiv.org/abs/2412.13472
    :alt: arXiv
+
+.. raw:: html
+
+   </div>
 
 
 -----

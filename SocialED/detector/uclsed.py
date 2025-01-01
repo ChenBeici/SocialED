@@ -171,7 +171,7 @@ class UCLSED:
         print(f"Validation F1 Score: {val_f1}")
         print(f"Validation Accuracy: {val_acc}")
 
-        return val_f1, val_acc
+
 
 
 class Preprocessor:
@@ -1061,4 +1061,4 @@ if __name__ == "__main__":
     uclsed.preprocess()
     uclsed.fit()
     predictions, ground_truths = uclsed.detection()  
-    results = uclsed.evaluate(predictions, ground_truths) 
+    uclsed.evaluate(predictions, ground_truths) 
