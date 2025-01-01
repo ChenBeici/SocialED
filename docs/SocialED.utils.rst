@@ -1,4 +1,4 @@
-SocialED.Uutils
+SocialED.utils
 ==================
 
 

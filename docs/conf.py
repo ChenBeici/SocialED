@@ -29,10 +29,10 @@ copyright = '2024 beici'
 author = 'beici'
 
 # 如果您有版本信息，可以使用以下代码获取版本号
-version_path = os.path.join(root_dir, 'SocialED', 'version.py')
-exec(open(version_path).read())
-version = __version__
-release = __version__
+#version_path = os.path.join(root_dir, 'SocialED', 'version.py')
+#exec(open(version_path).read())
+version = '1.1.2'
+release = version
 
 # -- General configuration ---------------------------------------------------
 
@@ -45,6 +45,8 @@ extensions = [
 ]
 
 bibtex_bibfiles = ['zreferences.bib']
+
+autodoc_member_order = 'bysource'
 
 autodoc_mock_imports = [
     # 'en_core_web_lg',

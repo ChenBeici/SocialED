@@ -1,10 +1,10 @@
-SocialED.losses
+SocialED.loss
 =========================
 
-losses
+loss
 ----------------------------
 
-.. automodule:: SocialED.utils.losses
+.. automodule:: SocialED.utils.loss
    :members:
    :undoc-members:
    :show-inheritance:
