@@ -1,4 +1,4 @@
-SocialED.Utils
+SocialED.Uutils
 ==================
 
 
@@ -9,5 +9,4 @@ utility
     :members:
     :undoc-members:
     :show-inheritance:
-
 

@@ -214,7 +214,15 @@ Accessibility and Community Support
    SocialED.dataset
    SocialED.detector
    SocialED.metrics
-   SocialED.utils
+   SocialED.utils    
+   SocialED.dataprocess
+   SocialED.GraphLevel
+   SocialED.NodeLevel
+   SocialED.losses
+
+
+
+
 
 .. toctree::
    :maxdepth: 2

@@ -14,14 +14,9 @@ from scipy import sparse
 from itertools import combinations, chain
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_mutual_info_score, adjusted_rand_score
-from transformers import AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
 from networkx.algorithms import cuts
 import networkx as nx
-from utils import preprocess_sentence, SBERT_embed
-from se_threshold import search_threshold, get_global_edges
-from SE import SE
 
 
 

@@ -1,4 +1,4 @@
-SocialED.Detector
+SocialED.detector
 =========================
 
 LDA
