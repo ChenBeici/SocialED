@@ -29,7 +29,7 @@ from torch.distributions import Categorical, MultivariateNormal
 import sys
 from sklearn.metrics import silhouette_score, calinski_harabasz_score
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
+
 
 
 def currentTime():
@@ -73,7 +73,7 @@ class HCRC:
         for i in range(22):
             print("************Message Block " + str(i) + " start! ************")
             # Node-level learning
-            embedder_N = Node_ModelTrainer(args, i)
+            embedder_N = Node_ModelTrainer(args, i, self.dataset)
             Node_emb, label = embedder_N.get_embedding()
             # Graph-level learning
             embedder_G = Graph_ModelTrainer(args, i)
@@ -630,10 +630,11 @@ class SinglePass:
 
 class Node_ModelTrainer(embedder):
 
-    def __init__(self, args, block_num):
+    def __init__(self, args, block_num, dataset):
         embedder.__init__(self, args)
         self._args = args
         self.block_num = block_num
+        self.dataset = dataset
         self._init()
 
     def _init(self):
@@ -649,7 +650,7 @@ class Node_ModelTrainer(embedder):
             args.Nes = 2000
         self.true_label = []
         # load data
-        self._loader, self.true_label = get_Node_Dataset(block_num)
+        self._loader, self.true_label = get_Node_Dataset(block_num, self.dataset)
 
         layers = [302] + self.hidden_layers
         self._model = NodeLevel(layers, args)
@@ -1498,9 +1499,9 @@ def get_edge_index(adj):  # Get edge set according to adjacency matrix
     return edge_index
 
 
-def get_data(message_num, start, tweet_sum, save_path):
+def get_data(message_num, start, tweet_sum, save_path, dataset):
     os.makedirs(save_path, exist_ok=True)
-    df = DatasetLoader("arabic_twitter").load_data()
+    df = dataset
     df = df.sort_values(by='created_at').reset_index()
     ini_df = df[start:tweet_sum]
 
@@ -1579,7 +1580,7 @@ def get_data(message_num, start, tweet_sum, save_path):
     return dict_graph
 
 
-def getData(M_num):  # construct an entire graph within a block
+def getData(M_num, dataset):  # construct an entire graph within a block
     #     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
     args = args_define.args
     M = [20254, 28976, 30467, 32302, 34312, 36146, 37422, 42700, 44260, 45623, 46719,
@@ -1603,11 +1604,11 @@ def getData(M_num):  # construct an entire graph within a block
 
     while 1:
         if (num + size) >= M[i]:
-            tmp = get_data(i, num, M[i], args.file_path)
+            tmp = get_data(i, num, M[i], args.file_path, dataset)
             data.append(tmp)
             break
         else:
-            tmp = get_data(i, num, num + size, args.file_path)
+            tmp = get_data(i, num, num + size, args.file_path, dataset)
             data.append(tmp)
             j = j + 1
             print("***************Block " + str(j) + " is done.****************")
@@ -1651,7 +1652,7 @@ def get_Graph_Dataset(message_number):
     return dataset, label
 
 
-def get_Node_Dataset(message_number):
+def get_Node_Dataset(message_number, dataset):
     # load data for node-level contrastive learning
     print("\nBuilding node-level social network...")
     start_time = time.time()
@@ -1664,7 +1665,7 @@ def get_Node_Dataset(message_number):
         print("Data loaded successfully.")
     else:
         print(f"No data file found at {file_path}")
-        datas = getData(message_number)
+        datas = getData(message_number, dataset)
 
     dataset = []
     labels = []

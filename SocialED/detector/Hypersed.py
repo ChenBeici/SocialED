@@ -32,8 +32,6 @@ class Hypersed():
         preprocessor = Preprocessor(self.dataset)
         preprocessor.preprocess()
 
-
-
     def evaluate(self, ground_truths, predictions):
         """
         Evaluate the model.

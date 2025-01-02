@@ -553,16 +553,19 @@ def get_global_edges(attributes, epsilon, folder, default_num_neighbors, e_a = T
     return list(set(knn_edges + graph_edges))
 
 def get_subgraphs_edges(clusters, graph_splits, weighted_global_edges):
-    '''
-    get the edges of each subgraph
+    """
+    Get the edges of each subgraph.
 
-    clusters: a list containing the current clusters, each cluster is a list of nodes of the original graph
-    graph_splits: a list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, 
-        which will serve as the nodes of a new subgraph
-    weighted_global_edges: a list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph
+    :param clusters: A list containing the current clusters, each cluster is a list of nodes of the original graph.
+    :type clusters: list of list of nodes
+    :param graph_splits: A list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, which will serve as the nodes of a new subgraph.
+    :type graph_splits: list of tuples (int, int)
+    :param weighted_global_edges: A list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph.
+    :type weighted_global_edges: list of tuples (node, node, float)
 
-    return: all_subgraphs_edges: a list containing the edges of all subgraphs
-    '''
+    :return: A list containing the edges of all subgraphs.
+    :rtype: list of lists of tuples (node, node, float)
+    """
     all_subgraphs_edges = []
     for split in graph_splits:
         subgraph_clusters = clusters[split[0]:split[1]]

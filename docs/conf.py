@@ -42,6 +42,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
+    'sphinxcontrib.bibtex'
 ]
 
 bibtex_bibfiles = ['zreferences.bib']

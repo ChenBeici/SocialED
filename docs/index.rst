@@ -15,7 +15,7 @@
 
    <div style="text-align: center;">
 
-|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
+|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license| |badge_codeql| |badge_arxiv| 
 
 .. |badge_pypi| image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
    :target: https://pypi.org/project/SocialED/
