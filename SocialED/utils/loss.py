@@ -167,6 +167,28 @@ def kl_divergence(alpha, num_classes, device):
     return kl
 
 def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
+    """Compute MSE loss with KL divergence regularization.
+    
+    Parameters
+    ----------
+    y : torch.Tensor
+        Ground truth labels
+    alpha : torch.Tensor
+        Dirichlet distribution parameters
+    epoch_num : int
+        Current epoch number
+    num_classes : int
+        Number of classes
+    annealing_step : int
+        Number of steps for KL annealing
+    device : str
+        Device to use for computation
+        
+    Returns
+    -------
+    torch.Tensor
+        Combined MSE and KL divergence loss
+    """
     y = y.to(device)
     alpha = alpha.to(device)
     loglikelihood = loglikelihood_loss(y, alpha, device)
@@ -181,6 +203,32 @@ def mse_loss(y, alpha, epoch_num, num_classes, annealing_step, device):
     return loglikelihood + kl_div
 
 def edl_loss(func, y, true_labels, alpha, epoch_num, num_classes, annealing_step, device):
+    """Compute evidential deep learning loss.
+    
+    Parameters
+    ----------
+    func : callable
+        Function to compute activation
+    y : torch.Tensor
+        Ground truth labels
+    true_labels : torch.Tensor
+        True class labels
+    alpha : torch.Tensor
+        Dirichlet distribution parameters
+    epoch_num : int
+        Current epoch number
+    num_classes : int
+        Number of classes
+    annealing_step : int
+        Number of steps for KL annealing
+    device : str
+        Device to use for computation
+        
+    Returns
+    -------
+    torch.Tensor
+        Combined EDL loss with KL divergence regularization
+    """
     y = y.to(device)
     alpha = alpha.to(device)
     S = torch.sum(alpha, dim=1, keepdim=True)

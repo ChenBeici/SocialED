@@ -106,6 +106,21 @@ def load_data(name, cache_dir=None):
 
 
 def graph_statistics(G, save_path):
+    """
+    Calculate and save basic statistics of a graph.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+        The input graph to analyze.
+    save_path : str
+        Directory path to save the statistics.
+
+    Returns
+    -------
+    num_isolated_nodes : int
+        Number of isolated nodes in the graph.
+    """
     message = '\nGraph statistics:\n'
     num_nodes = G.number_of_nodes()
     num_edges = G.number_of_edges()
@@ -128,17 +143,58 @@ def graph_statistics(G, save_path):
 
 
 def documents_to_features(df):
+    """
+    Convert document text to feature vectors using spaCy.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing documents with 'filtered_words' column.
+
+    Returns
+    -------
+    numpy.ndarray
+        Document feature vectors stacked into a matrix.
+    """
     nlp = en_core_web_lg.load()
     features = df.filtered_words.apply(lambda x: nlp(' '.join(x)).vector).values
     return np.stack(features, axis=0)
 
 def extract_time_feature(t_str):
+    """
+    Extract time features from timestamp string.
+
+    Parameters
+    ----------
+    t_str : str
+        Timestamp string in ISO format.
+
+    Returns
+    -------
+    list
+        List containing two normalized time features: [days, seconds].
+    """
     t = datetime.fromisoformat(str(t_str))
     OLE_TIME_ZERO = datetime(1899, 12, 30)
     delta = t - OLE_TIME_ZERO
     return [(float(delta.days) / 100000.), (float(delta.seconds) / 86400)]  # 86,400 seconds in day
 
 def get_word2id_emb(wordpath,embpath):
+    """
+    Load word-to-id mapping and embeddings from files.
+
+    Parameters
+    ----------
+    wordpath : str
+        Path to file containing words.
+    embpath : str
+        Path to file containing embeddings.
+
+    Returns
+    -------
+    tuple
+        (word2id dictionary, embeddings array).
+    """
     word2id = {}
     with open(wordpath, 'r') as f:
         for i, w in enumerate(list(f.readlines()[0].split())):
@@ -148,11 +204,39 @@ def get_word2id_emb(wordpath,embpath):
 
 
 def df_to_t_features(df):
+    """
+    Convert DataFrame timestamps to time features.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame with 'created_at' column containing timestamps.
+
+    Returns
+    -------
+    numpy.ndarray
+        Array of time features for each timestamp.
+    """
     t_features = np.asarray([extract_time_feature(t_str) for t_str in df['created_at']])
     return t_features
 
 
 def check_class_sizes(ground_truths, predictions):
+    """
+    Check sizes of predicted classes against ground truth classes.
+
+    Parameters
+    ----------
+    ground_truths : array-like
+        Ground truth class labels.
+    predictions : array-like
+        Predicted class labels.
+
+    Returns
+    -------
+    list
+        List of predicted class labels that are larger than average ground truth class size.
+    """
     count_true_labels = list(Counter(ground_truths).values())  
     ave_true_size = mean(count_true_labels)
     distinct_predictions = list(Counter(predictions).keys()) 

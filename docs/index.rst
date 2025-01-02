@@ -170,7 +170,6 @@ The library provides several utility functions including:
 
 * ``utils.tokenize_text`` and ``utils.construct_graph`` for data preprocessing
 * ``metric`` for evaluation metrics
-* ``utils.load_data`` for built-in datasets
 
 Library Robustness and Accessibility
 ------------------------------------
