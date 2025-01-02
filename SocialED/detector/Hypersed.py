@@ -31,9 +31,7 @@ class Hypersed():
         preprocessor = Preprocessor(self.dataset)
         preprocessor.preprocess()
 
-    def detection(self):
-        ground_truths, predictions = run_hier_2D_SE_mini_data(self.save_path, n=300, e_a=True, e_s=True)
-        return ground_truths, predictions
+
 
     def evaluate(self, ground_truths, predictions):
         """
