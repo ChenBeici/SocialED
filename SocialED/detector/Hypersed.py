@@ -17,7 +17,8 @@ from sklearn.model_selection import train_test_split
 from sentence_transformers import SentenceTransformer
 from networkx.algorithms import cuts
 import networkx as nx
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class Hypersed():

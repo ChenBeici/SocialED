@@ -215,8 +215,6 @@ Accessibility and Community Support
    SocialED.detector
    SocialED.metrics
    SocialED.utils    
-   SocialED.GraphLevel
-   SocialED.NodeLevel
    SocialED.loss
    SocialED.dataprocess
 
