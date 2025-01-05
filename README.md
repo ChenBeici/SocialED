@@ -410,7 +410,7 @@ The library provides several utility functions including:
 
 * B. Liu, F.X. Han, D. Niu, L. Kong, K. Lai, and Y. Xu. Story forest: Extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data, 14(3):1-28, 2020.
 
-* J. Ren, H. Peng, L. Jiang, J. Wu, Y. Tong, L. Wang, X. Bai, B. Wang, and Q. Yang. Transferring knowledge distillation for multilingual social event detection. arXiv preprint arXiv:2108.03084, 2021.
+* J. Ren, H. Peng, L. Jiang, Z. Liu, J. Wu, and P.S. Yu. Toward cross-lingual social event detection with hybrid knowledge distillation. ACM Transactions on Knowledge Discovery from Data, 18(9):1-36, 2024.
 
 * Y. Cao, H. Peng, J. Wu, Y. Dou, J. Li, and P.S. Yu. Knowledge-preserving incremental social event detection via heterogeneous GNNs. In Proceedings of The Web Conference, pages 3383-3395, 2021.
 
