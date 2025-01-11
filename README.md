@@ -430,4 +430,4 @@ The library provides several utility functions including:
 
 * Z. Yang, Y. Wei, H. Li, et al. Adaptive Differentially Private Structural Entropy Minimization for Unsupervised Social Event Detection. In Proceedings of CIKM, pages 2950-2960, 2024.
 
-* X. Yu, Y. Wei, S. Zhou, Z. Yang, L. Sun, H. Peng, L. Zhu, and P.S. Yu. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. arXiv preprint arXiv:2412.10712, 2024.
+* X. Yu, Y. Wei, S. Zhou, Z. Yang, L. Sun, H. Peng, L. Zhu, and P.S. Yu. Towards effective, efficient and unsupervised social event detection in the hyperbolic space. In Proceedings of AAAI, 2025.
