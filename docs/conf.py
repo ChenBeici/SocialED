@@ -31,7 +31,7 @@ author = 'beici'
 # 如果您有版本信息，可以使用以下代码获取版本号
 #version_path = os.path.join(root_dir, 'SocialED', 'version.py')
 #exec(open(version_path).read())
-version = '1.1.2'
+version = '1.1.3'
 release = version
 
 # -- General configuration ---------------------------------------------------

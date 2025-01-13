@@ -13,7 +13,7 @@ class DatasetLoader:
         self.dir_path = dir_path
         self.dataset = dataset
         self.default_root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../dataset/data"))
-        #print(f"Data root path: {self.default_root_path}")  # 调试信息
+        #print(f"Data root path: {self.default_root_path}")  
         os.makedirs(self.default_root_path, exist_ok=True)
         
         self.required_columns = [
@@ -34,7 +34,7 @@ class DatasetLoader:
             
             # 确保目标目录存在
             os.makedirs(local_target_folder, exist_ok=True)
-            print(f"Target directory: {local_target_folder}")  # 调试信息
+            print(f"Target directory: {local_target_folder}")  
             
             # 搜索.npy文件
             npy_files = []
@@ -45,7 +45,7 @@ class DatasetLoader:
             
             if npy_files:
                 target_file = os.path.join(local_target_folder, f'{dataset_name}.npy')
-                print(f"Copying from {npy_files[0]} to {target_file}")  # 调试信息
+                print(f"Copying from {npy_files[0]} to {target_file}")  
                 shutil.copy2(npy_files[0], target_file)
                 return True
             else:
@@ -67,6 +67,7 @@ class DatasetLoader:
             local_target_folder
         )
 
+    '''
     def load_data(self):
         """Temporary implementation that returns empty dataset"""
         print(f"Loading {self.dataset} dataset (mock data)")
@@ -75,6 +76,7 @@ class DatasetLoader:
             'labels': [],
             'metadata': {'name': self.dataset}
         }
+    '''
 
     def get_dataset_language(self):
         """
@@ -93,13 +95,11 @@ class DatasetLoader:
             'CrisisMMD': 'English',
             'CrisisNLP': 'English',
             'HumAID': 'English',
-            'ICWSM2018': 'English',
-            'ISCRAM2013': 'English',
-            'BigCrisisData': 'English',
+            'Mix_Data': 'English',
             'KBP': 'English',
             'Event2012_100': 'English',
             'Event2018_100': 'French',
-            'Arabic_100': 'Arabic'
+            'Arabic_7': 'Arabic'
         }
         
         language = dataset_language_map.get(self.dataset)
@@ -115,6 +115,30 @@ class DatasetLoader:
             str: The name of the dataset.
         """
         return self.dataset
+    
+
+
+    def get_dataset_info(self):
+        """
+        Get the info of the current dataset.
+        
+        Returns:
+            list: The info of the dataset.
+        """
+
+        df = self.load_data().sort_values(by='created_at').reset_index()
+        print(self.get_dataset_name())
+        print(self.get_dataset_language())
+        print("Columns:", df.columns.tolist())
+
+        print("First row:")
+        print(df.iloc[0].to_dict())
+        print("DataFrame shape:", df.shape)
+
+
+        
+        #return end
+
 
 class MAVEN(DatasetLoader):
     def __init__(self, dir_path=None):
@@ -122,7 +146,7 @@ class MAVEN(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -130,7 +154,7 @@ class MAVEN(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -140,6 +164,9 @@ class MAVEN(DatasetLoader):
         data = np.load(file_path, allow_pickle=True)
         df = pd.DataFrame(data, columns=self.required_columns)
         print("MAVEN dataset loaded successfully.")
+
+
+
         return df
 
 class CrisisNLP(DatasetLoader):
@@ -148,7 +175,7 @@ class CrisisNLP(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -156,7 +183,7 @@ class CrisisNLP(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -174,7 +201,7 @@ class Event2012(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -182,7 +209,7 @@ class Event2012(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -192,6 +219,9 @@ class Event2012(DatasetLoader):
         data = np.load(file_path, allow_pickle=True)
         df = pd.DataFrame(data, columns=self.required_columns)
         print("Event2012 dataset loaded successfully.")
+
+
+
         return df
 
 class Event2018(DatasetLoader):
@@ -200,7 +230,7 @@ class Event2018(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -208,7 +238,7 @@ class Event2018(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -226,7 +256,7 @@ class ArabicTwitter(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -234,7 +264,7 @@ class ArabicTwitter(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -252,7 +282,7 @@ class CrisisLexT26(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -260,7 +290,7 @@ class CrisisLexT26(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -278,7 +308,7 @@ class CrisisMMD(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -286,7 +316,7 @@ class CrisisMMD(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -304,7 +334,7 @@ class HumAID(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -312,7 +342,7 @@ class HumAID(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -330,7 +360,7 @@ class KBP(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -338,7 +368,7 @@ class KBP(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -350,13 +380,13 @@ class KBP(DatasetLoader):
         print("KBP dataset loaded successfully.")
         return df
 
-class Arabic_100(DatasetLoader):
+class Arabic_7(DatasetLoader):
     def __init__(self, dir_path=None):
-        super().__init__(dataset='Arabic_100', dir_path=dir_path)
+        super().__init__(dataset='Arabic_7', dir_path=dir_path)
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -364,7 +394,7 @@ class Arabic_100(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -373,7 +403,7 @@ class Arabic_100(DatasetLoader):
         
         data = np.load(file_path, allow_pickle=True)
         df = pd.DataFrame(data, columns=self.required_columns)
-        print("Arabic_100 dataset loaded successfully.")
+        print("Arabic_7 dataset loaded successfully.")
         return df
 
 class Event2012_100(DatasetLoader):
@@ -382,7 +412,7 @@ class Event2012_100(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -390,7 +420,7 @@ class Event2012_100(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -408,7 +438,7 @@ class Event2018_100(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -416,7 +446,7 @@ class Event2018_100(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -434,7 +464,7 @@ class Mix_Data(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -442,7 +472,7 @@ class Mix_Data(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -460,7 +490,7 @@ class CrisisLexT6(DatasetLoader):
     
     def load_data(self):
         dataset_path = os.path.join(self.default_root_path, self.dataset)
-        print(f"Dataset path: {dataset_path}")  # 调试信息
+        print(f"Dataset path: {dataset_path}")  
         
         if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
             print(f"Directory {dataset_path} does not exist or is empty, downloading...")
@@ -468,7 +498,7 @@ class CrisisLexT6(DatasetLoader):
                 raise RuntimeError("Failed to download dataset")
         
         file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
-        print(f"Loading file from: {file_path}")  # 调试信息
+        print(f"Loading file from: {file_path}")  
         
         if not os.path.exists(file_path):
             print(f"File not found at: {file_path}")
@@ -480,7 +510,31 @@ class CrisisLexT6(DatasetLoader):
         print("CrisisLexT6 dataset loaded successfully.")
         return df
 
-
+class CrisisLexT7(DatasetLoader):
+    def __init__(self, dir_path=None):
+        super().__init__(dataset='CrisisLexT7', dir_path=dir_path)
+    
+    def load_data(self):
+        dataset_path = os.path.join(self.default_root_path, self.dataset)
+        print(f"Dataset path: {dataset_path}")  
+        
+        if not os.path.exists(dataset_path) or not os.listdir(dataset_path):
+            print(f"Directory {dataset_path} does not exist or is empty, downloading...")
+            if not self.download():
+                raise RuntimeError("Failed to download dataset")
+        
+        file_path = os.path.join(dataset_path, f'{self.dataset}.npy')
+        print(f"Loading file from: {file_path}")  
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at: {file_path}")
+            print(f"Directory contents: {os.listdir(dataset_path) if os.path.exists(dataset_path) else 'Directory does not exist'}")
+            raise FileNotFoundError(f"Data file not found at {file_path}")
+        
+        data = np.load(file_path, allow_pickle=True)
+        df = pd.DataFrame(data, columns=self.required_columns)
+        print("CrisisLexT7 dataset loaded successfully.")
+        return df
 
 
 
