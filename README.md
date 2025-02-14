@@ -7,7 +7,6 @@
 [![GitHub forks](https://img.shields.io/github/forks/RingBDStack/SocialED?style=flat)](https://github.com/RingBDStack/SocialED/network)
 [![PyPI downloads](https://static.pepy.tech/personalized-badge/SocialED?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/SocialED)
 [![Testing](https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml/badge.svg)](https://github.com/ChenBeici/SocialED/actions/workflows/pytest.yml)
-[![Coverage Status](https://coveralls.io/repos/github/ChenBeici/SocialED/badge.svg?branch=main)](https://coveralls.io/github/ChenBeici/SocialED?branch=main)
 [![License](https://img.shields.io/github/license/RingBDStack/SocialED.svg)](https://github.com/RingBDStack/SocialED/blob/master/LICENSE)
 [![CodeQL](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml/badge.svg)](https://github.com/RingBDStack/SocialED/actions/workflows/codeql.yml)
 [![arXiv](https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2412.13472)
@@ -191,27 +190,6 @@ SocialED implements the following algorithms:
 ### 📊 Supported Datasets
 
 Below is a summary of all datasets supported by SocialED:
-
-|    Dataset    |       Language        |       Events        |       Texts        |    Long tail    |
-| :-----------: | :---------------: | :------------------: | :------------------: | :---------------: |
-| Event2012 | English | 503 | 68,841 | No |
-| Event2018 | French | 257 | 64,516 | No |
-| Arabic_Twitter | Arabic | 7 | 9,070 | No |
-| MAVEN | English | 164 | 10,242 | No |
-| CrisisLexT26 | English | 26 | 27,933 | No |
-| CrisisLexT6 | English | 6 | 60,082 | No |
-| CrisisMMD | English | 7 | 18,082 | No |
-| CrisisNLP | English | 11 | 25,976 | No |
-| HumAID | English | 19 | 76,484 | No |
-| Mix_Data | English | 5 | 78,489 | No |
-| KBP | English | 100 | 85,569 | No |
-| Event2012_100 | English | 100 | 15,019 | Yes |
-| Event2018_100 | French | 100 | 19,944 | Yes |
-| Arabic_7 | Arabic | 7 | 3,022 | Yes |
-
-### Supported Datasets
-
-
 
 -   **Event2012**: A comprehensive dataset containing 68,841 annotated English tweets spanning 503 distinct event categories. The data was collected over a continuous 29-day period, providing rich temporal context for event analysis.
 
