@@ -24,6 +24,49 @@ from dataset.dataloader import DatasetLoader
 
 
 class BiLSTM:
+    r"""The BiLSTM model for social event detection that uses bidirectional LSTM 
+    to detect events in social media data.
+
+    .. note::
+        This detector uses bidirectional LSTM to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    lr : float, optional
+        Learning rate for optimizer. Default: ``1e-3``.
+    batch_size : int, optional
+        Batch size for training. Default: ``1000``.
+    dropout_keep_prob : float, optional
+        Dropout keep probability. Default: ``0.8``.
+    embedding_size : int, optional
+        Size of word embeddings. Default: ``300``.
+    max_size : int, optional
+        Maximum vocabulary size. Default: ``5000``.
+    seed : int, optional
+        Random seed for reproducibility. Default: ``1``.
+    num_hidden_nodes : int, optional
+        Number of LSTM hidden nodes. Default: ``32``.
+    hidden_dim2 : int, optional
+        Size of second hidden layer. Default: ``64``.
+    num_layers : int, optional
+        Number of LSTM layers. Default: ``1``.
+    bi_directional : bool, optional
+        Whether to use bidirectional LSTM. Default: ``True``.
+    pad_index : int, optional
+        Index used for padding. Default: ``0``.
+    num_epochs : int, optional
+        Number of training epochs. Default: ``20``.
+    margin : int, optional
+        Margin for triplet loss. Default: ``3``.
+    max_len : int, optional
+        Maximum sequence length. Default: ``10``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/Bilstm/'``.
+    """
     def __init__(self, dataset,
                  lr=1e-3,
                  batch_size=1000,
@@ -40,7 +83,7 @@ class BiLSTM:
                  margin=3,
                  max_len=10,
                  file_path='../model/model_saved/Bilstm/'):
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.lr = lr
         self.batch_size = batch_size
         self.dropout_keep_prob = dropout_keep_prob
@@ -103,7 +146,6 @@ class BiLSTM:
         self.word2idx = np.load(self.file_path + 'word2idx.npy', allow_pickle='TRUE').item()
         logging.info('word2idx map loaded.')
 
-        # Convert tokenized tweets to indices
         df["wordsidx"] = df.words.apply(
             lambda tweet: [self.word2idx.get(w.lower(), self.word2idx['_UNK']) for w in tweet])
         logging.info('Tokenized tweets in the df to word indices.')
@@ -151,7 +193,6 @@ class BiLSTM:
 
         # Load pre-trained word2vec model
         start = time()
-        # nlp = en_core_web_lg.load()
         nlp = spacy.load("en_core_web_lg")
         logging.info('Word2vec model took {:.2f} mins to load.'.format((time() - start) / 60))
 
@@ -519,16 +560,3 @@ def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTri
                                                                                              negative_selection_fn=random_hard_negative,
                                                                                              cpu=cpu)
 
-
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-
-    bilstm = BiLSTM(dataset)
-
-    bilstm.preprocess()
-
-    bilstm.fit()
-    ground_truths, predictions = bilstm.detection()
-
-    bilstm.evaluate(ground_truths, predictions)

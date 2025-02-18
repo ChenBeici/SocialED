@@ -44,7 +44,7 @@ WMD
 Bert
 -----------------------------
 
-.. automodule:: SocialED.detector.bertmodel
+.. automodule:: SocialED.detector.bert
    :members:
    :undoc-members:
    :show-inheritance:

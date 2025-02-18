@@ -12,15 +12,46 @@ from dataset.dataloader import DatasetLoader
 # Setup logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+
 class BERT:
+    r"""The BERT model for social event detection that uses BERT embeddings to 
+    detect events in social media data.
+
+    .. note::
+        This detector uses BERT embeddings to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    model_name : str, optional
+        Path to pretrained BERT model or name from HuggingFace.
+        If path doesn't exist, defaults to 'bert-base-uncased'.
+        Default: ``'../model/model_needed/bert-base-uncased'``.
+    max_length : int, optional
+        Maximum sequence length for BERT tokenizer.
+        Longer sequences will be truncated.
+        Default: ``128``.
+    df : pandas.DataFrame, optional
+        Preprocessed dataframe. If None, will be created during preprocessing.
+        Default: ``None``.
+    train_df : pandas.DataFrame, optional
+        Training data split. If None, will be created during model fitting.
+        Default: ``None``.
+    test_df : pandas.DataFrame, optional
+        Test data split. If None, will be created during model fitting.
+        Default: ``None``.
+    """
     def __init__(self,
                  dataset,
                  model_name='../model/model_needed/bert-base-uncased',
                  max_length=128,
                  df=None,
                  train_df=None,
-                 test_df=None, ):
-        self.dataset = dataset
+                 test_df=None ):
+        self.dataset = dataset.load_data()
         if os.path.exists(model_name):
             self.model_name = model_name
         else:
@@ -56,6 +87,9 @@ class BERT:
         last_hidden_states = outputs.last_hidden_state
         mean_embedding = torch.mean(last_hidden_states, dim=1).squeeze().cpu().numpy()
         return mean_embedding
+        
+    def fit(self):
+        pass
 
     def detection(self):
         """
@@ -103,18 +137,6 @@ class BERT:
         print(f"Normalized Mutual Information (NMI): {nmi}")
 
         return ari, ami, nmi
-
-
-# Main function
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    bert = BERT(dataset)
-
-    bert.preprocess()
-
-    ground_truths, predictions = bert.detection()   
-    bert.evaluate(ground_truths, predictions)
 
 
 

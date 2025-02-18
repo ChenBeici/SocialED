@@ -7,10 +7,8 @@ import torch
 from scipy import sparse
 from torch.utils.data import Dataset
 import pandas as pd
-import en_core_web_lg
 from datetime import datetime
 import spacy
-import fr_core_news_lg
 import networkx as nx
 import dgl
 from dgl.data.utils import save_graphs, load_graphs
@@ -25,132 +23,206 @@ from itertools import combinations
 import re
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import DatasetLoader
+from dataset.dataloader import Event2012,Arabic_Twitter,Event2018
 
-class args_define:
-    def __init__(self, **kwargs):
-        # Default arguments
-        defaults = {
-            'finetune_epochs': 1,
-            'n_epochs': 5, 
-            'oldnum': 20,
-            'novelnum': 20,
-            'n_infer_epochs': 0,
-            'window_size': 3,
-            'patience': 5,
-            'margin': 3.0,
-            'a': 8.0,
-            'lr': 1e-3,
-            'batch_size': 1000,
-            'n_neighbors': 1200,
-            'word_embedding_dim': 300,
-            'hidden_dim': 16,
-            'out_dim': 64,
-            'num_heads': 4,
-            'use_residual': True,
-            'validation_percent': 0.1,
-            'test_percent': 0.2,
-            'use_hardest_neg': True,
-            'metrics': 'nmi',
-            'use_cuda': True,
-            'add_ort': True,
-            'gpuid': 0,
-            'mask_path': None,
-            'log_interval': 10,
-            'is_incremental': True,
-            'data_path': '../model/model_saved/qsgnn/English',
-            'file_path': '../model/model_saved/qsgnn',
-            'add_pair': True,
-            'initial_lang': 'English',
-            'is_static': False,
-            'graph_lang': 'English',
-            'days': 2
-        }
 
-        # Update defaults with any provided kwargs
-        defaults.update(kwargs)
 
-        # Set all attributes
-        for key, value in defaults.items():
-            setattr(self, key, value)
-
-        # Store namespace
-        self.args = argparse.Namespace(**defaults)
-
-class Arabic_preprocessor:
-    def __init__(self, tokenizer, **cfg):
-        self.tokenizer = tokenizer
-
-    def clean_text(self, text):
-        search = ["أ", "إ", "آ", "ة", "_", "-", "/", ".", "،", " و ", " يا ", '"', "ـ", "'", "ى", "\\", '\n', '\t',
-                  '&quot;', '?', '؟', '!']
-        replace = ["ا", "ا", "ا", "ه", " ", " ", "", "", "", " و", " يا", "", "", "", "ي", "", ' ', ' ', ' ', ' ? ',
-                   ' ؟ ', ' ! ']
-
-        # remove tashkeel
-        p_tashkeel = re.compile(r'[\u0617-\u061A\u064B-\u0652]')
-        text = re.sub(p_tashkeel, "", text)
-
-        # remove longation
-        p_longation = re.compile(r'(.)\1+')
-        subst = r"\1\1"
-        text = re.sub(p_longation, subst, text)
-
-        text = text.replace('وو', 'و')
-        text = text.replace('يي', 'ي')
-        text = text.replace('اا', 'ا')
-
-        for i in range(len(search)):
-            text = text.replace(search[i], replace[i])
-
-        # trim    
-        text = text.strip()
-
-        return text
-
-    def __call__(self, text):
-        preprocessed = self.clean_text(text)
-        return self.tokenizer(preprocessed)
 
 
 class QSGNN:
-    def __init__(self, args, dataset):
-        self.args = args
-        self.dataset = dataset
-        self.use_cuda = args.use_cuda
+    r"""The QSGNN model for social event detection that uses a query-based streaming graph neural network
+    for event detection.
+
+    .. note::
+        This detector uses graph neural networks with query-based streaming to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    finetune_epochs : int, optional
+        Number of fine-tuning epochs. Default: ``1``.
+    n_epochs : int, optional
+        Number of training epochs. Default: ``5``.
+    oldnum : int, optional
+        Number of old classes. Default: ``20``.
+    novelnum : int, optional
+        Number of novel classes. Default: ``20``.
+    n_infer_epochs : int, optional
+        Number of inference epochs. Default: ``0``.
+    window_size : int, optional
+        Size of sliding window. Default: ``3``.
+    patience : int, optional
+        Early stopping patience. Default: ``5``.
+    margin : float, optional
+        Margin for triplet loss. Default: ``3.0``.
+    a : float, optional
+        Scaling factor. Default: ``8.0``.
+    lr : float, optional
+        Learning rate for optimizer. Default: ``1e-3``.
+    batch_size : int, optional
+        Batch size for training. Default: ``1000``.
+    n_neighbors : int, optional
+        Number of neighbors to sample. Default: ``1200``.
+    word_embedding_dim : int, optional
+        Word embedding dimension. Default: ``300``.
+    hidden_dim : int, optional
+        Hidden layer dimension. Default: ``16``.
+    out_dim : int, optional
+        Output dimension. Default: ``64``.
+    num_heads : int, optional
+        Number of attention heads. Default: ``4``.
+    use_residual : bool, optional
+        Whether to use residual connections. Default: ``True``.
+    validation_percent : float, optional
+        Percentage of data for validation. Default: ``0.1``.
+    test_percent : float, optional
+        Percentage of data for testing. Default: ``0.2``.
+    use_hardest_neg : bool, optional
+        Whether to use hardest negative mining. Default: ``True``.
+    metrics : str, optional
+        Evaluation metric to use. Default: ``'nmi'``.
+    use_cuda : bool, optional
+        Whether to use GPU acceleration. Default: ``True``.
+    add_ort : bool, optional
+        Whether to add orthogonal regularization. Default: ``True``.
+    gpuid : int, optional
+        GPU device ID to use. Default: ``0``.
+    mask_path : str, optional
+        Path to mask file. Default: ``None``.
+    log_interval : int, optional
+        Number of steps between logging. Default: ``10``.
+    is_incremental : bool, optional
+        Whether to use incremental learning. Default: ``True``.
+    data_path : str, optional
+        Path to save model data. Default: ``'../model/model_saved/qsgnn/English'``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/qsgnn'``.
+    add_pair : bool, optional
+        Whether to add pair-wise constraints. Default: ``False``.
+    initial_lang : str, optional
+        Initial language for processing. Default: ``'English'``.
+    is_static : bool, optional
+        Whether to use static graph. Default: ``False``.
+    graph_lang : str, optional
+        Language for graph construction. Default: ``'English'``.
+    days : int, optional
+        Number of days for temporal window. Default: ``2``.
+    """
+    
+    def __init__(
+        self,
+        dataset,
+        finetune_epochs=1,
+        n_epochs=5,
+        oldnum=20,
+        novelnum=20,
+        n_infer_epochs=0,
+        window_size=3,
+        patience=5,
+        margin=3.0,
+        a=8.0,
+        lr=1e-3,
+        batch_size=1000,
+        n_neighbors=1200,
+        word_embedding_dim=300,
+        hidden_dim=16,
+        out_dim=64,
+        num_heads=4,
+        use_residual=True,
+        validation_percent=0.1,
+        test_percent=0.2,
+        use_hardest_neg=True,
+        metrics='nmi',
+        use_cuda=True,
+        add_ort=True,
+        gpuid=0,
+        mask_path=None,
+        log_interval=10,
+        is_incremental=True,
+        data_path='../model/model_saved/qsgnn/English',
+        file_path='../model/model_saved/qsgnn',
+        add_pair=False,
+        initial_lang='English',
+        is_static=False,
+        graph_lang='English',
+        days=2
+    ):
+        # 将参数赋值给 self
+        self.finetune_epochs = finetune_epochs
+        self.n_epochs = n_epochs
+        self.oldnum = oldnum
+        self.novelnum = novelnum
+        self.n_infer_epochs = n_infer_epochs
+        self.window_size = window_size
+        self.patience = patience
+        self.margin = margin
+        self.a = a
+        self.lr = lr
+        self.batch_size = batch_size
+        self.n_neighbors = n_neighbors
+        self.word_embedding_dim = word_embedding_dim
+        self.hidden_dim = hidden_dim
+        self.out_dim = out_dim
+        self.num_heads = num_heads
+        self.use_residual = use_residual
+        self.validation_percent = validation_percent
+        self.test_percent = test_percent
+        self.use_hardest_neg = use_hardest_neg
+        self.metrics = metrics
+        self.use_cuda = use_cuda
+        self.add_ort = add_ort
+        self.gpuid = gpuid
+        self.mask_path = mask_path
+        self.log_interval = log_interval
+        self.is_incremental = is_incremental
+        self.data_path = data_path
+        self.file_path = file_path
+        self.add_pair = add_pair
+        self.initial_lang = initial_lang
+        self.is_static = is_static
+        self.graph_lang = graph_lang
+        self.days = days
+        
+        self.dataset = dataset.load_data()
         if self.use_cuda:
-            torch.cuda.set_device(args.gpuid)
+            torch.cuda.set_device(self.gpuid)
 
         self.data_split = None
+        
 
     def preprocess(self):
-        preprocessor = Preprocessor(self.args)
-        preprocessor.generate_initial_features()
+        args=self
+        preprocessor = Preprocessor(self.dataset)
+        preprocessor.generate_initial_features(self.dataset)
         preprocessor.construct_graph()
 
-        self.embedding_save_path = self.args.data_path + '/embeddings'
+        self.embedding_save_path = self.data_path + '/embeddings'
         os.makedirs(self.embedding_save_path, exist_ok=True)
-        with open(self.embedding_save_path + '/args.txt', 'w') as f:
-            json.dump(self.args.__dict__, f, indent=2)
-        self.data_split = np.load(self.args.data_path + '/data_split.npy')
+        # with open(self.embedding_save_path + '/args.txt', 'w') as f:
+        #     json.dump(self.__dict__, f, indent=2)
+        self.data_split = np.load(self.data_path + '/data_split.npy')
 
     def fit(self):
-        if self.args.use_hardest_neg:
-            loss_fn = OnlineTripletLoss(self.args.margin, HardestNegativeTripletSelector(self.args.margin))
+        args=self
+        if self.use_hardest_neg:
+            loss_fn = OnlineTripletLoss(self.margin, HardestNegativeTripletSelector(self.margin))
         else:
-            loss_fn = OnlineTripletLoss(self.args.margin, RandomNegativeTripletSelector(self.args.margin))
+            loss_fn = OnlineTripletLoss(self.margin, RandomNegativeTripletSelector(self.margin))
         metrics = [AverageNonzeroTripletsMetric()]
 
-        if self.args.add_pair:
-            self.model = GAT(302, self.args.hidden_dim, self.args.out_dim, self.args.num_heads, self.args.use_residual)
+        if self.add_pair:
+            self.model = GAT(302, self.hidden_dim, self.out_dim, self.num_heads, self.use_residual)
             best_model_path = self.embedding_save_path + '/block_0/models/best.pt'
             label_center_emb = torch.load(self.embedding_save_path + '/block_0/models/center.pth')
             self.model.load_state_dict(torch.load(best_model_path))
 
-            if self.args.use_cuda:
+            if self.use_cuda:
                 self.model.cuda()
 
-            if self.args.is_incremental:
+            if self.is_incremental:
                 kmeans_scores = []
                 for i in range(1, self.data_split.shape[0]):
                     print("incremental setting")
@@ -160,16 +232,16 @@ class QSGNN:
                     kmeans_scores.append(score)
                     print("KMeans:")
                     print_scores(kmeans_scores)
-                print(self.args.finetune_epochs, self.args.oldnum, self.args.novelnum, self.args.a,
-                      self.args.batch_size, end="\n\n")
+                print(self.finetune_epochs, self.oldnum, self.novelnum, self.a,
+                      self.batch_size, end="\n\n")
         else:
-            self.model = initial_train(0, self.args, self.data_split, metrics, self.embedding_save_path, loss_fn, None)
+            self.model = initial_train(0, self, self.data_split, metrics, self.embedding_save_path, loss_fn, None)
         print("fit:", type(self.model))
 
         torch.save(self.model.state_dict(), self.embedding_save_path + '/final_model.pth')
 
     def detection(self):
-        data = SocialDataset(self.args.data_path, 0)
+        data = SocialDataset(self.data_path, 0)
         features = torch.FloatTensor(data.features)
         labels = torch.LongTensor(data.labels)
         in_feats = features.shape[1]  # feature dimension
@@ -180,16 +252,16 @@ class QSGNN:
 
         predictions = []
         ground_truths = []
-        self.detection_path = self.args.file_path + '/detection_split/'
+        self.detection_path = self.file_path + '/detection_split/'
         os.makedirs(self.detection_path, exist_ok=True)
 
-        self.model = GAT(in_feats, self.args.hidden_dim, self.args.out_dim, self.args.num_heads, self.args.use_residual)
+        self.model = GAT(in_feats, self.hidden_dim, self.out_dim, self.num_heads, self.use_residual)
         best_model_path = self.embedding_save_path + '/block_0/models/best.pt'
         self.model.load_state_dict(torch.load(best_model_path))
 
         train_indices, validation_indices, test_indices = generateMasks(len(labels), self.data_split, 0,
-                                                                        self.args.validation_percent,
-                                                                        self.args.test_percent,
+                                                                        self.validation_percent,
+                                                                        self.test_percent,
                                                                         self.detection_path)
 
         device = torch.device("cuda:{}".format(args.gpuid) if args.use_cuda else "cpu")
@@ -206,12 +278,12 @@ class QSGNN:
 
         '''
         print("detection:", type(self.model))
-        self.model = GAT(302, self.args.hidden_dim, self.args.out_dim, self.args.num_heads, self.args.use_residual)
+        self.model = GAT(302, self.hidden_dim, self.out_dim, self.num_heads, self.use_residual)
         self.model.load_state_dict(torch.load(self.embedding_save_path + '/final_model.pth'))
         print("detection2:", type(self.model))
         '''
 
-        extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), self.args)
+        extract_features, extract_labels = extract_embeddings(g, self.model, len(labels), self)
 
         test_indices = torch.load(self.detection_path + '/test_indices.pt')
 
@@ -246,24 +318,17 @@ class QSGNN:
         return ars, ami, nmi
 
 
-class Preprocessor:
-    def __init__(self, args):
-        pass
+class Preprocessor(QSGNN):
+    def __init__(self,dataser):
+        super().__init__(dataset=dataset)
 
-    def generate_initial_features(self):
+    def generate_initial_features(self,dataset):
+        args=self
         save_path = args.file_path + '/features/'
         os.makedirs(save_path, exist_ok=True)
 
-        # load data
-        if args.initial_lang == "French":
-            df = DatasetLoader('maven').load_data()
-        if args.initial_lang == "Arabic":
-            df = DatasetLoader('arabic_twitter').load_data()
-        elif args.initial_lang == "English":
-            df = DatasetLoader('maven').load_data()
-        else:
-            raise NotImplementedError("not contain that language")
-
+        df = dataset
+        print(type(df))
         print("Loaded {} data  shape {}".format(args.initial_lang, df.shape))
         print(df.head(10))
 
@@ -304,8 +369,9 @@ class Preprocessor:
         return t_features
 
     def construct_graph(self):
+        args=self
         if args.is_static:
-            save_path = ".../model/model_saved/qsgnn/hash_static-{}-{}/".format(str(args.days), args.graph_lang)
+            save_path = "../model/model_saved/qsgnn/hash_static-{}-{}/".format(str(args.days), args.graph_lang)
         else:
             save_path = "../model/model_saved/qsgnn/{}/".format(args.graph_lang)
 
@@ -313,9 +379,9 @@ class Preprocessor:
             os.mkdir(save_path)
 
         if args.graph_lang == "French":
-             df = DatasetLoader('maven').load_data()
-        if args.graph_lang == "Arabic":
-            df = DatasetLoader('arabic_twitter').load_data()
+             df = Event2018().load_data()
+        elif args.graph_lang == "Arabic":
+            df = Arabic_Twitter().load_data()
             name2id = {}
             for id, name in enumerate(df['event_id'].unique()):
                 name2id[name] = id
@@ -324,11 +390,12 @@ class Preprocessor:
             df.drop_duplicates(['tweet_id'], inplace=True, keep='first')
 
         elif args.graph_lang == "English":
-            df = DatasetLoader('maven').load_data()
+            df = Event2012().load_data()
 
         print("{} Data converted to dataframe.".format(args.graph_lang))
         df = df.sort_values(by='created_at').reset_index()
 
+        df['created_at'] = pd.to_datetime(df['created_at'])
         df['date'] = [d.date() for d in df['created_at']]
 
         f = np.load(args.file_path + '/features/features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}.npy'.format(
@@ -706,6 +773,41 @@ class SocialDataset(Dataset):
             self.matrix = self.matrix[indices_to_keep, :]
             self.matrix = self.matrix[:, indices_to_keep]
 
+
+class Arabic_preprocessor:
+    def __init__(self, tokenizer, **cfg):
+        self.tokenizer = tokenizer
+
+    def clean_text(self, text):
+        search = ["أ", "إ", "آ", "ة", "_", "-", "/", ".", "،", " و ", " يا ", '"', "ـ", "'", "ى", "\\", '\n', '\t',
+                  '&quot;', '?', '؟', '!']
+        replace = ["ا", "ا", "ا", "ه", " ", " ", "", "", "", " و", " يا", "", "", "", "ي", "", ' ', ' ', ' ', ' ? ',
+                   ' ؟ ', ' ! ']
+
+        # remove tashkeel
+        p_tashkeel = re.compile(r'[\u0617-\u061A\u064B-\u0652]')
+        text = re.sub(p_tashkeel, "", text)
+
+        # remove longation
+        p_longation = re.compile(r'(.)\1+')
+        subst = r"\1\1"
+        text = re.sub(p_longation, subst, text)
+
+        text = text.replace('وو', 'و')
+        text = text.replace('يي', 'ي')
+        text = text.replace('اا', 'ا')
+
+        for i in range(len(search)):
+            text = text.replace(search[i], replace[i])
+
+        # trim    
+        text = text.strip()
+
+        return text
+
+    def __call__(self, text):
+        preprocessed = self.clean_text(text)
+        return self.tokenizer(preprocessed)
 
 class EDNN(nn.Module):
     def __init__(self, in_dim, hidden_dim, out_dim, use_dropout=False):
@@ -1151,8 +1253,7 @@ def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, mo
 
             print(f"Epoch {epoch + 1}/{args.n_epochs}, Batch {batch_id + 1} - Forward pass done.")
 
-            # loss_outputs = loss_fn(pred, batch_labels)
-            # loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
+            # 计算到中心点的距离
             dis = torch.empty([0, 1]).cuda()
             for l in set(batch_labels.cpu().data.numpy()):
                 label_indices = torch.where(batch_labels == l)
@@ -1184,6 +1285,10 @@ def initial_train(i, args, data_split, metrics, embedding_save_path, loss_fn, mo
                     pair_loss = (pair_matrix - pair_out).pow(2).mean()
                     print("pair loss:", loss, "pair orthogonal loss:  ", 100 * pair_loss)
                     loss += 100 * pair_loss
+            else:
+                # 使用 triplet loss 作为默认的损失函数
+                loss_outputs = loss_fn(pred, batch_labels)
+                loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
 
             losses.append(loss.item())
             total_loss += loss.item()
@@ -1532,16 +1637,6 @@ def print_scores(scores):
         print("".join(line))
     print('\n', flush=True)
 
-    # line = [' ' * 3]+ [f'   M{i:02d}' for i in range(1, len(scores)+1)]
-    # print("".join(line))
-    #
-    # score_names = ['NMI', 'AMI', 'ARI']
-    # for n in score_names:
-    #     line = [f'{n:3}'] + [f'  {s[n]:4.2f}' for s in scores]
-    #     print("".join(line))
-    # print('\n', flush=True)
-
-
 def random_hard_negative(loss_values):
     hard_negatives = np.where(loss_values > 0)[0]
     return np.random.choice(hard_negatives) if len(hard_negatives) > 0 else None
@@ -1753,13 +1848,3 @@ class AverageNonzeroTripletsMetric(Metric):
         return 'Average nonzero triplets'
 
 
-if __name__ == '__main__':
-    from dataset.dataloader import Event2012
-    dataset = Event2012()
-    args = args_define().args
-    qsgnn = QSGNN(args, dataset)
-    qsgnn.preprocess()
-
-    qsgnn.fit()
-    predictions, ground_truths = qsgnn.detection()
-    result = qsgnn.evaluate(predictions, ground_truths)

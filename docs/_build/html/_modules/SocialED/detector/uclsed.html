@@ -5,13 +5,9 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <link rel="shortcut icon" href="../../../_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.detector.uclsed - SocialED documentation</title>
+        <title>SocialED.detector.uclsed - SocialED 1.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=613ab9ff" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -169,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SocialED  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +189,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">SocialED  documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -207,10 +203,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataset.html">SocialED.Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.detector.html">SocialED.Detector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.metrics.html">SocialED.Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.utils.html">SocialED.Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.utils.html">SocialED.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.loss.html">SocialED.loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataprocess.html">SocialED.dataprocess</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -263,8 +261,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
 <span class="kn">import</span> <span class="nn">spacy</span>
-<span class="kn">import</span> <span class="nn">en_core_web_lg</span>
-<span class="kn">import</span> <span class="nn">fr_core_news_lg</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">accuracy_score</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -275,76 +271,72 @@
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
 <span class="kn">from</span> <span class="nn">dataset.dataloader</span> <span class="kn">import</span> <span class="n">DatasetLoader</span>
 
-<span class="kn">import</span> <span class="nn">argparse</span>
-
-
-<div class="viewcode-block" id="args_define"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.args_define">[docs]</a><span class="k">class</span> <span class="nc">args_define</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Paths</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_path&#39;</span><span class="p">,</span> <span class="s1">&#39;../model/model_saved/uclsed/&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;save_path&#39;</span><span class="p">,</span> <span class="s1">&#39;../model/model_saved/uclsed/Eng_CrisisLexT26/evi1020191139&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Language</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lang&#39;</span><span class="p">,</span> <span class="s1">&#39;French&#39;</span><span class="p">)</span>
-        <span class="c1">#self.lang = kwargs.get(&#39;lang&#39;, &#39;English&#39;)</span>
-
-        <span class="c1"># Epoch</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="c1">#self.epoch = kwargs.get(&#39;epoch&#39;, 1)</span>
-        <span class="c1"># Batch size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
-
-        <span class="c1"># Neighbours number</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">neighbours_num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;neighbours_num&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-
-        <span class="c1"># GNN dimensions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">GNN_h_dim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GNN_h_dim&#39;</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">GNN_out_dim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GNN_out_dim&#39;</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
-
-        <span class="c1"># E_h_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">E_h_dim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;E_h_dim&#39;</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-
-        <span class="c1"># Use uncertainty</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_uncertainty</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_uncertainty&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
-        <span class="c1"># Use CUDA</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_cuda&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        
-        <span class="c1"># GPU ID</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gpuid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gpuid&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Mode</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Uncertainty type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">digamma</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;digamma&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># Store all arguments in a single attribute</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
-            <span class="s1">&#39;file_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span>
-            <span class="s1">&#39;save_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
-            <span class="s1">&#39;lang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">,</span>
-            <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span>
-            <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-            <span class="s1">&#39;neighbours_num&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours_num</span><span class="p">,</span>
-            <span class="s1">&#39;GNN_h_dim&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">GNN_h_dim</span><span class="p">,</span>
-            <span class="s1">&#39;GNN_out_dim&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">GNN_out_dim</span><span class="p">,</span>
-            <span class="s1">&#39;E_h_dim&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">E_h_dim</span><span class="p">,</span>
-            <span class="s1">&#39;use_uncertainty&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_uncertainty</span><span class="p">,</span>
-            <span class="s1">&#39;use_cuda&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">,</span>
-            <span class="s1">&#39;gpuid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpuid</span><span class="p">,</span>
-            <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
-            <span class="s1">&#39;mse&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mse</span><span class="p">,</span>
-            <span class="s1">&#39;digamma&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">digamma</span><span class="p">,</span>
-            <span class="s1">&#39;log&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span>
-        <span class="p">})</span></div>
-
-
 
 <div class="viewcode-block" id="UCLSED"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.UCLSED">[docs]</a><span class="k">class</span> <span class="nc">UCLSED</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The UCLSED model for social event detection that uses uncertainty-aware contrastive learning</span>
+<span class="sd">    for event detection.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        * dataset: The dataset object containing social media data.</span>
+<span class="sd">            The dataset should provide methods:</span>
+<span class="sd">            - load_data(): Returns the raw data</span>
+<span class="sd">            - get_dataset_language(): Returns the language of the dataset</span>
+<span class="sd">        * file_path (str, optional): Path to save model files. (default: &#39;../model/model_saved/uclsed/&#39;)</span>
+<span class="sd">        * epoch (int, optional): Number of training epochs. (default: 50)</span>
+<span class="sd">        * batch_size (int, optional): Batch size for training. (default: 128)</span>
+<span class="sd">        * neighbours_num (int, optional): Number of neighbors to sample. (default: 80)</span>
+<span class="sd">        * GNN_h_dim (int, optional): Hidden dimension of GNN. (default: 256)</span>
+<span class="sd">        * GNN_out_dim (int, optional): Output dimension of GNN. (default: 256)</span>
+<span class="sd">        * E_h_dim (int, optional): Hidden dimension of encoder. (default: 128)</span>
+<span class="sd">        * use_uncertainty (bool, optional): Whether to use uncertainty estimation. (default: True)</span>
+<span class="sd">        * use_cuda (bool, optional): Whether to use GPU acceleration. (default: True)</span>
+<span class="sd">        * gpuid (int, optional): GPU device ID to use. (default: 0)</span>
+<span class="sd">        * mode (int, optional): Training mode. (default: 0)</span>
+<span class="sd">        * mse (bool, optional): Whether to use MSE loss. (default: False)</span>
+<span class="sd">        * digamma (bool, optional): Whether to use digamma function. (default: True)</span>
+<span class="sd">        * log (bool, optional): Whether to use log transformation. (default: False)</span>
+<span class="sd">        * learning_rate (float, optional): Learning rate for optimizer. (default: 1e-4)</span>
+<span class="sd">        * weight_decay (float, optional): Weight decay for optimizer. (default: 1e-5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;../model/model_saved/uclsed/&#39;</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+        <span class="n">neighbours_num</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+        <span class="n">GNN_h_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+        <span class="n">GNN_out_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+        <span class="n">E_h_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+        <span class="n">use_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">use_cuda</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">gpuid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">mse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">digamma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+        <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-5</span>
+    <span class="p">):</span>
+        <span class="c1"># 将参数赋值给 self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbours_num</span> <span class="o">=</span> <span class="n">neighbours_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GNN_h_dim</span> <span class="o">=</span> <span class="n">GNN_h_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GNN_out_dim</span> <span class="o">=</span> <span class="n">GNN_out_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E_h_dim</span> <span class="o">=</span> <span class="n">E_h_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_uncertainty</span> <span class="o">=</span> <span class="n">use_uncertainty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span> <span class="o">=</span> <span class="n">use_cuda</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpuid</span> <span class="o">=</span> <span class="n">gpuid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mse</span> <span class="o">=</span> <span class="n">mse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digamma</span> <span class="o">=</span> <span class="n">digamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight_decay</span> <span class="o">=</span> <span class="n">weight_decay</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_indices</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val_indices</span> <span class="o">=</span> <span class="kc">None</span>
@@ -355,20 +347,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">g_dict</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_dataset_language</span><span class="p">()</span>
+        
 
 <div class="viewcode-block" id="UCLSED.preprocess"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.UCLSED.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Preprocessor</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
-        <span class="c1"># preprocessor.construct_graph(dataset)</span>
+        <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Preprocessor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">preprocessor</span><span class="o">.</span><span class="n">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UCLSED.fit"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.UCLSED.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">args</span><span class="o">=</span><span class="bp">self</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using CUDA:&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">:</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gpuid</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">g_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">get_dgl_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">file_path</span><span class="si">}{</span><span class="n">args</span><span class="o">.</span><span class="n">lang</span><span class="si">}</span><span class="s2">/&quot;</span> <span class="o">+</span> <span class="s2">&quot;masks/&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">get_dgl_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">file_path</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s2">/&quot;</span> <span class="o">+</span> <span class="s2">&quot;masks/&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_indices</span> <span class="o">=</span> <span class="n">ava_split_data</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
@@ -382,11 +378,11 @@
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_uncertainty</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;use_uncertainty&quot;</span><span class="p">)</span>
                 <span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;evi&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">file_path</span><span class="si">}{</span><span class="n">args</span><span class="o">.</span><span class="n">lang</span><span class="si">}</span><span class="s2">/&quot;</span> <span class="o">+</span> <span class="n">flag</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">file_path</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s2">/&quot;</span> <span class="o">+</span> <span class="n">flag</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
             <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">save_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;../model/model_saved/uclsed/&#39;</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_uncertainty</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">digamma</span><span class="p">:</span>
@@ -406,6 +402,7 @@
                                  <span class="n">args</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UCLSED.detection"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.UCLSED.detection">[docs]</a>    <span class="k">def</span> <span class="nf">detection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">args</span><span class="o">=</span><span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span> <span class="o">+</span> <span class="s2">&quot;val_indices.pt&quot;</span><span class="p">)</span>
         <span class="n">classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">))</span>
@@ -463,9 +460,11 @@
         <span class="k">return</span> <span class="n">val_f1</span><span class="p">,</span> <span class="n">val_acc</span></div></div>
 
 
-<div class="viewcode-block" id="Preprocessor"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor">[docs]</a><span class="k">class</span> <span class="nc">Preprocessor</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
-        <span class="k">pass</span>
+<div class="viewcode-block" id="Preprocessor"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor">[docs]</a><span class="k">class</span> <span class="nc">Preprocessor</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Preprocessor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
 
 <div class="viewcode-block" id="Preprocessor.str2list"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor.str2list">[docs]</a>    <span class="k">def</span> <span class="nf">str2list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_ele</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">str_ele</span> <span class="o">==</span> <span class="s2">&quot;[]&quot;</span><span class="p">:</span>
@@ -493,20 +492,40 @@
 
         <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">id_num</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">]:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-        <span class="n">sorted_id_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">id_num</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ori_df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">])))))</span>
+        
+        <span class="n">event_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">id_num</span><span class="p">]</span>
+        <span class="n">sorted_id_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">event_ids</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ori_df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">])))))</span>
+
         <span class="n">sorted_df</span> <span class="o">=</span> <span class="n">select_df</span>
         <span class="n">sorted_df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sorted_id_dict</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="n">sorted_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">data_value</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="p">[</span>
-            <span class="p">[</span><span class="s2">&quot;tweet_id&quot;</span><span class="p">,</span> <span class="s2">&quot;user_mentions&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;hashtags&quot;</span><span class="p">,</span> <span class="s2">&quot;entities&quot;</span><span class="p">,</span> <span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;filtered_words&quot;</span><span class="p">,</span> <span class="s2">&quot;created_at&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;event_id&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">event_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_value</span><span class="p">,</span>
-                                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tweet_id&quot;</span><span class="p">,</span> <span class="s2">&quot;mention_user&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;hashtags&quot;</span><span class="p">,</span> <span class="s2">&quot;entities&quot;</span><span class="p">,</span> <span class="s2">&quot;urls&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;filtered_words&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;event_id&quot;</span><span class="p">])</span>
-        <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;hashtags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;hashtags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;h_&quot;</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
-        <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;e_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
-        <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;mention_user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;mention_user&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;u_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        
+        <span class="c1"># 修改这部分：使用列表来选择多个列</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;tweet_id&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;event_id&#39;</span><span class="p">,</span> <span class="s1">&#39;words&#39;</span><span class="p">,</span> <span class="s1">&#39;filtered_words&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;entities&#39;</span><span class="p">,</span> <span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;urls&#39;</span><span class="p">,</span> <span class="s1">&#39;hashtags&#39;</span><span class="p">,</span> <span class="s1">&#39;user_mentions&#39;</span>
+        <span class="p">]</span>
+        
+        <span class="c1"># 检查列是否存在</span>
+        <span class="n">existing_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sorted_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">missing_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">existing_columns</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Missing columns in DataFrame: </span><span class="si">{</span><span class="n">missing_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available columns: </span><span class="si">{</span><span class="n">sorted_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">data_value</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="p">[</span><span class="n">existing_columns</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        
+        <span class="n">event_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_value</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">existing_columns</span><span class="p">)</span>
+        
+        <span class="c1"># 确保所需的列存在后再处理</span>
+        <span class="k">if</span> <span class="s1">&#39;hashtags&#39;</span> <span class="ow">in</span> <span class="n">event_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;hashtags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;hashtags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;h_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;entities&#39;</span> <span class="ow">in</span> <span class="n">event_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;e_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;user_mentions&#39;</span> <span class="ow">in</span> <span class="n">event_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;user_mentions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;user_mentions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;u_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        
         <span class="n">event_df</span> <span class="o">=</span> <span class="n">event_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">event_df</span><span class="p">[</span><span class="s1">&#39;event_id&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">]</span>
         <span class="n">event_df</span> <span class="o">=</span> <span class="n">event_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -514,12 +533,12 @@
         <span class="k">return</span> <span class="n">event_df</span></div>
 
 <div class="viewcode-block" id="Preprocessor.get_nlp"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor.get_nlp">[docs]</a>    <span class="k">def</span> <span class="nf">get_nlp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;English&quot;</span> <span class="ow">or</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;Arabic&quot;</span><span class="p">:</span>
-            <span class="c1"># nlp = en_core_web_lg.load()</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;English&quot;</span><span class="p">:</span>
             <span class="n">nlp</span> <span class="o">=</span><span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_lg&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;French&quot;</span><span class="p">:</span>
-            <span class="c1"># nlp = fr_core_news_lg.load()</span>
             <span class="n">nlp</span><span class="o">=</span><span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;fr_core_news_lg&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;Arabic&quot;</span><span class="p">:</span>
+            <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ar_core_news_lg&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nlp</span></div>
 
 <div class="viewcode-block" id="Preprocessor.construct_graph_base_eles"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor.construct_graph_base_eles">[docs]</a>    <span class="k">def</span> <span class="nf">construct_graph_base_eles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_dict</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
@@ -533,6 +552,27 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;features.npy&quot;</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;text features are saved in </span><span class="si">{}</span><span class="s2">features.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;timestamp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;created_at&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># 如果 created_at 是字符串格式，先转换为 datetime</span>
+                <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">]</span>
+                
+                <span class="c1"># 转换为 UNIX 时间戳（秒）</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span>
+                
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting created_at to timestamp: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using default timestamps...&quot;</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>  <span class="c1"># 使用序列号作为后备方案</span>
+        <span class="k">elif</span> <span class="s1">&#39;timestamp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: No timestamp or created_at column found, using sequential numbers&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+    
+        
         <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;time.npy&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time features are saved in </span><span class="si">{}</span><span class="s2">time.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
         <span class="n">df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
@@ -583,11 +623,16 @@
             <span class="n">sparse</span><span class="o">.</span><span class="n">save_npz</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;s_tweet_tweet_matrix_</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">.npz&quot;</span><span class="p">),</span> <span class="n">s_tweet_tweet_matrix</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sparse binary </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> commuting matrix is saved in </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">s_tweet_tweet_matrix_</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">.npz&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Preprocessor.construct_graph"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor.construct_graph">[docs]</a>    <span class="k">def</span> <span class="nf">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="Preprocessor.construct_graph"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.Preprocessor.construct_graph">[docs]</a>    <span class="k">def</span> <span class="nf">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
+        <span class="n">args</span><span class="o">=</span><span class="bp">self</span>
         <span class="n">event_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-        <span class="n">view_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hashtags&quot;</span><span class="p">,</span> <span class="s2">&quot;urls&quot;</span><span class="p">],</span> <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mention_user&quot;</span><span class="p">],</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]}</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">lang</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">construct_graph_base_eles</span><span class="p">(</span><span class="n">view_dict</span><span class="p">,</span> <span class="n">event_df</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">lang</span><span class="p">)</span></div></div>
+        <span class="n">view_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hashtags&quot;</span><span class="p">,</span> <span class="s2">&quot;urls&quot;</span><span class="p">],</span> 
+            <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_mentions&quot;</span><span class="p">],</span>  <span class="c1"># 修改这里：mention_user -&gt; user_mentions</span>
+            <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="n">lang</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">construct_graph_base_eles</span><span class="p">(</span><span class="n">view_dict</span><span class="p">,</span> <span class="n">event_df</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="extract_results"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.extract_results">[docs]</a><span class="k">def</span> <span class="nf">extract_results</span><span class="p">(</span><span class="n">g_dict</span><span class="p">,</span> <span class="n">views</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">train_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -680,7 +725,7 @@
         <span class="n">g_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span>
         <span class="n">g_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">times</span>
 
-    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-3</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">)</span>
     <span class="n">exp_lr_scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1282,9 +1327,9 @@
     <span class="k">return</span> <span class="n">num_isolated_nodes</span></div>
 
 
-<div class="viewcode-block" id="get_dgl_data"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.get_dgl_data">[docs]</a><span class="k">def</span> <span class="nf">get_dgl_data</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
+<div class="viewcode-block" id="get_dgl_data"><a class="viewcode-back" href="../../../SocialED.detector.html#SocialED.detector.uclsed.get_dgl_data">[docs]</a><span class="k">def</span> <span class="nf">get_dgl_data</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">views</span><span class="p">,</span><span class="n">language</span><span class="p">):</span>
     <span class="n">g_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">lang</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">file_path</span> <span class="o">+</span> <span class="n">language</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
     <span class="n">features</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;features.npy&quot;</span><span class="p">))</span>
     <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;time.npy&quot;</span><span class="p">)</span>
     <span class="n">times</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(((</span><span class="n">times</span> <span class="o">-</span> <span class="n">times</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;timedelta64[D]&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)))</span>
@@ -1340,18 +1385,6 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">train_indices</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">train_indices</span><span class="p">,</span> <span class="n">val_indices</span><span class="p">,</span> <span class="n">test_indices</span></div>
 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">args_define</span><span class="p">()</span><span class="o">.</span><span class="n">args</span>
-    <span class="n">dataset</span> <span class="o">=</span> <span class="n">DatasetLoader</span><span class="p">(</span><span class="s2">&quot;arabic_twitter&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
-
-    <span class="n">uclsed</span> <span class="o">=</span> <span class="n">UCLSED</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
-
-    <span class="n">uclsed</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
-    <span class="n">uclsed</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-
-    <span class="n">predictions</span><span class="p">,</span> <span class="n">ground_truths</span> <span class="o">=</span> <span class="n">uclsed</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>  <span class="c1"># 进行预测</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">uclsed</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">ground_truths</span><span class="p">)</span>  <span class="c1"># 评估模型</span>
 </pre></div>
         </article>
       </div>
@@ -1384,7 +1417,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e9012143"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

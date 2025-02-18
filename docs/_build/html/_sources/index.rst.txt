@@ -11,7 +11,11 @@
 ----
 
 
-|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license|
+.. raw:: html
+
+   <div style="text-align: center;">
+
+|badge_pypi| |badge_docs| |badge_stars| |badge_forks| |badge_downloads| |badge_testing| |badge_coverage| |badge_license| |badge_codeql| |badge_arxiv| 
 
 .. |badge_pypi| image:: https://img.shields.io/pypi/v/socialed.svg?color=brightgreen
    :target: https://pypi.org/project/SocialED/
@@ -52,6 +56,10 @@
 .. |badge_arxiv| image:: https://img.shields.io/badge/cs.LG-2412.13472-b31b1b?logo=arxiv&logoColor=red
    :target: https://arxiv.org/abs/2412.13472
    :alt: arXiv
+
+.. raw:: html
+
+   </div>
 
 
 -----
@@ -162,7 +170,6 @@ The library provides several utility functions including:
 
 * ``utils.tokenize_text`` and ``utils.construct_graph`` for data preprocessing
 * ``metric`` for evaluation metrics
-* ``utils.load_data`` for built-in datasets
 
 Library Robustness and Accessibility
 ------------------------------------
@@ -206,7 +213,11 @@ Accessibility and Community Support
    SocialED.dataset
    SocialED.detector
    SocialED.metrics
-   SocialED.utils
+   SocialED.utils    
+   SocialED.dataprocess
+
+
+
 
 .. toctree::
    :maxdepth: 2

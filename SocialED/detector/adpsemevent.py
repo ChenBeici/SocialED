@@ -22,7 +22,15 @@ from sklearn.model_selection import train_test_split
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-class ADPSEMEvent():
+class ADPSEMEvent:
+    """ADPSEMEvent class for event detection.
+    
+    This class implements adaptive semantic event detection.
+    
+    Args:
+        dataset: Input dataset
+        ...
+    """  # 修复缩进问题
     def __init__(self, dataset):
         self.dataset = dataset
         self.language = dataset.get_dataset_language()
@@ -553,19 +561,17 @@ def get_global_edges(attributes, epsilon, folder, default_num_neighbors, e_a = T
     return list(set(knn_edges + graph_edges))
 
 def get_subgraphs_edges(clusters, graph_splits, weighted_global_edges):
-    """
-    Get the edges of each subgraph.
+    """Get subgraph edges.
+    
+    Args:
+        clusters: a list containing the current clusters, each cluster is a list of nodes of the original graph
+        graph_splits: a list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, 
+            which will serve as the nodes of a new subgraph
+        weighted_global_edges: a list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph
 
-    :param clusters: A list containing the current clusters, each cluster is a list of nodes of the original graph.
-    :type clusters: list of list of nodes
-    :param graph_splits: A list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, which will serve as the nodes of a new subgraph.
-    :type graph_splits: list of tuples (int, int)
-    :param weighted_global_edges: A list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph.
-    :type weighted_global_edges: list of tuples (node, node, float)
-
-    :return: A list containing the edges of all subgraphs.
-    :rtype: list of lists of tuples (node, node, float)
-    """
+    Returns:
+        all_subgraphs_edges: a list containing the edges of all subgraphs
+    """  # 修复缩进和块引用问题
     all_subgraphs_edges = []
     for split in graph_splits:
         subgraph_clusters = clusters[split[0]:split[1]]
@@ -1122,13 +1128,3 @@ def decode(division):
         prediction_dict = {m: event for event, messages in enumerate(division) for m in messages}
     prediction_dict_sorted = dict(sorted(prediction_dict.items()))
     return list(prediction_dict_sorted.values())
-
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-
-    event2012 = Event2012()
-    adpsemevent = ADPSEMEvent(event2012)
-    adpsemevent.preprocess()
-    predictions, ground_truths = adpsemevent.detection()
-    adpsemevent.evaluate(predictions, ground_truths)
-

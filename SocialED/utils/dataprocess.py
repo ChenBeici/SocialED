@@ -4,7 +4,7 @@
 import numpy as np
 import torch
 import os
-import en_core_web_lg
+
 from datetime import datetime
 from collections import Counter
 import requests
@@ -141,24 +141,6 @@ def graph_statistics(G, save_path):
 
     return num_isolated_nodes
 
-
-def documents_to_features(df):
-    """
-    Convert document text to feature vectors using spaCy.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        DataFrame containing documents with 'filtered_words' column.
-
-    Returns
-    -------
-    numpy.ndarray
-        Document feature vectors stacked into a matrix.
-    """
-    nlp = en_core_web_lg.load()
-    features = df.filtered_words.apply(lambda x: nlp(' '.join(x)).vector).values
-    return np.stack(features, axis=0)
 
 def extract_time_feature(t_str):
     """

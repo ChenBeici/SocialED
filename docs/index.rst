@@ -80,7 +80,7 @@ SocialED is a comprehensive, open-source Python library designed to support soci
 Key Features
 -----------------
 
-* **Comprehensive Algorithm Collection**: Integrates 19 detection algorithms and supports 14 widely-used datasets, with continuous updates to include emerging methods
+* **Comprehensive Algorithm Collection**: Integrates 19 detection algorithms and supports 15 widely-used datasets, with continuous updates to include emerging methods
 * **Unified API Design**: Implements algorithms with a consistent interface, allowing seamless data preparation and integration across all models
 * **Modular Components**: Provides customizable components for each algorithm, enabling users to adjust models to specific needs
 * **Rich Utility Functions**: Offers tools designed to simplify the construction of social event detection workflows
@@ -110,19 +110,18 @@ SocialED plays a crucial role in various downstream applications, including:
 
 .. code-block:: python
 
-    from SocialED.dataset import MAVEN                 # Load the dataset
-    dataset = MAVEN().load_data()   # Load "arabic_twitter" dataset
-    
-    from SocialED.detector import KPGNN        # Import KPGNN model
-    args = args_define().args                  # Get training arguments
-    kpgnn = KPGNN(args, dataset)              # Initialize KPGNN model
-    
-    kpgnn.preprocess()                        # Preprocess data
-    kpgnn.fit()                               # Train the model
-    pres, trus = kpgnn.detection()            # Detect events
-    kpgnn.evaluate(pres, trus)                # Evaluate detection results
 
-
+    from SocialED.dataset import Event2012                 # Load the dataset
+    dataset = Event2012()                                  # Load "Event2012" dataset
+    
+    from SocialED.detector import KPGNN                    # Import KPGNN model
+    kpgnn = KPGNN(dataset, batch_size=200)                # Initialize KPGNN model
+    
+    kpgnn.preprocess()                                     # Preprocess data
+    kpgnn.fit()                                           # Train the model
+    pres, trus = kpgnn.detection()                        # Detect events
+    
+    kpgnn.evaluate(pres, trus)                            # Evaluate detection results
 
 ----
 
@@ -214,7 +213,6 @@ Accessibility and Community Support
    SocialED.detector
    SocialED.metrics
    SocialED.utils    
-   SocialED.loss
    SocialED.dataprocess
 
 

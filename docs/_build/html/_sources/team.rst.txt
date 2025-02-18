@@ -14,8 +14,17 @@ SocialED is a great team effort by researchers from BUAA, BIT, KUST and UIC . Ou
  - **Pu Li** (Kunming University of Science and Technology)
    Email: lip@stu.kust.edu.cn
 
- - **Hao Peng*** (Beihang University)
+ - **ZhiLin Xu** (Beihang University)
+   Email: 21377240@buaa.edu.cn
+
+ - **Kaiwei Yang** (Beihang University)
+   Email: yangkw@buaa.edu.cn
+
+ - **Hao Peng** (Beihang University) [*]
    Email: penghao@buaa.edu.cn
 
  - **Philip S. Yu** (University of Illinois at Chicago)
    Email: psyu@uic.edu
+
+
+

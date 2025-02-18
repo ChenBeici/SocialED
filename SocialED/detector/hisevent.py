@@ -16,9 +16,17 @@ from networkx.algorithms import cuts
 from sklearn.model_selection import train_test_split
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 class HISEvent():
+    """HISEvent class for event detection.
+
+    This class implements hierarchical structure-based event detection.
+    
+    Args:
+        dataset: Input dataset
+        ...
+    """
     def __init__(self, dataset):
         self.dataset = dataset
         self.language = dataset.get_dataset_language()
@@ -57,7 +65,7 @@ class Preprocessor:
             language: Language of the dataset (default 'English')
             mode: 'open' or 'close' (default 'close') - determines preprocessing mode
         """
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.language = dataset.get_dataset_language()
         self.dataset_name = dataset.get_dataset_name()
         self.mode = mode
@@ -169,7 +177,7 @@ class Preprocessor:
     def preprocess(self):
         """Main preprocessing function"""
         # Load raw data using 2012-style processing
-        df_np = self.dataset.load_data()
+        df_np = self.dataset
         
         print("Loaded data.")
         df = pd.DataFrame(data=df_np, columns=self.columns)
@@ -406,16 +414,17 @@ def get_global_edges(attributes, embeddings, default_num_neighbors, e_a=True, e_
     return list(set(knn_edges + graph_edges))
 
 def get_subgraphs_edges(clusters, graph_splits, weighted_global_edges):
-    '''
-    get the edges of each subgraph
+    """Get subgraph edges.
+    
+    Args:
+        clusters: a list containing the current clusters, each cluster is a list of nodes of the original graph
+        graph_splits: a list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, 
+            which will serve as the nodes of a new subgraph
+        weighted_global_edges: a list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph
 
-    clusters: a list containing the current clusters, each cluster is a list of nodes of the original graph
-    graph_splits: a list of (start_index, end_index) pairs, each (start_index, end_index) pair indicates a subset of clusters, 
-        which will serve as the nodes of a new subgraph
-    weighted_global_edges: a list of (start node, end node, edge weight) tuples, each tuple is an edge in the original graph
-
-    return: all_subgraphs_edges: a list containing the edges of all subgraphs
-    '''
+    Returns:
+        all_subgraphs_edges: a list containing the edges of all subgraphs
+    """
     all_subgraphs_edges = []
     for split in graph_splits:
         subgraph_clusters = clusters[split[0]:split[1]]
@@ -440,7 +449,7 @@ def hier_2D_SE_mini(weighted_global_edges, n_messages, n=100):
         all_subgraphs_edges = get_subgraphs_edges(clusters, graph_splits, weighted_global_edges)
         last_clusters = clusters
         clusters = []
-        print('111111111111111111111111111Number of subgraphs: ', len(graph_splits))
+        print('Number of subgraphs: ', len(graph_splits))
         for i, subgraph_edges in enumerate(all_subgraphs_edges):
             print('\tSubgraph ', str(i + 1))
             g = nx.Graph()
@@ -875,16 +884,4 @@ def decode(division):
         prediction_dict = {m: event for event, messages in enumerate(division) for m in messages}
     prediction_dict_sorted = dict(sorted(prediction_dict.items()))
     return list(prediction_dict_sorted.values())
-
-
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-
-    dataset = Event2012()
-    hisevent = HISEvent(dataset)
-    hisevent.preprocess()
-    predictions, ground_truths = hisevent.detection()
-    hisevent.evaluate(predictions, ground_truths)
-
-
 

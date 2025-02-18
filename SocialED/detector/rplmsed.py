@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
-import logging
-import argparse
 import gc
 import torch.optim as optim
 from ignite.contrib.handlers import ProgressBar
@@ -34,79 +32,186 @@ from dataset.dataloader import DatasetLoader
 
 
 
-logging.basicConfig(level=logging.WARN,
-                    format="%(asctime)s %(name)s %(levelname)s %(message)s",
-                    datefmt='%Y-%m-%d  %H:%M:%S %a')
+class RPLMSED:
+    r"""The RPLMSED model for social event detection that uses pre-trained language models
+    with prompt learning for event detection.
+
+    .. note::
+        This detector uses prompt learning with pre-trained language models to identify events 
+        in social media data. The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    plm_path : str, optional
+        Path to pre-trained language model. Default: ``'../model/model_needed/base_plm_model/roberta-large'``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/rplmsed/'``.
+    plm_tuning : bool, optional
+        Whether to fine-tune PLM. Default: ``False``.
+    use_ctx_att : bool, optional
+        Whether to use context attention. Default: ``False``.
+    offline : bool, optional
+        Whether to use offline mode. Default: ``True``.
+    ctx_att_head_num : int, optional
+        Number of context attention heads. Default: ``2``.
+    pmt_feats : tuple, optional
+        Prompt feature indices to use. Default: ``(0,1,2,4)``.
+    batch_size : int, optional
+        Batch size for training. Default: ``128``.
+    lmda1 : float, optional
+        Lambda 1 hyperparameter. Default: ``0.010``.
+    lmda2 : float, optional
+        Lambda 2 hyperparameter. Default: ``0.005``.
+    tao : float, optional
+        Temperature parameter. Default: ``0.90``.
+    optimizer : str, optional
+        Optimizer to use. Default: ``'Adam'``.
+    lr : float, optional
+        Learning rate. Default: ``2e-5``.
+    weight_decay : float, optional
+        Weight decay for optimizer. Default: ``1e-5``.
+    momentum : float, optional
+        Momentum for optimizer. Default: ``0.9``.
+    step_lr_gamma : float, optional
+        Learning rate decay factor. Default: ``0.98``.
+    max_epochs : int, optional
+        Maximum training epochs. Default: ``1``.
+    ckpt_path : str, optional
+        Path to save checkpoints. Default: ``'../model/model_saved/rplmsed/ckpt/'``.
+    eva_data : str, optional
+        Path to evaluation data. Default: ``'../model/model_saved/rplmsed/Eva_data/'``.
+    early_stop_patience : int, optional
+        Early stopping patience. Default: ``2``.
+    early_stop_monitor : str, optional
+        Metric to monitor for early stopping. Default: ``'loss'``.
+    SAMPLE_NUM_TWEET : int, optional
+        Number of tweets to sample. Default: ``60``.
+    WINDOW_SIZE : int, optional
+        Size of sliding window. Default: ``3``.
+    device : str, optional
+        Device to use for computation. Default: ``"cuda:0" if available else "cpu"``.
+    """
+    
+    def __init__(self, dataset,
+                 plm_path='../model/model_needed/base_plm_model/roberta-large',
+                 file_path='../model/model_saved/rplmsed/',
+                 plm_tuning=False,
+                 use_ctx_att=False,
+                 offline=True,
+                 ctx_att_head_num=2,
+                 pmt_feats=(0,1,2,4),
+                 batch_size=128,
+                 lmda1=0.010,
+                 lmda2=0.005,
+                 tao=0.90,
+                 optimizer='Adam',
+                 lr=2e-5,
+                 weight_decay=1e-5,
+                 momentum=0.9,
+                 step_lr_gamma=0.98,
+                 max_epochs=1,
+                 ckpt_path='../model/model_saved/rplmsed/ckpt/',
+                 eva_data="../model/model_saved/rplmsed/Eva_data/",
+                 early_stop_patience=2,
+                 early_stop_monitor='loss',
+                 SAMPLE_NUM_TWEET=60,
+                 WINDOW_SIZE=3,
+                 device="cuda:0" if torch.cuda.is_available() else "cpu"):
+        self.dataset = dataset
+        self.plm_path = plm_path
+        self.file_path = file_path
+        self.plm_tuning = plm_tuning
+        self.use_ctx_att = use_ctx_att
+        self.offline = offline
+        self.ctx_att_head_num = ctx_att_head_num
+        self.pmt_feats = pmt_feats
+        self.batch_size = batch_size
+        self.lmda1 = lmda1
+        self.lmda2 = lmda2
+        self.tao = tao
+        self.optimizer = optimizer
+        self.lr = lr
+        self.weight_decay = weight_decay
+        self.momentum = momentum
+        self.step_lr_gamma = step_lr_gamma
+        self.max_epochs = max_epochs
+        self.ckpt_path = ckpt_path
+        self.eva_data = eva_data
+        self.early_stop_patience = early_stop_patience
+        self.early_stop_monitor = early_stop_monitor
+        self.SAMPLE_NUM_TWEET = SAMPLE_NUM_TWEET
+        self.WINDOW_SIZE = WINDOW_SIZE
+        self.device = device
+
+    def preprocess(self):
+        preprocessor = Preprocessor(self)
+        preprocessor.preprocess_all(self.dataset)
+
+    def fit(self):
+        torch.manual_seed(2357)
+        args.model_name = os.path.basename(os.path.normpath(args.plm_path))
+        dataset_name = os.path.basename(args.dataset)
+        args.dataset_name = dataset_name.replace(".npy", "")
+
+        if 'cuda' in args.device:
+            torch.cuda.manual_seed(2357)
+
+        tokenizer = AutoTokenizer.from_pretrained(args.plm_path)
+        data_blocks = load_data_blocks(args.dataset, args, tokenizer)
+        self.model = start_run(args, data_blocks)
+
+    def detection(self):
+        blk = torch.load(f'{args.file_path}cache/cache_long_tail/roberta-large-data.npy')
+        test = blk['test']
+
+        msg_tags = np.array(test['tw_to_ev'], dtype=np.int32)
+        tst_num = msg_tags.shape[0]
+        msg_feats = torch.zeros((tst_num, self.model.feat_size()), device='cpu')
+        ref_num = torch.zeros((tst_num,), dtype=torch.long, device='cpu')
+
+        msg_feats = msg_feats / (ref_num + torch.eq(ref_num, 0).float()).unsqueeze(-1)
+        msg_feats = msg_feats.numpy()
+
+        n_clust = len(test['ev_to_idx'])
+        k_means_score = run_kmeans(msg_feats, n_clust, msg_tags)
+
+        k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40, random_state=0)
+        k_means.fit(msg_feats)
+
+        predictions = k_means.labels_
+        ground_truths = msg_tags
+        return predictions, ground_truths
+
+    def evaluate(self, predictions, ground_truths):
+        ars = metrics.adjusted_rand_score(ground_truths, predictions)
+
+        # Calculate Adjusted Mutual Information (AMI)
+        ami = metrics.adjusted_mutual_info_score(ground_truths, predictions)
+
+        # Calculate Normalized Mutual Information (NMI)
+        nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
+
+        print(f"Model Adjusted Rand Index (ARI): {ars}")
+        print(f"Model Adjusted Mutual Information (AMI): {ami}")
+        print(f"Model Normalized Mutual Information (NMI): {nmi}")
+        return ars, ami, nmi
 
 
-class args_define:
-    def __init__(self, **kwargs):
-        # Hyper parameters
-        self.dataset = kwargs.get('dataset', '../model/model_saved/rplmsed/cache/twitter12.npy')
-        self.plm_path = kwargs.get('plm_path', '../model/model_needed/base_plm_model/roberta-large')
-        self.file_path = kwargs.get('file_path', '../model/model_saved/rplmsed/')
-        self.plm_tuning = kwargs.get('plm_tuning', False)
-        self.use_ctx_att = kwargs.get('use_ctx_att', False)
-        self.offline = kwargs.get('offline', True)
-        self.ctx_att_head_num = kwargs.get('ctx_att_head_num', 2)
-        self.pmt_feats = kwargs.get('pmt_feats', (0, 1, 2, 4))
-        self.batch_size = kwargs.get('batch_size', 128)
-        # self.batch_size = kwargs.get('batch_size', 32)
-        self.lmda1 = kwargs.get('lmda1', 0.010)
-        self.lmda2 = kwargs.get('lmda2', 0.005)
-        self.tao = kwargs.get('tao', 0.90)
-        self.optimizer = kwargs.get('optimizer', 'Adam')
-        self.lr = kwargs.get('lr', 2e-5)
-        self.weight_decay = kwargs.get('weight_decay', 1e-5)
-        self.momentum = kwargs.get('momentum', 0.9)
-        self.step_lr_gamma = kwargs.get('step_lr_gamma', 0.98)
-        self.max_epochs = kwargs.get('max_epochs', 1)
-        self.ckpt_path = kwargs.get('ckpt_path', '../model/model_saved/rplmsed/ckpt/')
-        self.eva_data = kwargs.get('eva_data', "../model/model_saved/rplmsed/Eva_data/")
-        self.early_stop_patience = kwargs.get('early_stop_patience', 2)
-        self.early_stop_monitor = kwargs.get('early_stop_monitor', 'loss')
-        self.SAMPLE_NUM_TWEET = kwargs.get('SAMPLE_NUM_TWEET', 60)
-        self.WINDOW_SIZE = kwargs.get('WINDOW_SIZE', 3)
-        self.device = kwargs.get('device', "cuda:0" if torch.cuda.is_available() else "cpu")
 
-        # Store all arguments in a single attribute
-        self.args = argparse.Namespace(**{
-            'dataset': self.dataset,
-            'plm_path': self.plm_path,
-            'file_path': self.file_path,
-            'plm_tuning': self.plm_tuning,
-            'use_ctx_att': self.use_ctx_att,
-            'offline': self.offline,
-            'ctx_att_head_num': self.ctx_att_head_num,
-            'pmt_feats': self.pmt_feats,
-            'batch_size': self.batch_size,
-            'lmda1': self.lmda1,
-            'lmda2': self.lmda2,
-            'tao': self.tao,
-            'optimizer': self.optimizer,
-            'lr': self.lr,
-            'weight_decay': self.weight_decay,
-            'momentum': self.momentum,
-            'step_lr_gamma': self.step_lr_gamma,
-            'max_epochs': self.max_epochs,
-            'ckpt_path': self.ckpt_path,
-            'eva_data': self.eva_data,
-            'early_stop_patience': self.early_stop_patience,
-            'early_stop_monitor': self.early_stop_monitor,
-            'SAMPLE_NUM_TWEET': self.SAMPLE_NUM_TWEET,
-            'WINDOW_SIZE': self.WINDOW_SIZE,
-            'device': self.device
-        })
-
-
+COLUMNS = [
+    'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
+    'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
+]
+DataItem = namedtuple('DataItem', COLUMNS)
 
 class Preprocessor:
-    args = args_define().args
-
     def __init__(self):
         pass
 
-    def preprocess(self, dataset):
+    def preprocess_all(self, dataset):
         os.makedirs('../model/model_saved/rplmsed/cache', exist_ok=True)
         print(f"load data  ... ")
         df = dataset
@@ -114,8 +219,8 @@ class Preprocessor:
         print("\tDone")
 
         blk_data = self.pre_process(np_data)
-        print(f"save data to '{self.dataset}' ... ", end='')
-        np.save(f'{self.dataset}', blk_data)
+        print(f"save data to '../model/model_saved/rplmsed/cache/offline.npy' ... ", end='')
+        np.save(f'../model/model_saved/rplmsed/cache/offline.npy', blk_data)
         print("\tDone")
 
     def to_sparse_matrix(self, feat_to_tw, tw_num, tao=0):
@@ -228,11 +333,6 @@ class Preprocessor:
         tw_num = len(data)
         tw_feat_idx = []
         feat_to_idx = {}
-        COLUMNS = [
-            'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
-            'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
-        ]
-        DataItem = namedtuple('DataItem', COLUMNS)
         cols = [DataItem._fields.index(c) for c in cols] if isinstance(cols, list) else [DataItem._fields.index(cols)]
         for i, it in enumerate(data):
             feats = [
@@ -441,11 +541,6 @@ class Preprocessor:
         return block
 
     def split_into_blocks(self, data):
-        COLUMNS = [
-            'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
-            'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
-        ]
-        DataItem = namedtuple('DataItem', COLUMNS)
         data = [DataItem(*it) for it in data]
         data = sorted(data, key=lambda it: it.created_at)
         groups = itertools.groupby(data, key=lambda it: it.created_at.timetuple().tm_yday)
@@ -487,62 +582,7 @@ class Preprocessor:
         return data_blocks
 
 
-class RPLMSED:
-    def __init__(self, args, dataset):
-        self.dataset = dataset
 
-    def preprocess(self):
-        preprocessor = Preprocessor()
-        preprocessor.preprocess(self.dataset)
-
-    def fit(self):
-        torch.manual_seed(2357)
-        args.model_name = os.path.basename(os.path.normpath(args.plm_path))
-        dataset_name = os.path.basename(args.dataset)
-        args.dataset_name = dataset_name.replace(".npy", "")
-
-        if 'cuda' in args.device:
-            torch.cuda.manual_seed(2357)
-
-        tokenizer = AutoTokenizer.from_pretrained(args.plm_path)
-        data_blocks = load_data_blocks(args.dataset, args, tokenizer)
-        self.model = start_run(args, data_blocks)
-
-    def detection(self):
-        blk = torch.load(f'{args.file_path}cache/cache_long_tail/roberta-large-twitter12.npy')
-        test = blk['test']
-
-        msg_tags = np.array(test['tw_to_ev'], dtype=np.int32)
-        tst_num = msg_tags.shape[0]
-        msg_feats = torch.zeros((tst_num, self.model.feat_size()), device='cpu')
-        ref_num = torch.zeros((tst_num,), dtype=torch.long, device='cpu')
-
-        msg_feats = msg_feats / (ref_num + torch.eq(ref_num, 0).float()).unsqueeze(-1)
-        msg_feats = msg_feats.numpy()
-
-        n_clust = len(test['ev_to_idx'])
-        k_means_score = run_kmeans(msg_feats, n_clust, msg_tags)
-
-        k_means = KMeans(init="k-means++", n_clusters=n_clust, n_init=40, random_state=0)
-        k_means.fit(msg_feats)
-
-        predictions = k_means.labels_
-        ground_truths = msg_tags
-        return predictions, ground_truths
-
-    def evaluate(self, predictions, ground_truths):
-        ars = metrics.adjusted_rand_score(ground_truths, predictions)
-
-        # Calculate Adjusted Mutual Information (AMI)
-        ami = metrics.adjusted_mutual_info_score(ground_truths, predictions)
-
-        # Calculate Normalized Mutual Information (NMI)
-        nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-
-        print(f"Model Adjusted Rand Index (ARI): {ars}")
-        print(f"Model Adjusted Mutual Information (AMI): {ami}")
-        print(f"Model Normalized Mutual Information (NMI): {nmi}")
-        return ars, ami, nmi
 
 
 def get_model(args):
@@ -1025,7 +1065,7 @@ def load_data_blocks(path_to_data, args, tokenizer):
     del dataset
     print("Done")
 
-    path_to_blocks = ['../model/model_saved/rplmsed/cache/cache_long_tail/roberta-large-twitter12.npy']
+    path_to_blocks = ['../model/model_saved/rplmsed/cache/cache_long_tail/roberta-large-data.npy']
     for blk_path in path_to_blocks:
         print(f"load block from '{blk_path}'... \n", end='')
         loaded_blk = torch.load(blk_path)
@@ -1371,13 +1411,3 @@ class PairPfxTuningEncoder(nn.Module):
         return logit, left_feat
 
 
-if __name__ == '__main__':
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    args = args_define().args
-    
-    rplmsed = RPLMSED(args, dataset)
-    rplmsed.preprocess()
-    rplmsed.fit()
-    predictions, ground_truths = rplmsed.detection()
-    rplmsed.evaluate(predictions, ground_truths)

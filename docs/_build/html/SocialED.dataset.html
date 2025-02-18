@@ -3,16 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.Detector" href="SocialED.detector.html" /><link rel="prev" title="Installation" href="install.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.detector" href="SocialED.detector.html" /><link rel="prev" title="Installation" href="install.html" />
 
     <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.Dataset - SocialED documentation</title>
+        <title>SocialED.dataset - SocialED 1.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -170,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SocialED  documentation</div></a>
+      <a href="index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SocialED  documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,10 +204,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.Detector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.Utils</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.loss.html">SocialED.loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataprocess.html">SocialED.dataprocess</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -259,70 +257,28 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="socialed-dataset">
-<h1>SocialED.Dataset<a class="headerlink" href="#socialed-dataset" title="Permalink to this heading">¶</a></h1>
+<h1>SocialED.dataset<a class="headerlink" href="#socialed-dataset" title="Permalink to this heading">¶</a></h1>
 <section id="module-SocialED.dataset.dataloader">
 <span id="dataloader"></span><h2>Dataloader<a class="headerlink" href="#module-SocialED.dataset.dataloader" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.ArabicTwitter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">ArabicTwitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#ArabicTwitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.ArabicTwitter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.ArabicTwitter.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#ArabicTwitter.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.ArabicTwitter.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temporary implementation that returns empty dataset</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT26">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisLexT26</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT26"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT26" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT26.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT26.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT26.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temporary implementation that returns empty dataset</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisMMD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisMMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisMMD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisMMD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisMMD.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisMMD.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisMMD.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temporary implementation that returns empty dataset</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisNLP">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisNLP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisNLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisNLP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisNLP.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisNLP.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisNLP.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temporary implementation that returns empty dataset</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">DatasetLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup">
+<span class="sig-name descname"><span class="pre">download_and_cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_target_folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.download_and_cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.download">
 <span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.download" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup">
-<span class="sig-name descname"><span class="pre">download_and_cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_target_folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.download_and_cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.get_dataset_language">
@@ -353,8 +309,40 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.load_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.DatasetLoader.get_dataset_info">
+<span class="sig-name descname"><span class="pre">get_dataset_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#DatasetLoader.get_dataset_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the info of the current dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The info of the dataset.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.MAVEN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">MAVEN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#MAVEN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.MAVEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.MAVEN.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#MAVEN.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.MAVEN.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisNLP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisNLP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisNLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisNLP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisNLP.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisNLP.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisNLP.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Temporary implementation that returns empty dataset</p>
 </dd></dl>
 
@@ -385,6 +373,42 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Arabic_Twitter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">Arabic_Twitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Arabic_Twitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Arabic_Twitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Arabic_Twitter.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Arabic_Twitter.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Arabic_Twitter.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT26">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisLexT26</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT26"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT26" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT26.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT26.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT26.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisMMD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisMMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisMMD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisMMD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisMMD.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisMMD.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisMMD.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="SocialED.dataset.dataloader.HumAID">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">HumAID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#HumAID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.HumAID" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
@@ -409,12 +433,72 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.MAVEN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">MAVEN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#MAVEN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.MAVEN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Arabic_7">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">Arabic_7</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Arabic_7"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Arabic_7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="SocialED.dataset.dataloader.MAVEN.load_data">
-<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#MAVEN.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.MAVEN.load_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Arabic_7.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Arabic_7.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Arabic_7.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Event2012_100">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">Event2012_100</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Event2012_100"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Event2012_100" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Event2012_100.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Event2012_100.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Event2012_100.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Event2018_100">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">Event2018_100</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Event2018_100"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Event2018_100" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Event2018_100.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Event2018_100.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Event2018_100.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Mix_Data">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">Mix_Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Mix_Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Mix_Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.Mix_Data.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#Mix_Data.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.Mix_Data.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT6">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisLexT6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT6"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT6.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT6.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT6.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary implementation that returns empty dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT7">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.dataset.dataloader.</span></span><span class="sig-name descname"><span class="pre">CrisisLexT7</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT7"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader" title="SocialED.dataset.dataloader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.dataset.dataloader.CrisisLexT7.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/dataset/dataloader.html#CrisisLexT7.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.dataset.dataloader.CrisisLexT7.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Temporary implementation that returns empty dataset</p>
 </dd></dl>
 
@@ -433,7 +517,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">SocialED.Detector</div>
+                <div class="title">SocialED.detector</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -478,30 +562,23 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">SocialED.Dataset</a><ul>
+<li><a class="reference internal" href="#">SocialED.dataset</a><ul>
 <li><a class="reference internal" href="#module-SocialED.dataset.dataloader">Dataloader</a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.ArabicTwitter"><code class="docutils literal notranslate"><span class="pre">ArabicTwitter</span></code></a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.ArabicTwitter.load_data"><code class="docutils literal notranslate"><span class="pre">ArabicTwitter.load_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader"><code class="docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download_and_cleanup()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.load_data"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.load_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_language"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_language()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_name"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_name()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_info"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_info()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT26"><code class="docutils literal notranslate"><span class="pre">CrisisLexT26</span></code></a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT26.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisLexT26.load_data()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisMMD"><code class="docutils literal notranslate"><span class="pre">CrisisMMD</span></code></a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisMMD.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisMMD.load_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.MAVEN"><code class="docutils literal notranslate"><span class="pre">MAVEN</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.MAVEN.load_data"><code class="docutils literal notranslate"><span class="pre">MAVEN.load_data()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisNLP"><code class="docutils literal notranslate"><span class="pre">CrisisNLP</span></code></a><ul>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisNLP.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisNLP.load_data()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader"><code class="docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.download_and_cleanup"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.download_and_cleanup()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_language"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_language()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.get_dataset_name"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.get_dataset_name()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.DatasetLoader.load_data"><code class="docutils literal notranslate"><span class="pre">DatasetLoader.load_data()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2012"><code class="docutils literal notranslate"><span class="pre">Event2012</span></code></a><ul>
@@ -512,6 +589,18 @@
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2018.load_data"><code class="docutils literal notranslate"><span class="pre">Event2018.load_data()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Arabic_Twitter"><code class="docutils literal notranslate"><span class="pre">Arabic_Twitter</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Arabic_Twitter.load_data"><code class="docutils literal notranslate"><span class="pre">Arabic_Twitter.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT26"><code class="docutils literal notranslate"><span class="pre">CrisisLexT26</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT26.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisLexT26.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisMMD"><code class="docutils literal notranslate"><span class="pre">CrisisMMD</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisMMD.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisMMD.load_data()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.HumAID"><code class="docutils literal notranslate"><span class="pre">HumAID</span></code></a><ul>
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.HumAID.load_data"><code class="docutils literal notranslate"><span class="pre">HumAID.load_data()</span></code></a></li>
 </ul>
@@ -520,8 +609,28 @@
 <li><a class="reference internal" href="#SocialED.dataset.dataloader.KBP.load_data"><code class="docutils literal notranslate"><span class="pre">KBP.load_data()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.MAVEN"><code class="docutils literal notranslate"><span class="pre">MAVEN</span></code></a><ul>
-<li><a class="reference internal" href="#SocialED.dataset.dataloader.MAVEN.load_data"><code class="docutils literal notranslate"><span class="pre">MAVEN.load_data()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Arabic_7"><code class="docutils literal notranslate"><span class="pre">Arabic_7</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Arabic_7.load_data"><code class="docutils literal notranslate"><span class="pre">Arabic_7.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2012_100"><code class="docutils literal notranslate"><span class="pre">Event2012_100</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2012_100.load_data"><code class="docutils literal notranslate"><span class="pre">Event2012_100.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2018_100"><code class="docutils literal notranslate"><span class="pre">Event2018_100</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Event2018_100.load_data"><code class="docutils literal notranslate"><span class="pre">Event2018_100.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Mix_Data"><code class="docutils literal notranslate"><span class="pre">Mix_Data</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.Mix_Data.load_data"><code class="docutils literal notranslate"><span class="pre">Mix_Data.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT6"><code class="docutils literal notranslate"><span class="pre">CrisisLexT6</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT6.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisLexT6.load_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT7"><code class="docutils literal notranslate"><span class="pre">CrisisLexT7</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.dataset.dataloader.CrisisLexT7.load_data"><code class="docutils literal notranslate"><span class="pre">CrisisLexT7.load_data()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -537,7 +646,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e9012143"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

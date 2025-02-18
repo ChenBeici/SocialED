@@ -266,17 +266,17 @@ Inspired by the API designs of established frameworks, we developed a unified AP
 ### 💻 Example Usage
 
 
-    from SocialED.dataset import MAVEN                 # Load the dataset
-    dataset = MAVEN().load_data()   # Load "arabic_twitter" dataset
+    from SocialED.dataset import Event2012                 # Load the dataset
+    dataset = Event2012()                                  # Load "Event2012" dataset
     
-    from SocialED.detector import KPGNN        # Import KPGNN model
-    args = args_define().args                  # Get training arguments
-    kpgnn = KPGNN(args, dataset)              # Initialize KPGNN model
+    from SocialED.detector import KPGNN                    # Import KPGNN model
+    kpgnn = KPGNN(dataset, batch_size=200)                # Initialize KPGNN model
     
-    kpgnn.preprocess()                        # Preprocess data
-    kpgnn.fit()                               # Train the model
-    pres, trus = kpgnn.detection()            # Detect events
-    kpgnn.evaluate(pres, trus)                # Evaluate detection results
+    kpgnn.preprocess()                                     # Preprocess data
+    kpgnn.fit()                                           # Train the model
+    pres, trus = kpgnn.detection()                        # Detect events
+    
+    kpgnn.evaluate(pres, trus)                            # Evaluate detection results
 
 ### 🧩 Modular Design and Utility Functions
 
@@ -330,31 +330,59 @@ The library provides several utility functions including:
 
 ## 👥 Contributors
 
-### Core Team
+### 🌟 Core Team
 
-🎓 **Kun Zhang**  
-*Beihang University*  
-📧 zhangkun23@buaa.edu.cn
+<table>
+  <tr>
+    <td align="center">
+      <b>Kun Zhang</b><br>
+      🎓 Beihang University<br>
+      📧 zhangkun23@buaa.edu.cn
+    </td>
+    <td align="center">
+      <b>Xiaoyan Yu</b><br>
+      🎓 Beijing Institute of Technology<br>
+      📧 xiaoyan.yu@bit.edu.cn
+    </td>
+    <td align="center">
+      <b>Pu Li</b><br>
+      🎓 Kunming University of Science and Technology<br>
+      📧 lip@stu.kust.edu.cn
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Ye Tian</b><br>
+      🎓 Laboratory for Advanced Computing<br>and Intelligence Engineering<br>
+      📧 sweetwild@mail.ustc.edu.cn
+    </td>
+    <td align="center">
+      <b>ZhiLin Xu</b><br>
+      🎓 Beihang University<br>
+      📧 21377240@buaa.edu.cn
+    </td>
+    <td align="center">
+      <b>Kaiwei Yang</b><br>
+      🎓 Beihang University<br>
+      📧 yangkw@buaa.edu.cn
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Hao Peng</b> 📍<br>
+      <i>Corresponding Author</i><br>
+      🎓 Beihang University<br>
+      📧 penghao@buaa.edu.cn
+    </td>
+    <td align="center">
+      <b>Philip S. Yu</b><br>
+      🎓 University of Illinois at Chicago<br>
+      📧 psyu@uic.edu
+    </td>
+    <td></td>
+  </tr>
+</table>
 
-🎓 **Xiaoyan Yu**  
-*Beijing Institute of Technology*  
-📧 xiaoyan.yu@bit.edu.cn
-
-🎓 **Pu Li**  
-*Kunming University of Science and Technology*  
-📧 lip@stu.kust.edu.cn
-
-🎓 **Ye Tian**  
-*Laboratory for Advanced Computing and Intelligence Engineering*  
-📧 sweetwild@mail.ustc.edu.cn
-
-🎓 **Hao Peng** *(Corresponding author)*  
-*Beihang University*  
-📧 penghao@buaa.edu.cn
-
-🎓 **Philip S. Yu**  
-*University of Illinois at Chicago*  
-📧 psyu@uic.edu
 
 
 ## 📊 Citation

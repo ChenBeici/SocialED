@@ -19,83 +19,152 @@ import argparse
 import networkx as nx
 import scipy.sparse as sp
 from torch_geometric import loader
-import en_core_web_lg
+import spacy
 import pandas as pd
 import networkx as nx
 from torch_geometric.data import Data
 from torch_geometric import loader
 from torch_geometric.nn import GCNConv
 from torch.distributions import Categorical, MultivariateNormal
+from sklearn.metrics import silhouette_score,calinski_harabasz_score
 import sys
-from sklearn.metrics import silhouette_score, calinski_harabasz_score
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
+from dataset.dataloader import DatasetLoader,Event2012
 
 def currentTime():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-class args_define:
-    def __init__(self, **kwargs):
-        # Default arguments
-        defaults = {
-            'file_path': '../model/model_saved/hcrc/',
-            'result_path': '../model/model_saved/hcrc/res.txt',
-            'task': 'DRL',
-            'layers': '[256]',
-            'N_pred_hid': 64,
-            'G_pred_hid': 16,
-            'eval_freq': 5,
-            'mad': 0.9,
-            'Ges': 50,
-            'Nes': 2000,
-            'device': 0,
-            'Gepochs': 105,
-            'Nepochs': 100
-        }
-
-        defaults.update(kwargs)
-
-        # Set all attributes
-        for key, value in defaults.items():
-            setattr(self, key, value)
-
-        # Store namespace
-        self.args = argparse.Namespace(**defaults)
-
 class HCRC:
-    def __init__(self, args, dataset):
-        self.args = args
-        self.dataset = dataset
+    r"""The HCRC model for social event detection that uses hierarchical clustering 
+    and reinforcement learning for adaptive event detection.
+
+    .. note::
+        This detector uses hierarchical clustering and reinforcement learning to adaptively
+        detect events in social media data. The model requires a dataset object with a
+        load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/hcrc/'``.
+    result_path : str, optional
+        Path to save results file. Default: ``'../model/model_saved/hcrc/res.txt'``.
+    task : str, optional
+        Task type, e.g. 'DRL' for deep reinforcement learning. Default: ``'DRL'``.
+    layers : str, optional
+        Hidden layer dimensions as string. Default: ``'[256]'``.
+    N_pred_hid : int, optional
+        Node prediction hidden dimension. Default: ``64``.
+    G_pred_hid : int, optional
+        Graph prediction hidden dimension. Default: ``16``.
+    eval_freq : float, optional
+        Evaluation frequency. Default: ``5``.
+    mad : float, optional
+        Moving average decay rate. Default: ``0.9``.
+    Glr : float, optional
+        Learning rate for graph model. Default: ``0.0000006``.
+    Nlr : float, optional
+        Learning rate for node model. Default: ``0.00001``.
+    Ges : int, optional
+        Graph model early stopping patience. Default: ``50``.
+    Nes : int, optional
+        Node model early stopping patience. Default: ``2000``.
+    Gepochs : int, optional
+        Number of graph model training epochs. Default: ``105``.
+    Nepochs : int, optional
+        Number of node model training epochs. Default: ``100``.
+    device : int, optional
+        GPU device ID to use. Default: ``0``.
+    """
+
+    
+    def __init__(self,
+                 dataset,
+                 # 文件路径相关参数
+                 file_path: str = '../model/model_saved/hcrc/',
+                 result_path: str = '../model/model_saved/hcrc/res.txt',
+
+                 # 任务相关参数
+                 task: str = 'DRL',
+
+                 # 模型结构相关参数
+                 layers: str = '[256]',
+                 N_pred_hid: int = 64,
+                 G_pred_hid: int = 16,
+
+                 # 训练和评估相关参数
+                 eval_freq: float = 5,
+                 mad: float = 0.9,
+                 Glr: float = 0.0000006,
+                 Nlr: float = 0.00001,
+                 Ges: int = 50,
+                 Nes: int = 2000,
+                 Gepochs: int = 105,
+                 Nepochs: int = 100,
+
+                 # 设备相关参数
+                 device: int = 0):
+        self.dataset = dataset.load_data()
+        # 文件路径相关参数
+        self.file_path = file_path
+        self.result_path = result_path
+
+        # 任务相关参数
+        self.task = task
+
+        # 模型结构相关参数
+        self.layers = layers
+        self.N_pred_hid = N_pred_hid
+        self.G_pred_hid = G_pred_hid
+
+        # 训练和评估相关参数
+        self.eval_freq = eval_freq
+        self.mad = mad
+        self.Glr = Glr
+        self.Nlr = Nlr
+        self.Ges = Ges
+        self.Nes = Nes
+        self.Gepochs = Gepochs
+        self.Nepochs = Nepochs
+
+        # 设备相关参数
+        self.device = device
+
+    def fit(self):
+        pass
 
     def detection(self):
+        args=self
         for i in range(22):
-            print("************Message Block " + str(i) + " start! ************")
-            # Node-level learning
-            embedder_N = Node_ModelTrainer(args, i, self.dataset)
-            Node_emb, label = embedder_N.get_embedding()
-            # Graph-level learning
-            embedder_G = Graph_ModelTrainer(args, i)
-            Graph_emb, label = embedder_G.get_embedding()
-            # combining vectors
-            if i == 0:
-                all_embeddings = np.concatenate((Graph_emb, Node_emb), axis=1)
+            print("************Message Block "+str(i)+" start! ************")
+            #Node-level learning
+            embedder_N = Node_ModelTrainer(self,i)
+            Node_emb,label = embedder_N.get_embedding()
+            #Graph-level learning
+            embedder_G = Graph_ModelTrainer(self,i)
+            Graph_emb,label = embedder_G.get_embedding()
+            #combining vectors
+            if i==0:
+                all_embeddings = np.concatenate((Graph_emb,Node_emb),axis=1)
                 all_label = label
             else:
-                temp = np.concatenate((Graph_emb, Node_emb), axis=1)
-                all_embeddings = np.concatenate((all_embeddings, temp), axis=0)
-                all_label = all_label + label
+                temp = np.concatenate((Graph_emb,Node_emb),axis=1)
+                all_embeddings = np.concatenate((all_embeddings,temp),axis=0)
+                all_label = all_label+label
             all_embeddings = torch.tensor(all_embeddings)
             all_embeddings = F.normalize(all_embeddings, dim=-1, p=2).detach().cpu().numpy()
-
+                
             if i == 0:
-                pred_y = evaluate_fun(all_embeddings, label, i, None, args.result_path, args.task)
+                pred_y = evaluate_fun(all_embeddings,label,i,None,args.result_path,args.task)
                 all_pred_y = pred_y
             else:
-                pred_y = evaluate_fun(all_embeddings, label, i, all_pred_y, args.result_path, args.task)
+                pred_y = evaluate_fun(all_embeddings,label,i,all_pred_y,args.result_path,args.task)
                 all_pred_y = all_pred_y + pred_y
-            print("************Message Block " + str(i) + " end! ************\n\n")
+            print("************Message Block "+str(i)+" end! ************\n\n")
 
         predictions = all_pred_y
         ground_truths = all_label
@@ -111,14 +180,13 @@ class HCRC:
 
         # Calculate Normalized Mutual Information (NMI)
         nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-
+        
         print(f"Model Adjusted Rand Index (ARI): {ars}")
         print(f"Model Adjusted Mutual Information (AMI): {ami}")
         print(f"Model Normalized Mutual Information (NMI): {nmi}")
         return ars, ami, nmi
 
-
-class EMA:  # Exponential Moving Average
+class EMA:  #Exponential Moving Average
     def __init__(self, beta, epochs):
         super().__init__()
         self.beta = beta
@@ -130,32 +198,28 @@ class EMA:  # Exponential Moving Average
             return new
         return old * self.beta + (1 - self.beta) * new
 
-
 def get_task(strs):
-    tasks = ["DRL", "random", "semi-supervised", "traditional"]
+    tasks = ["DRL","random","semi-supervised","traditional"]
     if len(strs) == 1:
         return "DRL"
     if ("--task" in strs) and len(strs) == 2:
         return "DRL"
-    if ("--task" not in strs) or len(strs) != 3:
+    if ("--task" not in strs) or len(strs)!=3:
         return False
     elif strs[-1] not in tasks:
         return False
     else:
         return strs[-1]
 
-
-def init_weights(m):  # Model parameter initialization
+def init_weights(m):  #Model parameter initialization
     if type(m) == nn.Linear:
         torch.nn.init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.01)
-
-
+        
 def sim(z1, z2):
     z1 = F.normalize(z1)
     z2 = F.normalize(z2)
     return torch.mm(z1, z2.t())
-
 
 def semi_loss(z1, z2):
     f = lambda x: torch.exp(x / 0.05)
@@ -163,7 +227,6 @@ def semi_loss(z1, z2):
     between_sim = f(sim(z1, z2))
 
     return -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-
 
 def get_loss(h1, h2):
     l1 = semi_loss(h1, h2)
@@ -174,18 +237,15 @@ def get_loss(h1, h2):
 
     return ret
 
-
 def update_moving_average(ema_updater, ma_model, current_model):
     for current_params, ma_params in zip(current_model.parameters(), ma_model.parameters()):
         old_weight, up_weight = ma_params.data, current_params.data
         ma_params.data = ema_updater.update_average(old_weight, up_weight)
 
-
 def set_requires_grad(model, val):
-    # set require_grad
+    #set require_grad
     for p in model.parameters():
         p.requires_grad = val
-
 
 def enumerateConfig(args):
     args_names = []
@@ -196,21 +256,19 @@ def enumerateConfig(args):
 
     return args_names, args_vals
 
-
 def config2string(args):
     args_names, args_vals = enumerateConfig(args)
     st = ''
     for name, val in zip(args_names, args_vals):
         if val == False:
             continue
-        if name not in ['device', 'root', 'epochs', 'isAnneal', 'dropout', 'warmup_step', 'clus_num_iters']:
+        if name not in ['device','root','epochs','isAnneal','dropout','warmup_step','clus_num_iters']:
             st_ = "{}_{}_".format(name, val)
             st += st_
 
     return st[:-1]
 
-
-def printConfig(args):
+def printConfig(args): 
     args_names, args_vals = enumerateConfig(args)
     print(args_names)
     print(args_vals)
@@ -220,7 +278,6 @@ class embedder:
     def __init__(self, args):
         self.args = args
         self.hidden_layers = eval(args.layers)
-
 
 class Encoder(nn.Module):
 
@@ -240,12 +297,10 @@ class Encoder(nn.Module):
 
         return x
 
+M =[20254,28976,30467,32302,34312,36146,37422,42700,44260,45623,46719,
+    47951,51188,53160,56116,58665,59575,62251,64138,65537,66430,68840]
 
-M = [20254, 28976, 30467, 32302, 34312, 36146, 37422, 42700, 44260, 45623, 46719,
-     47951, 51188, 53160, 56116, 58665, 59575, 62251, 64138, 65537, 66430, 68840]
-
-
-def DRL_cluster(all_embeddings, block_num, pred_label):
+def DRL_cluster(all_embeddings,block_num,pred_label):
     para = 0.1
     if block_num == 0:
         print("Evaluating initial message block...")
@@ -253,62 +308,57 @@ def DRL_cluster(all_embeddings, block_num, pred_label):
         sp = SinglePass(0.87, all_embeddings, 0, pred_label, M[0], None, para, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
     else:
         print("Using DRL-Single-Pass to learn threshold...")
         global_step = 0
         agent = PPO([5], 1, continuous=True)
-        sp_sim = SinglePass(0.6, all_embeddings, 1, pred_label, M[block_num] - M[block_num - 1], agent, para,
-                            M[block_num - 1] - 2000, sim=True)
-
+        sp_sim = SinglePass(0.6, all_embeddings, 1, pred_label, M[block_num] - M[block_num - 1], agent, para, M[block_num-1]-2000, sim=True)
+        
         global_step = sp_sim.global_step
-        sp = SinglePass(0.6, all_embeddings, 1, pred_label, M[block_num] - M[block_num - 1], agent, para,
-                        M[block_num - 1] - 2000, sim=False)
-
-    return sp.cluster_result, sp.sim_threshold
-
-
-def random_cluster(all_embeddings, block_num, pred_label):
-    threshold = random.uniform(0.6, 0.8)
+        sp = SinglePass(0.6, all_embeddings, 1, pred_label, M[block_num] - M[block_num - 1], agent, para, M[block_num-1]-2000, sim=False)
+    
+    return sp.cluster_result,sp.sim_threshold
+    
+def random_cluster(all_embeddings,block_num,pred_label):
+    threshold = random.uniform(0.6,0.8)
     if block_num == 0:
         print("Evaluating initial message block...")
         start_time = time.time()
         sp = SinglePass(0.87, all_embeddings, 0, pred_label, M[0], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
         threshold = 0.87
     else:
         print("Evaluating message block...")
         start_time = time.time()
-        sp = SinglePass(threshold, all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0,
-                        sim=False)
+        sp = SinglePass(threshold, all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
-    return sp.cluster_result, threshold
-
-
-def semi_cluster(all_embeddings, label, block_num, pred_label):
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
+    return sp.cluster_result,threshold
+    
+def semi_cluster(all_embeddings,label,block_num,pred_label):
     if block_num == 0:
         print("Evaluating initial message block...")
         start_time = time.time()
         sp = SinglePass(0.87, all_embeddings, 0, pred_label, M[0], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
         threshold = 0.87
     else:
         print("Evaluating message block...")
         start_time = time.time()
         embeddings = all_embeddings.tolist()
         size = M[block_num] - M[block_num - 1]
-        embeddings = embeddings[0:len(embeddings) - int(size * 0.9)]
+        embeddings = embeddings[0:len(embeddings)-int(size*0.9)]
         pre_label = pred_label[0:len(embeddings)]
-
+        
         size = len(embeddings) - M[block_num - 1]
         embeddings = np.array(embeddings)
-        thresholds = [0.6, 0.65, 0.7, 0.75, 0.8]
+        thresholds = [0.6,0.65,0.7,0.75,0.8]
         s1s = []
         for t in thresholds:
             sp = SinglePass(t, embeddings, 2, pre_label, size, None, 0, 0, sim=False)
@@ -316,79 +366,72 @@ def semi_cluster(all_embeddings, label, block_num, pred_label):
             s1 = metrics.normalized_mutual_info_score(true_label, sp.cluster_result, average_method='arithmetic')
             s1s.append(s1)
         index = s1s.index(max(s1s))
-        sp = SinglePass(thresholds[index], all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0,
-                        sim=False)
+        sp = SinglePass(thresholds[index], all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
         threshold = thresholds[index]
-    return sp.cluster_result, threshold
-
-
-def NMI_cluster(all_embeddings, label, block_num, pred_label):
+    return sp.cluster_result,threshold
+        
+def NMI_cluster(all_embeddings,label,block_num,pred_label):
     if block_num == 0:
         print("Evaluating initial message block...")
         start_time = time.time()
         sp = SinglePass(0.87, all_embeddings, 0, pred_label, M[0], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
         threshold = 0.87
     else:
         print("Evaluating message block...")
         start_time = time.time()
-        thresholds = [0.6, 0.65, 0.7, 0.75, 0.8]
+        thresholds = [0.6,0.65,0.7,0.75,0.8]
         s1s = []
         for t in thresholds:
             sp = SinglePass(t, all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0, sim=False)
             s1 = metrics.normalized_mutual_info_score(label, sp.cluster_result, average_method='arithmetic')
             s1s.append(s1)
         index = s1s.index(max(s1s))
-        sp = SinglePass(thresholds[index], all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0,
-                        sim=False)
+        sp = SinglePass(thresholds[index], all_embeddings, 2, pred_label, M[block_num] - M[block_num - 1], None, 0, 0, sim=False)
         end_time = time.time()
         run_time = end_time - start_time
-        print("Done! " + "It takes " + str(int(run_time)) + " seconds.\n")
+        print("Done! " + "It takes "+str(int(run_time))+" seconds.\n")
         threshold = thresholds[index]
-    return sp.cluster_result, threshold
-
-
-def evaluate_fun(all_embeddings, label, block_num, pred_label, result_path, task):
+    return sp.cluster_result,threshold 
+        
+def evaluate_fun(all_embeddings,label,block_num,pred_label,result_path,task):
     if task == "DRL":
-        y_pred, threshold = DRL_cluster(all_embeddings, block_num, pred_label)
+        y_pred,threshold = DRL_cluster(all_embeddings,block_num,pred_label)
     elif task == "random":
-        y_pred, threshold = random_cluster(all_embeddings, block_num, pred_label)
+        y_pred,threshold = random_cluster(all_embeddings,block_num,pred_label)
     elif task == "semi-supervised":
-        y_pred, threshold = semi_cluster(all_embeddings, label, block_num, pred_label)
+        y_pred,threshold = semi_cluster(all_embeddings,label,block_num,pred_label)
     elif task == "traditional":
-        y_pred, threshold = NMI_cluster(all_embeddings, label, block_num, pred_label)
-
-    # NMI
+        y_pred,threshold = NMI_cluster(all_embeddings,label,block_num,pred_label)
+    
+    #NMI
     s1 = metrics.normalized_mutual_info_score(label, y_pred, average_method='arithmetic')
-    # AMI
+    #AMI
     s2 = metrics.adjusted_mutual_info_score(label, y_pred, average_method='arithmetic')
-    # ARI
+    #ARI
     s3 = metrics.adjusted_rand_score(label, y_pred)
-
+    
     print('** Theta:{:.2f} **\n'.format(threshold))
     print('** NMI: {:.2f} **\n'.format(s1))
     print('** AMI: {:.2f} **\n'.format(s2))
     print('** ARI: {:.2f} **\n'.format(s3))
-    result = '\nmessage_block_' + str(block_num) + '\nthreshold: {:.2f} '.format(
-        threshold) + '\n** NMI: {:.2f} **\n'.format(s1) + '** AMI: {:.2f} **\n'.format(
-        s2) + '** ARI: {:.2f} **\n'.format(s3)
+    result = '\nmessage_block_'+str(block_num)+'\nthreshold: {:.2f} '.format(threshold)+'\n** NMI: {:.2f} **\n'.format(s1) + '** AMI: {:.2f} **\n'.format(s2) + '** ARI: {:.2f} **\n'.format(s3)
 
-    if not os.path.exists(result_path):
+    if not os.path.exists(result_path) :
         pass
     else:
-        with open(result_path, encoding='utf-8') as file:
-            content = file.read()
+        with open(result_path,encoding='utf-8') as file:
+            content=file.read()
         result = content.rstrip() + result
     file = open(result_path, mode='w')
     file.write(result)
     file.close()
     return y_pred
-
 
 class SinglePass:
     def __init__(self, sim_threshold, data, flag, label, size, agent, para, sim_init, sim=False, global_step=0):
@@ -397,11 +440,11 @@ class SinglePass:
         self.topic_serial = None
         self.topic_cnt = 0
         self.sim_threshold = sim_threshold
-
+        
         self.done_data = data[0:data.shape[0] - size]
         self.new_data = data[data.shape[0] - size:]
         self.done_label = label
-
+        
         if flag == 0 or flag == 2:
             self.cluster_result = self.run_cluster(flag, size)
         else:
@@ -411,10 +454,10 @@ class SinglePass:
             self.sim = sim
             if self.sim:
                 start_time = time.time()
-                self.cluster_result = self.run_cluster_sim(flag, size, para, sim_init, sim, data)
+                self.cluster_result = self.run_cluster_sim(flag, size, para, sim_init, sim, data)  
                 end_time = time.time()
                 self.time = end_time - start_time
-                print("Creating Environment Done! " + "It takes " + str(int(self.time)) + " seconds.")
+                print("Creating Environment Done! " + "It takes "+str(int(self.time))+" seconds.")
             else:
                 start_time = time.time()
                 self.pseudo_labels = self.run_cluster_init(0.6, size)
@@ -427,18 +470,18 @@ class SinglePass:
                 # action projection
                 sim_threshold = torch.clamp(action, -1, 1).detach()
                 sim_threshold += 7
-                sim_threshold /= 10
+                sim_threshold /=10
                 self.sim_threshold = sim_threshold.item()
                 end_time = time.time()
                 self.time = end_time - start_time
-                print("Getting Threshold Done! " + "It takes " + str(int(self.time)) + " seconds. ")
-                print("Threshold is " + str(self.sim_threshold) + ".\n")
+                print("Getting Threshold Done! " + "It takes "+str(int(self.time))+" seconds. ")
+                print("Threshold is "+str(self.sim_threshold)+".\n")
                 print("Evaluating message block...")
                 start_time = time.time()
                 self.cluster_result = self.run_cluster(flag, size)  # clustering
                 end_time = time.time()
                 self.time = end_time - start_time
-                print("Done! " + "It takes " + str(int(self.time)) + " seconds.\n")
+                print("Done! " + "It takes "+str(int(self.time))+" seconds.\n")
 
     def clustering(self, sen_vec):
         if self.topic_cnt == 0:
@@ -457,7 +500,7 @@ class SinglePass:
             else:
                 self.topic_cnt += 1
                 self.topic_serial.append(self.topic_cnt)
-
+    
     def clustering_init(self, t, sen_vec):
         if self.topic_cnt_init == 0:
             self.text_vec_init = sen_vec
@@ -475,15 +518,15 @@ class SinglePass:
             else:
                 self.topic_cnt_init += 1
                 self.topic_serial_init.append(self.topic_cnt_init)
-
+    
     def run_cluster_init(self, t, size):
         self.text_vec_init = []
         self.topic_serial_init = []
         self.topic_cnt_init = 0
         for vec in self.new_data:
-            self.clustering_init(t, vec)
+            self.clustering_init(t,vec)
         return self.topic_serial_init
-
+    
     def run_cluster_sim(self, flag, size, para, sim_init, sim, data):
         self.text_vec = []
         self.topic_serial = []
@@ -499,16 +542,16 @@ class SinglePass:
             if i > self.new_data.shape[0] * para:
                 break
             state = self.get_state(sim, sim_init, data)
-
+            
             action, action_log_prob = self.agent.select_action(state)
             self.sim_threshold = action.item()
             self.clustering(vec)
-
+            
             reward = self.get_reward(sim_init, data)
             done = False
             transition = make_transition(self.scheme, state, action, reward, done, action_log_prob)
             self.agent.add_buffer(transition)
-            if self.global_step % 200 == 0:
+            if self.global_step % 200==0:
                 self.agent.learn()
 
         return self.topic_serial[len(self.topic_serial) - size:]
@@ -525,7 +568,7 @@ class SinglePass:
             self.clustering(vec)
         return self.topic_serial[len(self.topic_serial) - size:]
 
-    def get_center(self, label, data):
+    def get_center(self,label,data):
         centers = []
         indexs_per_cluster = []
         label_u = list(set(label))
@@ -539,9 +582,9 @@ class SinglePass:
             center = np.mean(data[indexs], 0).tolist()
             centers.append(center)
             indexs_per_cluster.append(tmp_indexs_text)
-        return centers, indexs_per_cluster
+        return centers,indexs_per_cluster
 
-    def get_info_cluster(self, text_vec, indexs_per_cluster):  # Get detailed clustering results
+    def get_info_cluster(self,text_vec,indexs_per_cluster):  # Get detailed clustering results
         res = []
         for i in range(len(indexs_per_cluster)):
             tmp_vec = []
@@ -559,17 +602,17 @@ class SinglePass:
         else:
             data = self.new_data
             topic_serial = self.pseudo_labels
-        centers, indexs_per_cluster = self.get_center(topic_serial, data)
-
+        centers,indexs_per_cluster = self.get_center(topic_serial, data)
+        
         centers = np.array(centers)
         neighbor_dists = np.dot(centers, centers.T)
-
+        
         neighbor_dists = np.nan_to_num(neighbor_dists, 0.0001)
         # the minimum neighbor distance
         state.append(neighbor_dists.min())
         # the average separation distance
         state.append((neighbor_dists.mean() * max(topic_serial) - 1) / max(topic_serial))
-        info_of_cluster = self.get_info_cluster(data, indexs_per_cluster)
+        info_of_cluster = self.get_info_cluster(data,indexs_per_cluster)
 
         coh_dists = 0
         for cluster in info_of_cluster:
@@ -581,30 +624,30 @@ class SinglePass:
             cohdist = np.dot(tmp_vec, tmp_vec.T)
             if cohdist.max() > coh_dists:
                 coh_dists = cohdist.max()
-        #         Dunn index
-        state.append(neighbor_dists.min() / coh_dists)
-
-        # Sum of intra-group error squares
+#         Dunn index
+        state.append(neighbor_dists.min()/coh_dists)
+    
+        #Sum of intra-group error squares
         SSE = 0
         SSEE = 0
         for i in range(len(indexs_per_cluster)):
             sumtmp = 0
             for j in range(len(indexs_per_cluster[i])):
-                tmp = np.dot(data[indexs_per_cluster[i][j]].T, centers[i])
-                SSE = SSE + (tmp) ** 2
-                sumtmp = sumtmp + (tmp) ** 2
-            SSEE = SSEE + sumtmp / len(indexs_per_cluster[i])
-        #         state.append(SSE)
+                tmp = np.dot(data[indexs_per_cluster[i][j]].T,centers[i])
+                SSE = SSE + (tmp)**2
+                sumtmp = sumtmp + (tmp)**2
+            SSEE = SSEE + sumtmp/len(indexs_per_cluster[i])
+#         state.append(SSE)
 
         # Sum of squared errors between groups
         SSR = 0
         SSRR = 0
         for i in range(len(centers)):
-            SSR = SSR + np.dot(centers[i].T, centers.mean(axis=0))
-            SSRR = SSRR + np.dot(centers[i].T, centers.mean(axis=0)) ** 2
+            SSR = SSR + np.dot(centers[i].T,centers.mean(axis=0))
+            SSRR = SSRR + np.dot(centers[i].T,centers.mean(axis=0))**2
         SSRR = SSRR / max(topic_serial)
-        #         state.append(SSR)
-        # the average cohesion distance
+#         state.append(SSR)
+        #the average cohesion distance
         coh_dists = 0
         for cluster in info_of_cluster:
             if cluster.shape[0] == 1:
@@ -624,17 +667,15 @@ class SinglePass:
 
         data = data[sim_init:len(self.topic_serial)]
         topic_serial = self.topic_serial[sim_init:]
-
+        
         return calinski_harabasz_score(data, topic_serial)
-
 
 class Node_ModelTrainer(embedder):
 
-    def __init__(self, args, block_num, dataset):
+    def __init__(self, args,block_num):
         embedder.__init__(self, args)
         self._args = args
         self.block_num = block_num
-        self.dataset = dataset
         self._init()
 
     def _init(self):
@@ -643,25 +684,26 @@ class Node_ModelTrainer(embedder):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.device)
         self._device = f'cuda:{args.device}' if torch.cuda.is_available() else "cpu"
         torch.cuda.set_device(self._device)
-
+        
+        
         if block_num == 0 or block_num == 1:
             args.Nes = 200
         else:
             args.Nes = 2000
         self.true_label = []
-        # load data
-        self._loader, self.true_label = get_Node_Dataset(block_num, self.dataset)
+        #load data
+        self._loader,self.true_label = get_Node_Dataset(args,block_num)
 
         layers = [302] + self.hidden_layers
         self._model = NodeLevel(layers, args)
 
-        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=0.00001, weight_decay=1e-5)
+        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=args.Nlr, weight_decay=1e-5)
         self.train()
         self.all_embeddings = F.normalize(self.all_embeddings, dim=-1, p=2).detach().cpu().numpy()
-
+    
     def get_embedding(self):
-        return self.all_embeddings, self.true_label
-
+        return self.all_embeddings,self.true_label
+    
     def train(self):
 
         loss_t = 1e10
@@ -672,19 +714,20 @@ class Node_ModelTrainer(embedder):
             losses = []
             embs = []
             for batch in self._loader:
-                emb, loss = self._model(batch)
+
+                emb,loss = self._model(batch)
                 self._optimizer.zero_grad()
                 loss.backward()
                 self._optimizer.step()
                 self._model.update_moving_average()
                 losses.append(loss.item())
-                embs = embs + emb
+                embs = embs +emb
 
-            st = '[{}][Epoch {}/{}] Loss: {:.4f}'.format(currentTime(),
+            st = '[{}][Epoch {}/{}] Loss: {:.4f}'.format(currentTime(), 
                                                          epoch, self._args.Nepochs, np.mean(np.array(losses)))
             print(st)
-            # Early Stopping Criterion
-            if np.mean(np.array(losses)) < loss_t:
+            #Early Stopping Criterion
+            if  np.mean(np.array(losses)) < loss_t:
                 loss_t = np.mean(np.array(losses))
             else:
                 cnt_wait = cnt_wait + 1
@@ -692,15 +735,14 @@ class Node_ModelTrainer(embedder):
                 print("Early Stopping Criterion")
                 break
 
-        self.all_embeddings = torch.tensor(embs)
+        self.all_embeddings  = torch.tensor(embs)
         print("\n----Node-Level Training Done! ----\n")
-
 
 class NodeLevel(nn.Module):
     def __init__(self, layer_config, args):
         super().__init__()
         self._device = f'cuda:{args.device}' if torch.cuda.is_available() else "cpu"
-        # encoder
+        #encoder
         self.student_encoder = Encoder(layer_config=layer_config)
         self.teacher_encoder = copy.deepcopy(self.student_encoder)
         self.student_encoder = self.student_encoder.to(self._device)
@@ -710,16 +752,16 @@ class NodeLevel(nn.Module):
 
         rep_dim = layer_config[-1]
 
-        # projection head
+        #projection head
         self.student_projector = nn.Sequential(nn.Linear(rep_dim, args.N_pred_hid), nn.BatchNorm1d(args.N_pred_hid),
                                                nn.PReLU(), nn.Linear(args.N_pred_hid, rep_dim))
-
+     
         self.student_projector = self.student_projector.to(self._device)
 
         self.student_projector.apply(init_weights)
         self.teacher_projector = copy.deepcopy(self.student_projector)
         set_requires_grad(self.teacher_projector, False)
-
+        
     def reset_moving_average(self):
         del self.teacher_encoder
         self.teacher_encoder = None
@@ -730,33 +772,33 @@ class NodeLevel(nn.Module):
         update_moving_average(self.teacher_ema_updater, self.teacher_projector, self.student_projector)
 
     def forward(self, batch):
-        student = self.student_encoder(batch.x1.to(torch.float32).to(self._device), batch.edge_index1.to(self._device))
+
+        student = self.student_encoder(batch.x1.to(torch.float32).to(self._device),batch.edge_index1.to(self._device))
 
         h1 = self.student_projector(student)
-
-        with torch.no_grad():  # stop gradient
+        
+        with torch.no_grad(): #stop gradient
             teacher = self.teacher_encoder(batch.x2.to(torch.float32).to(self._device),
                                            batch.edge_index2.to(self._device))
-        with torch.no_grad():  # stop gradient
+        with torch.no_grad(): #stop gradient
             h2 = self.teacher_projector(teacher)
 
-        emb = self.student_encoder(batch.x.to(torch.float32).to(self._device), batch.edge_index.to(self._device))
-
+        emb = self.student_encoder(batch.x.to(torch.float32).to(self._device),batch.edge_index.to(self._device))
+   
         emb = emb.detach().cpu().numpy().tolist()
 
-        loss = get_loss(h1, h2)
-
-        return emb, loss
-
+        loss = get_loss(h1,h2)              
+          
+        return emb,loss
 
 class Graph_ModelTrainer(embedder):
 
-    def __init__(self, args, block_num):
+    def __init__(self, args,block_num):
         self.block_num = block_num
         embedder.__init__(self, args)
         self._args = args
         self._init()
-
+    
     def _init(self):
         args = self._args
         block_num = self.block_num
@@ -767,18 +809,19 @@ class Graph_ModelTrainer(embedder):
             print("using cuda")
 
         layers = [300] + self.hidden_layers
-        # load data
+        #load data
         self._model = GraphLevel(layers, args).to(self._device)
         self._model.to(self._device)
-        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=0.0000006, weight_decay=1e-5)
+        self._optimizer = optim.AdamW(params=self._model.parameters(), lr=args.Glr, weight_decay=1e-5)
 
-        self._loader, self.true_label = get_Graph_Dataset(block_num)
+        self._loader,self.true_label = get_Graph_Dataset(args,block_num)
         self.train()
         self.all_embeddings = F.normalize(self.all_embeddings, dim=-1, p=2).detach().cpu().numpy()
 
-    def get_embedding(self):
-        return self.all_embeddings, self.true_label
 
+    def get_embedding(self):
+        return self.all_embeddings,self.true_label
+            
     def train(self):
         h_loss = 1e10
         cnt_wait = 0
@@ -789,34 +832,34 @@ class Graph_ModelTrainer(embedder):
             embs = []
             for batch in self._loader:
                 batch = batch.to(self._device)
-                emb, loss = self._model(batch)
-                self._optimizer.zero_grad()
+                emb,loss = self._model(batch)
+                self._optimizer.zero_grad() 
                 loss.backward()
                 self._optimizer.step()
                 self._model.update_moving_average()
                 losses.append(loss.item())
                 embs = embs + emb
-            st = '[{}][Epoch {}/{}] Loss: {:.4f}'.format(currentTime(),
-                                                         epoch, self._args.Gepochs, np.mean(np.array(losses)))
+            st = '[{}][Epoch {}/{}] Loss: {:.4f}'.format(currentTime(), 
+                                                     epoch,self._args.Gepochs, np.mean(np.array(losses)))
             print(st)
 
-            # Early Stopping Criterion
+            #Early Stopping Criterion
             if np.mean(np.array(losses)) < h_loss:
-                h_loss = np.mean(np.array(losses))
+                h_loss = np.mean(np.array(losses)) 
             elif np.mean(np.array(losses)) > h_loss:
                 cnt_wait = cnt_wait + 1
             if cnt_wait > 5:
                 break
         self.all_embeddings = torch.tensor(embs)
         print("\n----Graph-Level Training Done! ----")
-
-
+        
 class GraphLevel(nn.Module):
     def __init__(self, layer_config, args):
+
         self.args = args
         super().__init__()
         self._device = f'cuda:{args.device}' if torch.cuda.is_available() else "cpu"
-        # encoder
+        #encoder
         self.student_encoder = Encoder(layer_config)
         self.teacher_encoder = copy.deepcopy(self.student_encoder)
         self.student_encoder.to(self._device)
@@ -825,17 +868,17 @@ class GraphLevel(nn.Module):
         self.teacher_ema_updater = EMA(args.mad, args.Gepochs)
 
         rep_dim = layer_config[-1]
-        # projection head
+        #projection head
         self.student_projector = nn.Sequential(nn.Linear(rep_dim, args.G_pred_hid), nn.BatchNorm1d(args.G_pred_hid),
                                                nn.PReLU(), nn.Linear(args.G_pred_hid, rep_dim))
         self.student_projector.to(self._device)
         self.student_projector.apply(init_weights)
         self.teacher_projector = copy.deepcopy(self.student_projector)
         set_requires_grad(self.teacher_projector, False)
-        # pooling
+        #pooling
         self.pool = GlobalAttention(gate_nn=nn.Sequential(
-            nn.Linear(rep_dim, rep_dim), nn.BatchNorm1d(rep_dim), nn.ReLU(), nn.Linear(rep_dim, 1)))
-
+                nn.Linear(rep_dim, rep_dim), nn.BatchNorm1d(rep_dim), nn.ReLU(), nn.Linear(rep_dim, 1))) 
+  
     def reset_moving_average(self):
         del self.teacher_encoder
         self.teacher_encoder = None
@@ -845,26 +888,26 @@ class GraphLevel(nn.Module):
         update_moving_average(self.teacher_ema_updater, self.teacher_encoder, self.student_encoder)
         update_moving_average(self.teacher_ema_updater, self.teacher_projector, self.student_projector)
 
-    def forward(self, batch):
-        student = self.student_encoder(batch.x1.to(self._device), batch.edge_index1.to(self._device))
+    def forward(self,batch):
 
-        h1 = self.pool(student, batch.batch)
+        student = self.student_encoder(batch.x1.to(self._device),batch.edge_index1.to(self._device))
+
+        h1 = self.pool(student,batch.batch)
         h1 = self.student_projector(h1)
 
-        with torch.no_grad():  # stop gradient
-            teacher = self.teacher_encoder(batch.x2.to(self._device), batch.edge_index2.to(self._device))
-        h2 = self.pool(teacher, batch.batch)
-        with torch.no_grad():  # stop gradient
+        with torch.no_grad(): #stop gradient
+            teacher = self.teacher_encoder(batch.x2.to(self._device),batch.edge_index2.to(self._device))
+        h2 = self.pool(teacher,batch.batch)
+        with torch.no_grad(): #stop gradient
             h2 = self.teacher_projector(h2)
 
-        emb = self.student_encoder(batch.x.to(self._device), batch.edge_index.to(self._device))
-        emb = self.pool(emb, batch.batch)
+        emb = self.student_encoder(batch.x.to(self._device),batch.edge_index.to(self._device))
+        emb = self.pool(emb,batch.batch)
         emb = emb.detach().cpu().numpy().tolist()
-        loss = get_loss(h1, h2)
+        loss = get_loss(h1,h2)
         res_emb = emb
 
-        return res_emb, loss
-
+        return res_emb,loss
 
 def make_transition(trans, *items):
     transition = {}
@@ -881,7 +924,6 @@ def make_transition(trans, *items):
             transition[key] = torch.Tensor([item])
 
     return transition
-
 
 def make_batch(state, action, old_log_prob, advantage, old_value, learn_size, batch_size, use_cuda):
     batch = []
@@ -908,7 +950,6 @@ def make_batch(state, action, old_log_prob, advantage, old_value, learn_size, ba
         batch.append([mini_state, mini_action, mini_old_log_prob, mini_advantage, mini_old_value])
     return batch
 
-
 def calculate_nature_cnn_out_dim(height, weight):
     size_h = np.floor((height - 8) / 4) + 1
     size_h = np.floor((size_h - 4) / 2) + 1
@@ -917,7 +958,6 @@ def calculate_nature_cnn_out_dim(height, weight):
     size_w = np.floor((size_w - 4) / 2) + 1
     size_w = np.floor((size_w - 3) / 1) + 1
     return size_h, size_w
-
 
 class DQN_Config:
     def __init__(self, input_type, input_size=None):
@@ -945,7 +985,6 @@ class DQN_Config:
                                   [64, 64, 3, 1]]
             size_h, size_w = calculate_nature_cnn_out_dim(input_size[1], input_size[2])
             self.feature_dim = [int(64 * size_h * size_w), 256]
-
 
 class DQN:
     def __init__(self, state_dim, action_dim, input_type="vector", args=None):
@@ -1033,7 +1072,6 @@ class DQN:
             self.update_network()
         return loss.item()
 
-
 class PPO_Config:
     def __init__(self, input_type, input_size=None):
         self.max_buffer = 2048
@@ -1068,7 +1106,6 @@ class PPO_Config:
                                   [64, 64, 3, 1]]
             size_h, size_w = calculate_nature_cnn_out_dim(input_size[1], input_size[2])
             self.feature_dim = [int(64 * size_h * size_w), 256]
-
 
 class PPO:
     def __init__(self, state_dim, action_dim, continuous=True, input_type="vector", args=None):
@@ -1158,7 +1195,6 @@ class PPO:
         self.buffer.clear()
         return np.mean(loss_list)
 
-
 class ActorCritic(nn.Module):
     def __init__(self, state_dim, action_dim, actor_layer, critic_layer, encoder=None, encoder_layer=None,
                  feature_dim=None, continuous=False, std_init=0.6):
@@ -1247,7 +1283,6 @@ class ActorCritic(nn.Module):
         value = self.critic(state)
         return action_log_prob.cuda(), value, dist_entropy.cuda()
 
-
 class MLPEncoder(nn.Module):
     def __init__(self, state_dim, layer_dim: list, feature_dim: int):
         super(MLPEncoder, self).__init__()
@@ -1267,7 +1302,6 @@ class MLPEncoder(nn.Module):
 
     def get_dim(self):
         return self.out_dim
-
 
 class CNNEncoder(nn.Module):
     def __init__(self, layer_dim: list, feature_dim: list):
@@ -1290,7 +1324,6 @@ class CNNEncoder(nn.Module):
     def get_dim(self):
         return self.out_dim
 
-
 class QNet(nn.Module):
     def __init__(self, state_dim, action_dim, q_layer, encoder=None, encoder_layer=None, feature_dim=None):
         super(QNet, self).__init__()
@@ -1308,7 +1341,7 @@ class QNet(nn.Module):
 
         layers = [nn.Linear(input_dim, q_layer[0]),
                   nn.ReLU(inplace=True)]
-        for i in range(len(q_layer) - 1):
+        for i in range(len(q_layer)-1):
             layers.append(nn.Linear(q_layer[i], q_layer[i + 1]))
             layers.append(nn.ReLU(inplace=True))
         layers.append(nn.Linear(q_layer[-1], action_dim))
@@ -1327,7 +1360,6 @@ class QNet(nn.Module):
             state = self.encoder(state)
         q = self.q_net(state)
         return q
-
 
 class BaseBuffer:
     def __init__(self, trans, max_len):
@@ -1379,20 +1411,19 @@ class BaseBuffer:
         return data
 
 
-def unique(lists):
-    # delete duplicate attribute values
-    lists = list(map(lambda x: x.lower(), lists))
-    if lists[0] == '':
+def unique(lists):  
+    #delete duplicate attribute values
+    lists = list(map(lambda x: x.lower(), lists ))
+    if lists[0]=='':
         res = []
-    else:
+    else: 
         res = [lists[0]]
     for i in range(len(lists)):
-        if i == 0 or (lists[i] in lists[0:i]) or lists[i] == '':
+        if i==0 or (lists[i] in lists[0:i]) or lists[i]=='':
             continue
         else:
             res.append(lists[i])
     return res
-
 
 def construct_graph_from_df(df, G=None):
     # construct graph according to df
@@ -1416,93 +1447,93 @@ def construct_graph_from_df(df, G=None):
         G.add_nodes_from(hashtags)
 
         edges = []
-        # Connect the message node with each related user node, word node, etc
-        edges += [(tid, each) for each in user_ids]
+        #Connect the message node with each related user node, word node, etc
+        edges += [(tid, each) for each in user_ids] 
         edges += [(tid, each) for each in words]
         edges += [(tid, each) for each in hashtags]
         G.add_edges_from(edges)
     return G
 
-
-def construct_graph(data, feature, index):
-    # Build graph for a single tweet
+def construct_graph(data,feature,index):
+#Build graph for a single tweet 
     G = nx.Graph()
     X = []
 
     tweet = data["text"].values
     X.append(feature[index].tolist())
-    index = index + 1
+    index = index+1
     tweet_id = data["tweet_id"].values
     G.add_node(tweet_id[0])
+
+    user_loc = data["user_loc"].values
 
     f_w = data["filtered_words"].tolist()
     edges = []
 
     h_t = data["hashtags"].tolist()
     h_t = h_t[0]
-    n =  + f_w[0] + h_t
+    n = [user_loc[0]] + f_w[0] + h_t 
     n = unique(n)
-
-    if len(n) != 0:
+    
+    if len(n)!=0:
         for each in n:
             X.append(feature[index].tolist())
-            index = index + 1
+            index = index+1
         G.add_nodes_from(n)
-        edges += [(tweet_id[0], each) for each in n]
+        edges +=[(tweet_id[0], each) for each in n]
     G.add_edges_from(edges)
-    return G, X
-
+    return G,X
 
 def normalize_adj(adj):
     # Symmetrically normalize adjacency matrix
-    adj = sp.coo_matrix(adj)
-    rowsum = np.array(adj.sum(1))
-    d_inv_sqrt = np.power(rowsum, -0.5).flatten()
-    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
-    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-    return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo()
+    adj = sp.coo_matrix(adj) 
+    rowsum = np.array(adj.sum(1)) 
+    d_inv_sqrt = np.power(rowsum, -0.5).flatten() 
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0. 
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt) 
+    return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo() 
 
-
-def aug_edge(adj):  # edge perturbation
+def aug_edge(adj): #  edge perturbation
     adj = np.array(adj)
     aug_adj1 = np.array([[i for i in j] for j in adj])
     aug_adj2 = np.array([[i for i in j] for j in adj])
-    p = np.random.randint(0, len(adj) - 1)
+    p = np.random.randint(0,len(adj)-1)
     aug_adj1[p][0] = 0
     aug_adj1[0][p] = 0
-    t = np.random.randint(1, len(adj) - 1)
+    t = np.random.randint(1,len(adj)-1)
     aug_adj1[t][p] = 1
     aug_adj1[p][t] = 1
-
-    p = np.random.randint(0, len(adj) - 1)
+    
+    p = np.random.randint(0,len(adj)-1)
     aug_adj2[p][0] = 0
     aug_adj2[0][p] = 0
-    t = np.random.randint(1, len(adj) - 1)
+    t = np.random.randint(1,len(adj)-1)
     aug_adj2[t][p] = 1
     aug_adj2[p][t] = 1
+        
+    return aug_adj1,aug_adj2
 
-    return aug_adj1, aug_adj2
-
-
-def get_edge_index(adj):  # Get edge set according to adjacency matrix
+def get_edge_index(adj):  #Get edge set according to adjacency matrix
 
     edge_index1 = []
     edge_index2 = []
     for i in range(len(adj)):
         for j in range(len(adj)):
-            if adj[i][j] == 1 and i < j:
+            if adj[i][j]==1 and i<j:
                 edge_index1.append(i)
                 edge_index2.append(j)
 
     edge_index = [edge_index1] + [edge_index2]
-
+    
     return edge_index
 
+def get_data(message_num,start,tweet_sum,save_path):
 
-def get_data(message_num, start, tweet_sum, save_path, dataset):
     os.makedirs(save_path, exist_ok=True)
-    df = dataset
-    df = df.sort_values(by='created_at').reset_index()
+    
+    
+    dataset = Event2012().load_data()
+    df = dataset.sort_values(by='created_at').reset_index()
     ini_df = df[start:tweet_sum]
 
     G = construct_graph_from_df(ini_df)
@@ -1518,29 +1549,29 @@ def get_data(message_num, start, tweet_sum, save_path, dataset):
 
     combined_features = np.load(save_path + 'features_69612_0709_spacy_lg_zero_multiclasses_filtered.npy')
     A = nx.adjacency_matrix(G).todense().tolist()
-
+    
     X = []
     nodes = list(G.nodes)
-
-    tweet = []
+    
+    tweet=[]
     j = 0
 
     for i in range(len(nodes)):
-        t = nodes[i][0:2]
-        e = nodes[i][2:]
-        if t == "t_":
+        t=nodes[i][0:2]
+        e=nodes[i][2:]
+        if t=="t_":
             tweet.append(i)
-            index = list(ini_df["tweet_id"]).index(int(e))
+            index=list(ini_df["tweet_id"]).index(int(e))
             X.append(list(combined_features[index]))
-            j = j + 1
+            j=j+1
     X = torch.tensor(X)
-    adj = np.array([[0] * len(tweet)] * len(tweet))
+    adj = np.array([[0]*len(tweet)]*len(tweet))
 
     for i in range(len(tweet)):
         for j in range(len(A)):
-            if A[tweet[i]][j] == 1:
+            if A[tweet[i]][j]==1:
                 for s in range(len(tweet)):
-                    if A[j][tweet[s]] == 1 and s != i:
+                    if A[j][tweet[s]]==1 and s!=i:
                         adj[i][s] = 1
     edge_index = get_edge_index(adj)
 
@@ -1551,18 +1582,18 @@ def get_data(message_num, start, tweet_sum, save_path, dataset):
     drop_percent = 0.2
     i = 0
     while 1:
-        if i >= len(G.edges) * drop_percent:
+        if i >= len(G.edges)*drop_percent:
             break
-        m1 = random.randint(0, len(edge_index1[0]) - 1)
-        m2 = random.randint(0, len(edge_index2[0]) - 1)
-        if m1 == m2:
+        m1 = random.randint(0, len(edge_index1[0])-1)
+        m2 = random.randint(0, len(edge_index2[0])-1)
+        if m1==m2:
             continue
         else:
             del edge_index1[0][m1]
             del edge_index1[1][m1]
             del edge_index2[0][m2]
             del edge_index2[1][m2]
-
+    
         i = i + 1
     edge_index = torch.tensor(edge_index)
     edge_index1 = torch.tensor(edge_index1)
@@ -1579,44 +1610,42 @@ def get_data(message_num, start, tweet_sum, save_path, dataset):
     dict_graph['y'] = true_y
     return dict_graph
 
-
-def getData(M_num, dataset):  # construct an entire graph within a block
-    #     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-    args = args_define.args
-    M = [20254, 28976, 30467, 32302, 34312, 36146, 37422, 42700, 44260, 45623, 46719,
-         47951, 51188, 53160, 56116, 58665, 59575, 62251, 64138, 65537, 66430, 68840]
+def getData(args,M_num):  #construct an entire graph within a block
+#     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    M =[20254,28976,30467,32302,34312,36146,37422,42700,44260,45623,46719,
+        47951,51188,53160,56116,58665,59575,62251,64138,65537,66430,68840]  
 
     if M_num == 0:
         num = 0
         size = 500
     elif M_num == 1:
-        num = M[M_num - 1]
+        num = M[M_num-1]
         size = 500
-    elif M[M_num] - M[M_num - 1] > 2000:
-        num = M[M_num - 1]
+    elif M[M_num]-M[M_num-1]>2000:
+        num = M[M_num-1]
         size = 1000
     else:
-        num = M[M_num - 1]
-        size = M[M_num] - M[M_num - 1]
+        num = M[M_num-1]
+        size = M[M_num]-M[M_num-1]
     data = []
     i = M_num
     j = 0
 
     while 1:
-        if (num + size) >= M[i]:
-            tmp = get_data(i, num, M[i], args.file_path, dataset)
+        if (num+size)>=M[i]:
+            tmp = get_data(i, num ,M[i], args.file_path)
             data.append(tmp)
             break
         else:
-            tmp = get_data(i, num, num + size, args.file_path, dataset)
+            tmp = get_data(i, num, num+size, args.file_path)
             data.append(tmp)
             j = j + 1
-            print("***************Block " + str(j) + " is done.****************")
-            num = num + size
+            print("***************Block "+str(j)+" is done.****************")
+            num = num+size
+    
 
     save_data(data, args.file_path, M_num)
     return data
-
 
 def save_data(data, save_path, M_num):
     os.makedirs(save_path, exist_ok=True)
@@ -1626,50 +1655,49 @@ def save_data(data, save_path, M_num):
     print(f"Data saved at {file_path}")
 
 
-def get_Graph_Dataset(message_number):
-    args = args_define().args
+def get_Graph_Dataset(args,message_number):
     print("\nBuilding graph-level social network...")
-    start_time = time.time()
-    # load data for graph-level contrastive learning
+    start_time = time.time() 
+    #load data for graph-level contrastive learning
     dataset = []
     label = []
-    file_name = args.file_path + 'GCL-data/message_block_' + str(message_number) + '.npy'
-    data = np.load(file_name, allow_pickle=True)
+    file_name = args.file_path + 'GCL-data/message_block_'+str(message_number)+'.npy'
+    data = np.load(file_name,allow_pickle=True)
 
     for dict_data in data:
-        data = Data(x=dict_data['X'], x1=dict_data['x1'], x2=dict_data['x2'],
-                    edge_index=dict_data['edge_index'], edge_index1=dict_data['edge_index1'],
+        data = Data(x=dict_data['X'],x1=dict_data['x1'],x2=dict_data['x2'],
+                    edge_index=dict_data['edge_index'],edge_index1=dict_data['edge_index1'],
                     edge_index2=dict_data['edge_index2'])
         dataset.append(data)
         label.append(dict_data['label'])
-    if message_number == 0:
-        dataset = loader.DataLoader(dataset, batch_size=4096)
+    if message_number == 0 :
+        dataset = loader.DataLoader(dataset,batch_size=4096)
     else:
-        dataset = loader.DataLoader(dataset, batch_size=len(dataset))
+        dataset = loader.DataLoader(dataset,batch_size=len(dataset))
     end_time = time.time()
     run_time = end_time - start_time
-    print("Done! It takes " + str(int(run_time)) + " seconds.\n")
-    return dataset, label
+    print("Done! It takes "+str(int(run_time))+" seconds.\n")
+    return dataset,label
 
-
-def get_Node_Dataset(message_number, dataset):
-    # load data for node-level contrastive learning
+def get_Node_Dataset(args,message_number):
+    #load data for node-level contrastive learning
     print("\nBuilding node-level social network...")
-    start_time = time.time()
-    # datas = getData(message_number)
+    start_time = time.time() 
+    #datas = getData(message_number)
     file_path = os.path.join(args.file_path, f'data_{message_number}.pkl')
 
     if os.path.exists(file_path):
         with open(file_path, 'rb') as f:
-            datas = pickle.load(f)
+                datas = pickle.load(f)
         print("Data loaded successfully.")
+        # 现在你可以使用 data 进行进一步操作
     else:
         print(f"No data file found at {file_path}")
-        datas = getData(message_number, dataset)
-
+        datas = getData(message_number)
+    
     dataset = []
     labels = []
-
+    
     for data in datas:
         dict_data = data
 
@@ -1679,30 +1707,28 @@ def get_Node_Dataset(message_number, dataset):
         dict_data['edge_index'] = torch.tensor(np.array(dict_data['edge_index']))
         dict_data['edge_index1'] = torch.tensor(np.array(dict_data['edge_index1']))
         dict_data['edge_index2'] = torch.tensor(np.array(dict_data['edge_index2']))
-        data = Data(x=dict_data['x'], x1=dict_data['x1'], x2=dict_data['x2'],
-                    edge_index=dict_data['edge_index'], edge_index1=dict_data['edge_index1'],
-                    edge_index2=dict_data['edge_index2'])
+        data = Data(x=dict_data['x'],x1=dict_data['x1'],x2=dict_data['x2'],
+                        edge_index=dict_data['edge_index'],edge_index1=dict_data['edge_index1'],
+                        edge_index2=dict_data['edge_index2'])
 
         label = dict_data['y']
-        if len(labels) == 0:
+        if len(labels)==0:
             labels = label
         else:
-            labels = torch.cat([labels, label])
-
+            labels = torch.cat([labels,label])
+    
         dataset.append(data)
     end_time = time.time()
     run_time = end_time - start_time
-    print("Done! It takes " + str(int(run_time)) + " seconds.\n")
-    return dataset, np.array(labels).tolist()
+    print("Done! It takes "+str(int(run_time))+" seconds.\n")
+    return dataset,np.array(labels).tolist()
 
-
-# Calculate the embeddings of all the documents in the dataframe,
+# Calculate the embeddings of all the documents in the dataframe, 
 # the embedding of each document is an average of the pre-trained embeddings of all the words in it
 def documents_to_features(df):
-    nlp = en_core_web_lg.load()
+    nlp = spacy.load("en_core_web_lg")
     features = df.filtered_words.apply(lambda x: nlp(' '.join(x)).vector).values
     return np.stack(features, axis=0)
-
 
 # encode one times-tamp
 # t_str: a string of format '2012-10-11 07:19:34'
@@ -1712,18 +1738,9 @@ def extract_time_feature(t_str):
     delta = t - OLE_TIME_ZERO
     return [(float(delta.days) / 100000.), (float(delta.seconds) / 86400)]  # 86,400 seconds in day
 
-
 # encode the times-tamps of all the messages in the dataframe
 def df_to_t_features(df):
     t_features = np.asarray([extract_time_feature(t_str) for t_str in df['created_at']])
     return t_features
 
 
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    args = args_define().args
-    hcrc = HCRC(args, dataset)
-
-    predictions, ground_truths = hcrc.detection()  
-    results = hcrc.evaluate(predictions, ground_truths)  

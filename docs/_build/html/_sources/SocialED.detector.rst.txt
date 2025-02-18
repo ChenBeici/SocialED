@@ -1,4 +1,4 @@
-SocialED.Detector
+SocialED.detector
 =========================
 
 LDA
@@ -44,7 +44,7 @@ WMD
 Bert
 -----------------------------
 
-.. automodule:: SocialED.detector.bert
+.. automodule:: SocialED.detector.bertmodel
    :members:
    :undoc-members:
    :show-inheritance:
@@ -129,7 +129,7 @@ HISEvent
    :undoc-members:
    :show-inheritance:
 
-ADPSemEvent
+ADPSEMEvent
 ---------------------------------
 
 .. automodule:: SocialED.detector.adpsemevent
@@ -137,10 +137,12 @@ ADPSemEvent
    :undoc-members:
    :show-inheritance:
 
-Module Contents
----------------
+Hypersed
+---------------------------------
 
-.. automodule:: SocialED.detector
+.. automodule:: SocialED.detector.hypersed
    :members:
    :undoc-members:
    :show-inheritance:
+
+

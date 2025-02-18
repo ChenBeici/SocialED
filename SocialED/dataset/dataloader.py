@@ -13,7 +13,7 @@ class DatasetLoader:
         self.dir_path = dir_path
         self.dataset = dataset
         self.default_root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../dataset/data"))
-        #print(f"Data root path: {self.default_root_path}")  
+        print(f"Data root path: {self.default_root_path}")  # 调试信息
         os.makedirs(self.default_root_path, exist_ok=True)
         
         self.required_columns = [
@@ -34,7 +34,7 @@ class DatasetLoader:
             
             # 确保目标目录存在
             os.makedirs(local_target_folder, exist_ok=True)
-            print(f"Target directory: {local_target_folder}")  
+            print(f"Target directory: {local_target_folder}")  # 调试信息
             
             # 搜索.npy文件
             npy_files = []
@@ -45,7 +45,7 @@ class DatasetLoader:
             
             if npy_files:
                 target_file = os.path.join(local_target_folder, f'{dataset_name}.npy')
-                print(f"Copying from {npy_files[0]} to {target_file}")  
+                print(f"Copying from {npy_files[0]} to {target_file}")  # 调试信息
                 shutil.copy2(npy_files[0], target_file)
                 return True
             else:
@@ -67,7 +67,6 @@ class DatasetLoader:
             local_target_folder
         )
 
-    '''
     def load_data(self):
         """Temporary implementation that returns empty dataset"""
         print(f"Loading {self.dataset} dataset (mock data)")
@@ -76,7 +75,6 @@ class DatasetLoader:
             'labels': [],
             'metadata': {'name': self.dataset}
         }
-    '''
 
     def get_dataset_language(self):
         """
@@ -165,8 +163,6 @@ class MAVEN(DatasetLoader):
         df = pd.DataFrame(data, columns=self.required_columns)
         print("MAVEN dataset loaded successfully.")
 
-
-
         return df
 
 class CrisisNLP(DatasetLoader):
@@ -219,10 +215,8 @@ class Event2012(DatasetLoader):
         data = np.load(file_path, allow_pickle=True)
         df = pd.DataFrame(data, columns=self.required_columns)
         print("Event2012 dataset loaded successfully.")
-
-
-
         return df
+
 
 class Event2018(DatasetLoader):
     def __init__(self, dir_path=None):
@@ -250,7 +244,8 @@ class Event2018(DatasetLoader):
         print("Event2018 dataset loaded successfully.")
         return df
 
-class ArabicTwitter(DatasetLoader):
+
+class Arabic_Twitter(DatasetLoader):
     def __init__(self, dir_path=None):
         super().__init__(dataset='Arabic_Twitter', dir_path=dir_path)
     
@@ -275,6 +270,7 @@ class ArabicTwitter(DatasetLoader):
         df = pd.DataFrame(data, columns=self.required_columns)
         print("Arabic Twitter dataset loaded successfully.")
         return df
+
 
 class CrisisLexT26(DatasetLoader):
     def __init__(self, dir_path=None):

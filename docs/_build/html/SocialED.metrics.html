@@ -3,16 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.Utils" href="SocialED.utils.html" /><link rel="prev" title="SocialED.Detector" href="SocialED.detector.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.utils" href="SocialED.utils.html" /><link rel="prev" title="SocialED.detector" href="SocialED.detector.html" />
 
     <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.Metrics - SocialED documentation</title>
+        <title>SocialED.metrics - SocialED 1.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -170,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SocialED  documentation</div></a>
+      <a href="index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SocialED  documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,10 +204,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.Detector</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.utils.html">SocialED.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.loss.html">SocialED.loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataprocess.html">SocialED.dataprocess</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -259,23 +257,23 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="socialed-metrics">
-<h1>SocialED.Metrics<a class="headerlink" href="#socialed-metrics" title="Permalink to this heading">¶</a></h1>
+<h1>SocialED.metrics<a class="headerlink" href="#socialed-metrics" title="Permalink to this heading">¶</a></h1>
 <section id="module-SocialED.metrics.metric">
-<span id="metric"></span><h2>metric<a class="headerlink" href="#module-SocialED.metrics.metric" title="Permalink to this heading">¶</a></h2>
-<p>Metrics used to evaluate the outlier detection performance</p>
+<span id="metrics"></span><h2>metrics<a class="headerlink" href="#module-SocialED.metrics.metric" title="Permalink to this heading">¶</a></h2>
+<p>Evaluation metrics for clustering and classification in social event detection.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_acc">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_acc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accuracy score for classification evaluation.</p>
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_nmi">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_nmi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_nmi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_nmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized Mutual Information (NMI) score for clustering evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
-<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted cluster labels.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>acc</strong> – Accuracy score.</p>
+<dd class="field-even"><p><strong>nmi</strong> – Normalized Mutual Information score.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
@@ -344,18 +342,18 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_nmi">
-<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_nmi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_nmi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_nmi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalized Mutual Information (NMI) score for clustering evaluation.</p>
+<dt class="sig sig-object py" id="SocialED.metrics.metric.eval_acc">
+<span class="sig-prename descclassname"><span class="pre">SocialED.metrics.metric.</span></span><span class="sig-name descname"><span class="pre">eval_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/metrics/metric.html#eval_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.metrics.metric.eval_acc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy score for classification evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ground_truths</strong> (<em>array-like</em>) – Ground truth labels.</p></li>
-<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted cluster labels.</p></li>
+<li><p><strong>predictions</strong> (<em>array-like</em>) – Predicted labels.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>nmi</strong> – Normalized Mutual Information score.</p>
+<dd class="field-even"><p><strong>acc</strong> – Accuracy score.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
@@ -376,7 +374,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">SocialED.Utils</div>
+                <div class="title">SocialED.utils</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -387,7 +385,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">SocialED.Detector</div>
+                <div class="title">SocialED.detector</div>
                 
               </div>
             </a>
@@ -421,13 +419,13 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">SocialED.Metrics</a><ul>
-<li><a class="reference internal" href="#module-SocialED.metrics.metric">metric</a><ul>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_acc"><code class="docutils literal notranslate"><span class="pre">eval_acc()</span></code></a></li>
+<li><a class="reference internal" href="#">SocialED.metrics</a><ul>
+<li><a class="reference internal" href="#module-SocialED.metrics.metric">metrics</a><ul>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_nmi"><code class="docutils literal notranslate"><span class="pre">eval_nmi()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.metrics.metric.eval_ami"><code class="docutils literal notranslate"><span class="pre">eval_ami()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.metrics.metric.eval_ari"><code class="docutils literal notranslate"><span class="pre">eval_ari()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.metrics.metric.eval_f1"><code class="docutils literal notranslate"><span class="pre">eval_f1()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.metrics.metric.eval_nmi"><code class="docutils literal notranslate"><span class="pre">eval_nmi()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.metrics.metric.eval_acc"><code class="docutils literal notranslate"><span class="pre">eval_acc()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -441,7 +439,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e9012143"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

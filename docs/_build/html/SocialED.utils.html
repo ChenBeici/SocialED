@@ -3,16 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Cite" href="cite.html" /><link rel="prev" title="SocialED.Metrics" href="SocialED.metrics.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.loss" href="SocialED.loss.html" /><link rel="prev" title="SocialED.metrics" href="SocialED.metrics.html" />
 
     <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.Utils - SocialED documentation</title>
+        <title>SocialED.utils - SocialED 1.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -170,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SocialED  documentation</div></a>
+      <a href="index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SocialED  documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,10 +204,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.Detector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.Metrics</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SocialED.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.loss.html">SocialED.loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SocialED.dataprocess.html">SocialED.dataprocess</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -259,118 +257,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="socialed-utils">
-<h1>SocialED.Utils<a class="headerlink" href="#socialed-utils" title="Permalink to this heading">¶</a></h1>
+<h1>SocialED.utils<a class="headerlink" href="#socialed-utils" title="Permalink to this heading">¶</a></h1>
 <section id="module-SocialED.utils.utility">
 <span id="utility"></span><h2>utility<a class="headerlink" href="#module-SocialED.utils.utility" title="Permalink to this heading">¶</a></h2>
-<p>A set of utility functions to support outlier detection.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.utils.utility.check_parameter">
-<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">check_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2147483648</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2147483647</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#check_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.check_parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if an input is within the defined range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The input parameter to check.</p></li>
-<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The lower bound of the range.</p></li>
-<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The higher bound of the range.</p></li>
-<li><p><strong>param_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em><em> (</em><em>default=''</em><em>)</em>) – The name of the parameter.</p></li>
-<li><p><strong>include_left</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the lower bound (lower bound &lt;=).</p></li>
-<li><p><strong>include_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Whether includes the higher bound (&lt;= higher bound).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>within_range</strong> – Whether the parameter is within the range of (low, high)</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a> or raise errors</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.utils.utility.construct_graph_from_df">
-<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">construct_graph_from_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#construct_graph_from_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.construct_graph_from_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a graph from a DataFrame containing social media data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing social media data with columns:
-tweet_id, user_mentions, user_id, entities, sampled_words</p></li>
-<li><p><strong>G</strong> (<a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph" title="(in NetworkX v3.4.2)"><em>networkx.Graph</em></a><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Existing graph to add nodes/edges to. If None, creates new graph.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>G</strong> – Graph with nodes for tweets, users, entities and words, and edges between them.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph" title="(in NetworkX v3.4.2)">networkx.Graph</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.utils.utility.load_data">
-<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Data loading function that downloads .npy files from SocialED_datasets repository.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the dataset.</p></li>
-<li><p><strong>cache_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The directory for dataset caching.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>data</strong> – The loaded dataset.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">SocialED.utils</span> <span class="kn">import</span> <span class="n">load_data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;maven&#39;</span><span class="p">)</span> <span class="c1"># loads maven.npy dataset</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.utils.utility.logger">
-<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logger for detector.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The current epoch.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The current epoch loss value.</p></li>
-<li><p><strong>score</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – The current outlier scores.</p></li>
-<li><p><strong>target</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – The ground truth labels.</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The current epoch time.</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Verbosity mode. Range in [0, 3]. Larger value for printing out
-more log information. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
-<li><p><strong>train</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the logger is used for training.</p></li>
-<li><p><strong>deep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the logger is used for deep detector.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SocialED.utils.utility.pprint">
-<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;built-in</span> <span class="pre">function</span> <span class="pre">repr&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.pprint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pretty print the dictionary ‘params’</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – The dictionary to pretty print</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The offset at the beginning of each line.</p></li>
-<li><p><strong>printer</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function to convert entries to strings, typically
-the builtin str or repr.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<p>A set of utility functions to support social event detection tasks.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="SocialED.utils.utility.tokenize_text">
 <span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">tokenize_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#tokenize_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.tokenize_text" title="Permalink to this definition">¶</a></dt>
@@ -387,6 +277,27 @@ the builtin str or repr.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.pprint">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;built-in</span> <span class="pre">function</span> <span class="pre">repr&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.pprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print the dictionary ‘params’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – The dictionary to pretty print</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default=0</em><em>)</em>) – The offset at the beginning of each line</p></li>
+<li><p><strong>printer</strong> (<em>callable</em><em>, </em><em>optional</em><em> (</em><em>default=repr</em><em>)</em>) – The function to convert entries to strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pretty printed string representation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -409,6 +320,96 @@ If no GPU is presented, return ‘cpu’.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.check_parameter">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">check_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#check_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.check_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a parameter value is within specified bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The parameter value to check</p></li>
+<li><p><strong>lower</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Lower bound</p></li>
+<li><p><strong>upper</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Upper bound</p></li>
+<li><p><strong>param_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the parameter for error messages</p></li>
+<li><p><strong>include_left</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – Whether to include lower bound in valid range</p></li>
+<li><p><strong>include_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – Whether to include upper bound in valid range</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if parameter is valid, raises ValueError otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.currentTime">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">currentTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#currentTime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.currentTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current time as formatted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current time in format ‘YYYY-MM-DD HH:MM:SS’</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.sim">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">sim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#sim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.sim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute cosine similarity between two sets of vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z1</strong> (<em>torch.Tensor</em>) – First set of vectors</p></li>
+<li><p><strong>z2</strong> (<em>torch.Tensor</em>) – Second set of vectors</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Similarity matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.pairwise_sample">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">pairwise_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#pairwise_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.pairwise_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.SBERT_embed">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">SBERT_embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#SBERT_embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.SBERT_embed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Sentence-BERT to embed sentences.
+s_list: a list of sentences/ tokens to be embedded.
+language: the language of the sentences (‘English’, ‘French’, ‘Arabic’).
+output: the embeddings of the sentences/ tokens.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.DS_Combin">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">DS_Combin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#DS_Combin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.DS_Combin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> – All Dirichlet distribution parameters.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Combined Dirichlet distribution parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="SocialED.utils.utility.graph_statistics">
+<span class="sig-prename descclassname"><span class="pre">SocialED.utils.utility.</span></span><span class="sig-name descname"><span class="pre">graph_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/utils/utility.html#graph_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.utils.utility.graph_statistics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 
@@ -417,12 +418,12 @@ If no GPU is presented, return ‘cpu’.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="cite.html">
+          <a class="next-page" href="SocialED.loss.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Cite</div>
+                <div class="title">SocialED.loss</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -433,7 +434,7 @@ If no GPU is presented, return ‘cpu’.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">SocialED.Metrics</div>
+                <div class="title">SocialED.metrics</div>
                 
               </div>
             </a>
@@ -467,15 +468,18 @@ If no GPU is presented, return ‘cpu’.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">SocialED.Utils</a><ul>
+<li><a class="reference internal" href="#">SocialED.utils</a><ul>
 <li><a class="reference internal" href="#module-SocialED.utils.utility">utility</a><ul>
-<li><a class="reference internal" href="#SocialED.utils.utility.check_parameter"><code class="docutils literal notranslate"><span class="pre">check_parameter()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.utils.utility.construct_graph_from_df"><code class="docutils literal notranslate"><span class="pre">construct_graph_from_df()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.utils.utility.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.utils.utility.logger"><code class="docutils literal notranslate"><span class="pre">logger()</span></code></a></li>
-<li><a class="reference internal" href="#SocialED.utils.utility.pprint"><code class="docutils literal notranslate"><span class="pre">pprint()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.utils.utility.tokenize_text"><code class="docutils literal notranslate"><span class="pre">tokenize_text()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.pprint"><code class="docutils literal notranslate"><span class="pre">pprint()</span></code></a></li>
 <li><a class="reference internal" href="#SocialED.utils.utility.validate_device"><code class="docutils literal notranslate"><span class="pre">validate_device()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.check_parameter"><code class="docutils literal notranslate"><span class="pre">check_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.currentTime"><code class="docutils literal notranslate"><span class="pre">currentTime()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.sim"><code class="docutils literal notranslate"><span class="pre">sim()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.pairwise_sample"><code class="docutils literal notranslate"><span class="pre">pairwise_sample()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.SBERT_embed"><code class="docutils literal notranslate"><span class="pre">SBERT_embed()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.DS_Combin"><code class="docutils literal notranslate"><span class="pre">DS_Combin()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.utils.utility.graph_statistics"><code class="docutils literal notranslate"><span class="pre">graph_statistics()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -489,7 +493,7 @@ If no GPU is presented, return ‘cpu’.</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e9012143"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

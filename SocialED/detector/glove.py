@@ -15,9 +15,30 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 
 class GloVe:
+    r"""The GloVe model for social event detection that uses GloVe word embeddings
+    to detect events in social media data.
+
+    .. note::
+        This detector uses word embeddings to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    num_clusters : int, optional
+        Number of clusters for KMeans clustering. Default: ``50``.
+    random_state : int, optional
+        Random seed for reproducibility. Default: ``1``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/GloVe/'``.
+    model : str, optional
+        Path to pre-trained GloVe word vectors file. Default: ``'../model/model_needed/glove.6B.100d.txt'``.
+    """
     def __init__(self, dataset, num_clusters=50, random_state=1, file_path='../model/model_saved/GloVe/',
                  model='../model/model_needed/glove.6B.100d.txt'):
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.num_clusters = num_clusters
         self.random_state = random_state
         self.model_path = os.path.join(file_path, 'kmeans_model')
@@ -133,22 +154,3 @@ class GloVe:
         ari = metrics.adjusted_rand_score(ground_truths, predictions)
         print(f"Adjusted Rand Index (ARI): {ari}")
 
-
-# Main function
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-
-    glove = GloVe(dataset)
-
-    # Data preprocessing
-    glove.preprocess()
-
-    # Train the KMeans model
-    glove.fit()
-
-    # Detection
-    ground_truths, predicted_labels = glove.detection()
-
-    # Evaluate the model
-    glove.evaluate(ground_truths, predicted_labels)

@@ -20,6 +20,31 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 
 class EventX:
+    r"""The EventX model for social event detection that extracts events from breaking news
+    using keyword co-occurrence and graph-based clustering.
+
+    .. note::
+        This detector uses keyword co-occurrence and graph-based clustering to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    See :cite:`liu2020story` for details.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/eventX/'``.
+    num_repeats : int, optional
+        Number of times to repeat keyword extraction. Default: ``5``.
+    min_cooccur_time : int, optional
+        Minimum number of times keywords must co-occur. Default: ``2``.
+    min_prob : float, optional
+        Minimum probability threshold for keyword selection. Default: ``0.15``.
+    max_kw_num : int, optional
+        Maximum number of keywords to extract per document. Default: ``3``.
+    """
     def __init__(self,
                  dataset,
                  file_path='../model/model_saved/eventX/',
@@ -27,7 +52,7 @@ class EventX:
                  min_cooccur_time=2,
                  min_prob=0.15,
                  max_kw_num=3):
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.file_path = file_path
         self.mask_path = None
         self.num_repeats = num_repeats
@@ -83,6 +108,10 @@ class EventX:
 
         logging.info(
             f"Data split completed: {len(train_data)} train, {len(test_data)} test, {len(val_data)} validation samples.")
+
+    def fit(self):
+        pass
+
 
     def detection(self):
         kw_pair_dict, kw_dict = self.construct_dict(self.df, self.file_path)
@@ -294,14 +323,3 @@ def detect_kw_communities(G, communities, kw_pair_dict, kw_dict, max_kw_num=3):
 
 
 
-
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-
-    eventx = EventX(dataset)
-    # Data preprocessing
-    eventx.preprocess()
-
-    predictions, ground_truths = eventx.detection()
-    eventx.evaluate(predictions, ground_truths)

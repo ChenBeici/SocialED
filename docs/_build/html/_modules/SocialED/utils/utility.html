@@ -5,13 +5,9 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <link rel="shortcut icon" href="../../../_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.utils.utility - SocialED documentation</title>
+        <title>SocialED.utils.utility - SocialED 1.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=613ab9ff" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -169,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SocialED  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +189,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">SocialED  documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -207,10 +203,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API References</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataset.html">SocialED.Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.detector.html">SocialED.Detector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.metrics.html">SocialED.Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.utils.html">SocialED.Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataset.html">SocialED.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.detector.html">SocialED.detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.metrics.html">SocialED.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.utils.html">SocialED.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.loss.html">SocialED.loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SocialED.dataprocess.html">SocialED.dataprocess</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -253,80 +251,16 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for SocialED.utils.utility</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;A set of utility functions to support outlier detection.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;A set of utility functions to support social event detection tasks.&quot;&quot;&quot;</span>
 
-
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">numbers</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
-
-<span class="kn">from</span> <span class="nn">..metrics</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">MAX_INT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
-<span class="n">MIN_INT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">min</span>
-
-
-<div class="viewcode-block" id="construct_graph_from_df"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.construct_graph_from_df">[docs]</a><span class="k">def</span> <span class="nf">construct_graph_from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a graph from a DataFrame containing social media data.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    df : pandas.DataFrame</span>
-<span class="sd">        DataFrame containing social media data with columns:</span>
-<span class="sd">        tweet_id, user_mentions, user_id, entities, sampled_words</span>
-<span class="sd">    G : networkx.Graph, optional (default=None)</span>
-<span class="sd">        Existing graph to add nodes/edges to. If None, creates new graph.</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    G : networkx.Graph</span>
-<span class="sd">        Graph with nodes for tweets, users, entities and words, and edges between them.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-    
-    <span class="k">if</span> <span class="n">G</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="c1"># Add tweet node</span>
-        <span class="n">tid</span> <span class="o">=</span> <span class="s1">&#39;t_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tweet_id&#39;</span><span class="p">])</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">tid</span><span class="p">][</span><span class="s1">&#39;tweet_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Add user nodes</span>
-        <span class="n">user_ids</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;user_mentions&#39;</span><span class="p">]</span>
-        <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">])</span> 
-        <span class="n">user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">each</span><span class="p">)</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">user_ids</span><span class="p">]</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">user_ids</span><span class="p">:</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">each</span><span class="p">][</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Add entity nodes</span>
-        <span class="n">entities</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">each</span><span class="p">][</span><span class="s1">&#39;entity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Add word nodes</span>
-        <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;w_&#39;</span> <span class="o">+</span> <span class="n">each</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;sampled_words&#39;</span><span class="p">]]</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">each</span><span class="p">][</span><span class="s1">&#39;word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Add edges between tweet and other nodes</span>
-        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">edges</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">tid</span><span class="p">,</span> <span class="n">each</span><span class="p">)</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">user_ids</span><span class="p">]</span>
-        <span class="n">edges</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">tid</span><span class="p">,</span> <span class="n">each</span><span class="p">)</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">]</span> 
-        <span class="n">edges</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">tid</span><span class="p">,</span> <span class="n">each</span><span class="p">)</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">G</span></div>
+<span class="kn">from</span> <span class="nn">sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="tokenize_text"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.tokenize_text">[docs]</a><span class="k">def</span> <span class="nf">tokenize_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Tokenize text for social event detection tasks.</span>
@@ -355,129 +289,22 @@
         
     <span class="k">return</span> <span class="n">tokens</span></div>
 
-
-
-
-<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Data loading function that downloads .npy files from SocialED_datasets repository.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        The name of the dataset.</span>
-<span class="sd">    cache_dir : str, optional</span>
-<span class="sd">        The directory for dataset caching.</span>
-<span class="sd">        Default: ``None``.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    data : numpy.ndarray</span>
-<span class="sd">        The loaded dataset.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from SocialED.utils import load_data</span>
-<span class="sd">    &gt;&gt;&gt; data = load_data(name=&#39;maven&#39;) # loads maven.npy dataset</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">cache_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s1">&#39;.socialed/data&#39;</span><span class="p">)</span>
-    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/ChenBeici/SocialED_datasets/raw/main/npy_data/&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Failed downloading url </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>  <span class="c1"># filter out keep-alive new chunks</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data</span></div>
-
-
-<div class="viewcode-block" id="logger"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.logger">[docs]</a><span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-           <span class="n">loss</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-           <span class="n">score</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-           <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-           <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-           <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-           <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-           <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Logger for detector.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    epoch : int, optional</span>
-<span class="sd">        The current epoch.</span>
-<span class="sd">    loss : float, optional</span>
-<span class="sd">        The current epoch loss value.</span>
-<span class="sd">    score : torch.Tensor, optional</span>
-<span class="sd">        The current outlier scores.</span>
-<span class="sd">    target : torch.Tensor, optional</span>
-<span class="sd">        The ground truth labels.</span>
-<span class="sd">    time : float, optional</span>
-<span class="sd">        The current epoch time.</span>
-<span class="sd">    verbose : int, optional</span>
-<span class="sd">        Verbosity mode. Range in [0, 3]. Larger value for printing out</span>
-<span class="sd">        more log information. Default: ``0``.</span>
-<span class="sd">    train : bool, optional</span>
-<span class="sd">        Whether the logger is used for training.</span>
-<span class="sd">    deep : bool, optional</span>
-<span class="sd">        Whether the logger is used for deep detector.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">train</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">{:04d}</span><span class="s2">: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test: &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loss I </span><span class="si">{:.4f}</span><span class="s2"> | Loss O </span><span class="si">{:.4f}</span><span class="s2"> | &quot;</span>
-                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">loss</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loss </span><span class="si">{:.4f}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">nmi</span> <span class="o">=</span> <span class="n">eval_nmi</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NMI </span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nmi</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">ari</span> <span class="o">=</span> <span class="n">eval_ari</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
-                    <span class="n">ami</span> <span class="o">=</span> <span class="n">eval_ami</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
-
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; | ARI </span><span class="si">{:.4f}</span><span class="s2"> | AMI </span><span class="si">{:.4f}</span><span class="s2">&quot;</span>
-                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ari</span><span class="p">,</span> <span class="n">ami</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; | Time </span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">()</span></div>
-
-
-
 <div class="viewcode-block" id="pprint"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.pprint">[docs]</a><span class="k">def</span> <span class="nf">pprint</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">printer</span><span class="o">=</span><span class="nb">repr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pretty print the dictionary &#39;params&#39;</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pretty print the dictionary &#39;params&#39;.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    params : dict</span>
 <span class="sd">        The dictionary to pretty print</span>
-<span class="sd">    offset : int, optional</span>
-<span class="sd">        The offset at the beginning of each line.</span>
-<span class="sd">    printer : callable, optional</span>
-<span class="sd">        The function to convert entries to strings, typically</span>
-<span class="sd">        the builtin str or repr.</span>
+<span class="sd">    offset : int, optional (default=0)</span>
+<span class="sd">        The offset at the beginning of each line</span>
+<span class="sd">    printer : callable, optional (default=repr)</span>
+<span class="sd">        The function to convert entries to strings</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Pretty printed string representation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">params_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -508,8 +335,6 @@
     <span class="c1"># Strip trailing space to avoid nightmare in doctests</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">lines</span></div>
-
-
 
 <div class="viewcode-block" id="validate_device"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.validate_device">[docs]</a><span class="k">def</span> <span class="nf">validate_device</span><span class="p">(</span><span class="n">gpu_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate the input GPU ID is valid on the given environment.</span>
@@ -547,81 +372,207 @@
 
     <span class="k">return</span> <span class="n">device</span></div>
 
+<div class="viewcode-block" id="check_parameter"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.check_parameter">[docs]</a><span class="k">def</span> <span class="nf">check_parameter</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">include_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_right</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a parameter value is within specified bounds.</span>
 
-<div class="viewcode-block" id="check_parameter"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.check_parameter">[docs]</a><span class="k">def</span> <span class="nf">check_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">MIN_INT</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">MAX_INT</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                    <span class="n">include_left</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_right</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if an input is within the defined range.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : int or float</span>
+<span class="sd">        The parameter value to check</span>
+<span class="sd">    lower : int or float </span>
+<span class="sd">        Lower bound</span>
+<span class="sd">    upper : int or float</span>
+<span class="sd">        Upper bound</span>
+<span class="sd">    param_name : str</span>
+<span class="sd">        Name of the parameter for error messages</span>
+<span class="sd">    include_left : bool, optional (default=True)</span>
+<span class="sd">        Whether to include lower bound in valid range</span>
+<span class="sd">    include_right : bool, optional (default=True)</span>
+<span class="sd">        Whether to include upper bound in valid range</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if parameter is valid, raises ValueError otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">include_left</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">lower</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2"> must be greater than or equal to </span><span class="si">{</span><span class="n">lower</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">include_right</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2"> must be less than or equal to </span><span class="si">{</span><span class="n">upper</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="currentTime"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.currentTime">[docs]</a><span class="k">def</span> <span class="nf">currentTime</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get current time as formatted string.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Current time in format &#39;YYYY-MM-DD HH:MM:SS&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="sim"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.sim">[docs]</a><span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute cosine similarity between two sets of vectors.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    param : int, float</span>
-<span class="sd">        The input parameter to check.</span>
-<span class="sd">    low : int, float</span>
-<span class="sd">        The lower bound of the range.</span>
-<span class="sd">    high : int, float</span>
-<span class="sd">        The higher bound of the range.</span>
-<span class="sd">    param_name : str, optional (default=&#39;&#39;)</span>
-<span class="sd">        The name of the parameter.</span>
-<span class="sd">    include_left : bool, optional (default=False)</span>
-<span class="sd">        Whether includes the lower bound (lower bound &lt;=).</span>
-<span class="sd">    include_right : bool, optional (default=False)</span>
-<span class="sd">        Whether includes the higher bound (&lt;= higher bound).</span>
+<span class="sd">    z1 : torch.Tensor</span>
+<span class="sd">        First set of vectors</span>
+<span class="sd">    z2 : torch.Tensor</span>
+<span class="sd">        Second set of vectors</span>
+<span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    within_range : bool or raise errors</span>
-<span class="sd">        Whether the parameter is within the range of (low, high)</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Similarity matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span>
+    <span class="n">z2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="o">.</span><span class="n">t</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="pairwise_sample"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.pairwise_sample">[docs]</a><span class="k">def</span> <span class="nf">pairwise_sample</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">pair_labels</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">labels</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="n">pair_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pair_labels</span><span class="p">)</span>
+        <span class="n">pair_matrix</span><span class="p">[</span><span class="n">pairs</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">],</span><span class="n">pairs</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pair_matrix</span><span class="p">[</span><span class="n">pairs</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">pair_labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)),</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">pair_matrix</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pair_matrix</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pair_matrix</span></div>
+
+<div class="viewcode-block" id="SBERT_embed"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.SBERT_embed">[docs]</a><span class="k">def</span> <span class="nf">SBERT_embed</span><span class="p">(</span><span class="n">s_list</span><span class="p">,</span> <span class="n">language</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Use Sentence-BERT to embed sentences.</span>
+<span class="sd">    s_list: a list of sentences/ tokens to be embedded.</span>
+<span class="sd">    language: the language of the sentences (&#39;English&#39;, &#39;French&#39;, &#39;Arabic&#39;).</span>
+<span class="sd">    output: the embeddings of the sentences/ tokens.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Model paths or names for each language</span>
+    <span class="n">model_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;English&#39;</span><span class="p">:</span> <span class="s1">&#39;../model/model_needed/all-MiniLM-L6-v2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;French&#39;</span><span class="p">:</span> <span class="s1">&#39;../model/model_needed/distiluse-base-multilingual-cased-v1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Arabic&#39;</span><span class="p">:</span> <span class="s1">&#39;../model/model_needed/paraphrase-multilingual-mpnet-base-v2&#39;</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Default model for Hugging Face</span>
+    <span class="n">hf_model_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;English&#39;</span><span class="p">:</span> <span class="s1">&#39;sentence-transformers/all-MiniLM-L6-v2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;French&#39;</span><span class="p">:</span> <span class="s1">&#39;sentence-transformers/distiluse-base-multilingual-cased-v1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Arabic&#39;</span><span class="p">:</span> <span class="s1">&#39;sentence-transformers/paraphrase-multilingual-mpnet-base-v2&#39;</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Print language and model being used</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding sentences in language: </span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Determine model path</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">model_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported language: </span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2">. Supported languages are: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using model: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load the model, downloading if necessary</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully loaded model from local path: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2"> not found locally. Attempting to download from Hugging Face...&quot;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="n">hf_model_map</span><span class="p">[</span><span class="n">language</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model downloaded from Hugging Face: </span><span class="si">{</span><span class="n">hf_model_map</span><span class="p">[</span><span class="n">language</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute embeddings</span>
+    <span class="n">embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">s_list</span><span class="p">,</span> <span class="n">convert_to_tensor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize_embeddings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Computed embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">s_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> sentences/tokens.&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DS_Combin"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.DS_Combin">[docs]</a><span class="k">def</span> <span class="nf">DS_Combin</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">classes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param alpha: All Dirichlet distribution parameters.</span>
+<span class="sd">    :return: Combined Dirichlet distribution parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># param, low and high should all be numerical</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="p">(</span><span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{param_name}</span><span class="s1"> is set to </span><span class="si">{param}</span><span class="s1"> Not numerical&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">DS_Combin_two</span><span class="p">(</span><span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">classes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param alpha1: Dirichlet distribution parameters of view 1</span>
+<span class="sd">        :param alpha2: Dirichlet distribution parameters of view 2</span>
+<span class="sd">        :return: Combined Dirichlet distribution parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">S</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">b</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="n">u</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">classes</span> <span class="o">/</span> <span class="n">S</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="p">(</span><span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;low is set to </span><span class="si">{low}</span><span class="s1">. Not numerical&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">))</span>
+        <span class="c1"># b^0 @ b^(0+1)</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">classes</span><span class="p">))</span>
+        <span class="c1"># b^0 * u^1</span>
+        <span class="n">uv1_expand</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">bu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uv1_expand</span><span class="p">)</span>
+        <span class="c1"># b^1 * u^0</span>
+        <span class="n">uv_expand</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">ub</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uv_expand</span><span class="p">)</span>
+        <span class="c1"># calculate C</span>
+        <span class="n">bb_sum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bb</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">bb_diag</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">bb</span><span class="p">,</span> <span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">bb_sum</span> <span class="o">-</span> <span class="n">bb_diag</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="p">(</span><span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;high is set to </span><span class="si">{high}</span><span class="s1">. Not numerical&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">))</span>
+        <span class="c1"># calculate b^a</span>
+        <span class="n">b_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">bu</span> <span class="o">+</span> <span class="n">ub</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="c1"># calculate u^a</span>
+        <span class="n">u_a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
-    <span class="c1"># at least one of the bounds should be specified</span>
-    <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="n">MIN_INT</span> <span class="ow">and</span> <span class="n">high</span> <span class="ow">is</span> <span class="n">MAX_INT</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Neither low nor high bounds is undefined&#39;</span><span class="p">)</span>
+        <span class="c1"># calculate new S</span>
+        <span class="n">S_a</span> <span class="o">=</span> <span class="n">classes</span> <span class="o">/</span> <span class="n">u_a</span>
+        <span class="c1"># calculate new e_k</span>
+        <span class="n">e_a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">b_a</span><span class="p">,</span> <span class="n">S_a</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">b_a</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="n">alpha_a</span> <span class="o">=</span> <span class="n">e_a</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">alpha_a</span><span class="p">,</span> <span class="n">u_a</span>
 
-    <span class="c1"># if wrong bound values are used</span>
-    <span class="k">if</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">high</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Lower bound &gt; Higher bound&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">classes</span> <span class="o">/</span> <span class="n">S</span>
+        <span class="k">return</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">u</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">alpha_a</span><span class="p">,</span><span class="n">u_a</span> <span class="o">=</span> <span class="n">DS_Combin_two</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">classes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alpha_a</span><span class="p">,</span><span class="n">u_a</span> <span class="o">=</span> <span class="n">DS_Combin_two</span><span class="p">(</span><span class="n">alpha_a</span><span class="p">,</span> <span class="n">alpha</span><span class="p">[</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">classes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">alpha_a</span><span class="p">,</span><span class="n">u_a</span></div>
 
-    <span class="c1"># value check under different bound conditions</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">include_left</span> <span class="ow">and</span> <span class="n">include_right</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">param</span> <span class="o">&lt;</span> <span class="n">low</span> <span class="ow">or</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="n">high</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{param_name}</span><span class="s1"> is set to </span><span class="si">{param}</span><span class="s1">. &#39;</span>
-            <span class="s1">&#39;Not in the range of [</span><span class="si">{low}</span><span class="s1">, </span><span class="si">{high}</span><span class="s1">].&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">))</span>
+<div class="viewcode-block" id="graph_statistics"><a class="viewcode-back" href="../../../SocialED.utils.html#SocialED.utils.utility.graph_statistics">[docs]</a><span class="k">def</span> <span class="nf">graph_statistics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">save_path</span><span class="p">):</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Graph statistics:</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+    <span class="n">num_edges</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+    <span class="n">ave_degree</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_edges</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="n">num_nodes</span>
+    <span class="n">in_degrees</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">in_degrees</span><span class="p">()</span>
+    <span class="n">isolated_nodes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">in_degrees</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <span class="n">isolated_nodes</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_degrees</span> <span class="o">==</span> <span class="n">isolated_nodes</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">isolated_nodes</span><span class="p">,</span> <span class="n">save_path</span> <span class="o">+</span> <span class="s1">&#39;/isolated_nodes.pt&#39;</span><span class="p">)</span>
+    <span class="n">num_isolated_nodes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">isolated_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;We have &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; nodes.</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;We have &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_edges</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; in-edges.</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;Average degree: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ave_degree</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;Number of isolated nodes: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_isolated_nodes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span> <span class="o">+</span> <span class="s2">&quot;/graph_statistics.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">num_isolated_nodes</span></div>
 
-    <span class="k">elif</span> <span class="p">(</span><span class="n">include_left</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">include_right</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">param</span> <span class="o">&lt;</span> <span class="n">low</span> <span class="ow">or</span> <span class="n">param</span> <span class="o">&gt;=</span> <span class="n">high</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{param_name}</span><span class="s1"> is set to </span><span class="si">{param}</span><span class="s1">. &#39;</span>
-            <span class="s1">&#39;Not in the range of [</span><span class="si">{low}</span><span class="s1">, </span><span class="si">{high}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">))</span>
-
-    <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">include_left</span> <span class="ow">and</span> <span class="n">include_right</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">param</span> <span class="o">&lt;=</span> <span class="n">low</span> <span class="ow">or</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="n">high</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{param_name}</span><span class="s1"> is set to </span><span class="si">{param}</span><span class="s1">. &#39;</span>
-            <span class="s1">&#39;Not in the range of (</span><span class="si">{low}</span><span class="s1">, </span><span class="si">{high}</span><span class="s1">].&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">))</span>
-
-    <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">include_left</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">include_right</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">param</span> <span class="o">&lt;=</span> <span class="n">low</span> <span class="ow">or</span> <span class="n">param</span> <span class="o">&gt;=</span> <span class="n">high</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{param_name}</span><span class="s1"> is set to </span><span class="si">{param}</span><span class="s1">. &#39;</span>
-            <span class="s1">&#39;Not in the range of (</span><span class="si">{low}</span><span class="s1">, </span><span class="si">{high}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
 
 </pre></div>
         </article>
@@ -655,7 +606,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e9012143"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

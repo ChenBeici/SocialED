@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import en_core_web_lg
+import spacy
 from datetime import datetime
 import torch
 from typing import Any, Dict, List
@@ -32,64 +32,694 @@ import torch.optim as optim
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-class args_define:
-    def __init__(self, **kwargs):
-        # Default values for all parameters
-        defaults = {
+
+
+class FinEvent:
+    r"""The FinEvent model for social event detection that uses graph neural networks
+    and reinforcement learning for adaptive event detection.
+
+    .. note::
+        This detector uses graph neural networks and reinforcement learning to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    n_epochs : int, optional
+        Number of training epochs. Default: ``1``.
+    window_size : int, optional
+        Size of sliding window for incremental learning. Default: ``3``.
+    patience : int, optional
+        Number of epochs to wait before early stopping. Default: ``5``.
+    margin : float, optional
+        Margin for triplet loss. Default: ``3.0``.
+    lr : float, optional
+        Learning rate. Default: ``1e-3``.
+    batch_size : int, optional
+        Mini-batch size. Default: ``50``.
+    hidden_dim : int, optional
+        Hidden layer dimension. Default: ``128``.
+    out_dim : int, optional
+        Output dimension. Default: ``64``.
+    heads : int, optional
+        Number of attention heads. Default: ``4``.
+    validation_percent : float, optional
+        Percentage of data for validation. Default: ``0.2``.
+    use_hardest_neg : bool, optional
+        Whether to use hardest negative mining. Default: ``False``.
+    is_shared : bool, optional
+        Whether to use shared parameters. Default: ``False``.
+    inter_opt : str, optional
+        Integration option for multi-view features. Default: ``'cat_w_avg'``.
+    is_initial : bool, optional
+        Whether to initialize model. Default: ``True``.
+    sampler : str, optional
+        Type of sampler to use. Default: ``'RL_sampler'``.
+    cluster_type : str, optional
+        Clustering algorithm to use. Default: ``'kmeans'``.
+    threshold_start0 : list, optional
+        Initial thresholds for RL-0. Default: ``[[0.2], [0.2], [0.2]]``.
+    RL_step0 : float, optional
+        Step size for RL-0. Default: ``0.02``.
+    RL_start0 : int, optional
+        Starting point for RL-0. Default: ``0``.
+    eps_start : float, optional
+        Initial epsilon for RL-1. Default: ``0.001``.
+    eps_step : float, optional
+        Step size for epsilon in RL-1. Default: ``0.02``.
+    min_Pts_start : int, optional
+        Initial minimum points for RL-1. Default: ``2``.
+    min_Pts_step : int, optional
+        Step size for minimum points in RL-1. Default: ``1``.
+    use_cuda : bool, optional
+        Whether to use GPU acceleration. Default: ``True``.
+    data_path : str, optional
+        Path to data directory. Default: ``'../model/model_saved/finevent/incremental_test/'``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/finevent/'``.
+    mask_path : str, optional
+        Path to attention mask file. Default: ``None``.
+    log_interval : int, optional
+        Number of steps between logging. Default: ``10``.
+    """
+
+    def __init__(self,
+                 # Hyper-parameters
+                 dataset,
+                 n_epochs=1,
+                 window_size=3,
+                 patience=5,
+                 margin=3.0,
+                 lr=1e-3,
+                 batch_size=50,
+                 hidden_dim=128,
+                 out_dim=64,
+                 heads=4,
+                 validation_percent=0.2,
+                 use_hardest_neg=False,
+                 is_shared=False,
+                 inter_opt='cat_w_avg',
+                 is_initial=True,
+                 sampler='RL_sampler',
+                 cluster_type='kmeans',
+
+                 # RL-0
+                 threshold_start0=[[0.2], [0.2], [0.2]],
+                 RL_step0=0.02,
+                 RL_start0=0,
+
+                 # RL-1
+                 eps_start=0.001,
+                 eps_step=0.02,
+                 min_Pts_start=2,
+                 min_Pts_step=1,
+
+                 # Other arguments
+                 use_cuda=True,
+                 data_path='../model/model_saved/finevent/incremental_test/',
+                 file_path='../model/model_saved/finevent/',
+                 mask_path=None,
+                 log_interval=10):
+            
+            self.dataset = dataset
+            
             # Hyper-parameters
-            'n_epochs': 1,
-            'window_size': 3,
-            'patience': 5,
-            'margin': 3.0,
-            'lr': 1e-3,
-            'batch_size': 50,
-            'hidden_dim': 128,
-            'out_dim': 64,
-            'heads': 4,
-            'validation_percent': 0.2,
-            'use_hardest_neg': False,
-            'is_shared': False,
-            'inter_opt': 'cat_w_avg',
-            'is_initial': True,
-            'sampler': 'RL_sampler',
-            'cluster_type': 'kmeans',
+            self.n_epochs = n_epochs
+            self.window_size = window_size
+            self.patience = patience
+            self.margin = margin
+            self.lr = lr
+            self.batch_size = batch_size
+            self.hidden_dim = hidden_dim
+            self.out_dim = out_dim
+            self.heads = heads
+            self.validation_percent = validation_percent
+            self.use_hardest_neg = use_hardest_neg
+            self.is_shared = is_shared
+            self.inter_opt = inter_opt
+            self.is_initial = is_initial
+            self.sampler = sampler
+            self.cluster_type = cluster_type
 
             # RL-0
-            'threshold_start0': [[0.2], [0.2], [0.2]],
-            'RL_step0': 0.02,
-            'RL_start0': 0,
+            self.threshold_start0 = threshold_start0
+            self.RL_step0 = RL_step0
+            self.RL_start0 = RL_start0
 
-            # RL-1 
-            'eps_start': 0.001,
-            'eps_step': 0.02,
-            'min_Pts_start': 2,
-            'min_Pts_step': 1,
+            # RL-1
+            self.eps_start = eps_start
+            self.eps_step = eps_step
+            self.min_Pts_start = min_Pts_start
+            self.min_Pts_step = min_Pts_step
 
             # Other arguments
-            'use_cuda': True,
-            'data_path': '../model/model_saved/finevent/incremental_test/',
-            'file_path': '../model/model_saved/finevent/',
-            'mask_path': None,
-            'log_interval': 10
-        }
+            self.use_cuda = use_cuda
+            self.data_path = data_path
+            self.file_path = file_path
+            self.mask_path = mask_path
+            self.log_interval = log_interval
 
-        # Update defaults with any provided kwargs
-        defaults.update(kwargs)
+    def preprocess(self):
+        preprocessor = Preprocessor()
+        preprocessor.generate_initial_features(self.dataset)
+        preprocessor.construct_graph(self.dataset)
+        preprocessor.save_edge_index()
 
-        # Set all attributes
-        for key, value in defaults.items():
-            setattr(self, key, value)
+    def fit(self):
+        args=self
+        embedding_save_path = args.data_path + '/embeddings'
+        os.makedirs(embedding_save_path, exist_ok=True)
+        print('embedding save path: ', embedding_save_path)
 
-        # Store all arguments in Namespace
-        self.args = argparse.Namespace(**defaults)
+        # record hyper-parameters
+        # with open(embedding_save_path + '/args.txt', 'w') as f:
+        #     json.dump(args.__dict__, f, indent=2)
 
+        print('Batch Size:', args.batch_size)
+        print('Intra Agg Mode:', args.is_shared)
+        print('Inter Agg Mode:', args.inter_opt)
+        print('Reserve node config?', args.is_initial)
+
+        data_split = np.load(args.data_path + '/data_split.npy')
+
+        if args.use_hardest_neg:
+            loss_fn = OnlineTripletLoss(args.margin, HardestNegativeTripletSelector(args.margin))
+        else:
+            loss_fn = OnlineTripletLoss(args.margin, RandomNegativeTripletSelector(args.margin))
+
+        # define metrics
+        BCL_metrics = [AverageNonzeroTripletsMetric()]
+
+        # define detection stage
+        Streaming = FinEvent_model(args)
+
+        # pre-train stage: train on initial graph
+        train_i = 0
+        self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
+                                                                    i=0,
+                                                                    metrics=BCL_metrics,
+                                                                    embedding_save_path=embedding_save_path,
+                                                                    loss_fn=loss_fn,
+                                                                    model=None)
+
+        # detection-maintenance stage: incremental training and detection
+        for i in range(1, data_split.shape[0]):
+            # infer every block
+            self.model = Streaming.inference(train_i=train_i,
+                                             i=i,
+                                             metrics=BCL_metrics,
+                                             embedding_save_path=embedding_save_path,
+                                             loss_fn=loss_fn,
+                                             model=self.model,
+                                             RL_thresholds=self.RL_thresholds)
+
+            # maintenance in window size and desert the last block
+            if i % args.window_size == 0 and i != data_split.shape[0] - 1:
+                train_i = i
+                self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
+                                                                            i=i,
+                                                                            metrics=BCL_metrics,
+                                                                            embedding_save_path=embedding_save_path,
+                                                                            loss_fn=loss_fn,
+                                                                            model=None)
+
+    def detection(self):
+        args=self
+        """
+        :param eval_data_path: Path to the detection data
+        :param eval_metrics: List of detection metrics
+        :param embedding_save_path: Path to save embeddings if needed
+        :param best_model_path: Path to the best trained model
+        :param loss_fn: Loss function used during detection
+        :return: None
+        """
+
+        start_time = time()
+
+        # Load detection data
+        print("Loading detection data...")
+        relation_ids = ['entity', 'userid', 'word']
+        homo_data = create_offline_homodataset(args.data_path, [0, 0])
+        multi_r_data = create_multi_relational_graph(args.data_path, relation_ids, [0, 0])
+        print("detection data loaded. Time elapsed: {:.2f} seconds".format(time() - start_time))
+
+        device = torch.device('cuda' if torch.cuda.is_available() and args.use_cuda else 'cpu')
+
+        # Load the best trained model
+        print("Loading the best trained model...")
+        best_model_path = args.data_path + 'embeddings/block_0/models/best.pt'
+        feat_dim = homo_data.x.size(1)
+        num_relations = len(multi_r_data)
+
+        self.model = MarGNN((feat_dim, args.hidden_dim, args.out_dim, args.heads),
+                            num_relations=num_relations, inter_opt=args.inter_opt, is_shared=args.is_shared)
+
+        state_dict = torch.load(best_model_path)
+        self.model.load_state_dict(state_dict)
+        self.model.to(device)  # 将模型移动到指定设备（如果使用GPU）
+
+        # 设置模型为评估模式
+        self.model.eval()
+        print("Best model loaded and set to eval mode. Time elapsed: {:.2f} seconds".format(time() - start_time))
+
+        RL_thresholds = torch.FloatTensor(args.threshold_start0)
+        filtered_multi_r_data = torch.load('../model/model_saved/finevent/multi_remain_data.pt')
+
+        # Sampling nodes
+        print("Sampling nodes...")
+        sampler = MySampler(args.sampler)
+        test_num_samples = homo_data.test_mask.size(0)
+        num_batches = int(test_num_samples / args.batch_size) + 1
+
+        extract_features = []
+
+        for batch in range(num_batches):
+            print(f"Processing batch {batch + 1}/{num_batches}...")
+            i_start = args.batch_size * batch
+            i_end = min((batch + 1) * args.batch_size, test_num_samples)
+            batch_nodes = homo_data.test_mask[i_start:i_end]
+            batch_labels = homo_data.y[batch_nodes]
+            adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
+                                         batch_size=args.batch_size)
+
+            # Perform prediction
+            with torch.no_grad():
+                pred = self.model(homo_data.x, adjs, n_ids, device, RL_thresholds)
+
+            extract_features.append(pred.cpu().detach())
+            print(f"Batch {batch + 1} processed.")
+
+        extract_features = torch.cat(extract_features, dim=0)
+
+        all_nodes = homo_data.test_mask
+        ground_truths = homo_data.y[all_nodes]
+
+        X = extract_features.cpu().detach().numpy()
+        assert ground_truths.shape[0] == X.shape[0]
+
+        # Get the total number of classes
+        n_classes = len(set(ground_truths.tolist()))
+
+        # k-means clustering
+        print("Performing k-means clustering...")
+        kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
+        predictions = kmeans.labels_
+        print("k-means clustering done. Time elapsed: {:.2f} seconds".format(time() - start_time))
+
+        print("Detection complete. Total time elapsed: {:.2f} seconds".format(time() - start_time))
+        return ground_truths, predictions
+
+
+    def evaluate(self, predictions, ground_truths):
+        ars = metrics.adjusted_rand_score(ground_truths, predictions)
+
+        # Calculate Adjusted Mutual Information (AMI)
+        ami = metrics.adjusted_mutual_info_score(ground_truths, predictions)
+
+        # Calculate Normalized Mutual Information (NMI)
+        nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
+
+        print(f"Model Adjusted Rand Index (ARI): {ars}")
+        print(f"Model Adjusted Mutual Information (AMI): {ami}")
+        print(f"Model Normalized Mutual Information (NMI): {nmi}")
+        return ars, ami, nmi
+
+
+class FinEvent_model(FinEvent):
+    def __init__(self, args) -> None:
+        # register args
+        super().__init__(dataset="")
+        self.args = args
+
+    def inference(self,
+                  train_i, i,
+                  metrics,
+                  embedding_save_path,
+                  loss_fn,
+                  model,
+                  RL_thresholds=None,
+                  loss_fn_dgi=None):
+
+        model = MarGNN()
+        # make dir for graph i
+        # ./incremental_0808//embeddings_0403005348/block_xxx
+        save_path_i = embedding_save_path + '/block_' + str(i)
+        if not os.path.isdir(save_path_i):
+            os.mkdir(save_path_i)
+
+        # load data
+        relation_ids: List[str] = ['entity', 'userid', 'word']
+        homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
+        multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
+
+        print('embedding save path: ', embedding_save_path)
+        num_relations = len(multi_r_data)
+
+        device = torch.device('cuda:0' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
+
+        # input dimension (300 in our paper)
+        features = homo_data.x
+        feat_dim = features.size(1)
+
+        # prepare graph configs for node filtering
+        if self.args.is_initial:
+            print('prepare node configures...')
+            pre_node_dist(multi_r_data, homo_data.x, save_path_i)
+            filter_path = save_path_i
+        else:
+            filter_path = save_path_i
+
+        if model is None:
+            assert 'Cannot find pre-trained model'
+
+        # directly predict
+        message = "\n------------ Directly predict on block " + str(i) + " ------------\n"
+        print(message)
+        print('RL Threshold using in this block:', RL_thresholds)
+
+        model.eval()
+
+        test_indices, labels = homo_data.test_mask, homo_data.y
+        test_num_samples = test_indices.size(0)
+
+        sampler = MySampler(self.args.sampler)
+
+        # filter neighbor in advance to fit with neighbor sampling
+        filtered_multi_r_data = RL_neighbor_filter(self,multi_r_data, RL_thresholds,
+                                                   filter_path) if RL_thresholds is not None and self.args.sampler == 'RL_sampler' else multi_r_data
+
+        # batch testing
+        extract_features = torch.FloatTensor([])
+        num_batches = int(test_num_samples / self.args.batch_size) + 1
+        with torch.no_grad():
+            for batch in range(num_batches):
+
+                start_batch = time()
+
+                # split batch
+                i_start = self.args.batch_size * batch
+                i_end = min((batch + 1) * self.args.batch_size, test_num_samples)
+                batch_nodes = test_indices[i_start:i_end]
+                if not len(batch_nodes):
+                    continue
+                # sampling neighbors of batch nodes
+                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
+                                             batch_size=self.args.batch_size)
+
+                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
+
+                batch_seconds_spent = time() - start_batch
+
+                # for we haven't shuffle the test indices(see utils.py),
+                # the output embeddings can be simply stacked together
+                extract_features = torch.cat((extract_features, pred.cpu().detach()), dim=0)
+
+                del pred
+                gc.collect()
+
+
+        nmi, ami, ari, = evaluate_model(extract_features,
+                                        labels,
+                                        indices=test_indices,
+                                        epoch=-1,  # just for test
+                                        num_isolated_nodes=0,
+                                        save_path=save_path_i,
+                                        is_validation=False,
+                                        cluster_type=self.args.cluster_type,
+                                        )
+
+        k_score = {"NMI": nmi, "AMI": ami, "ARI": ari}
+        del homo_data, multi_r_data, features, filtered_multi_r_data
+        torch.cuda.empty_cache()
+
+        return model, k_score
+
+    # train on initial/maintenance graphs, t == 0 or t % window_size == 0 in this paper
+
+    def initial_maintain(self,
+                         train_i, i,
+                         metrics,
+                         embedding_save_path,
+                         loss_fn,
+                         model=None,
+                         loss_fn_dgi=None):
+        """
+        :param i:
+        :param data_split:
+        :param metrics:
+        :param embedding_save_path:
+        :param loss_fn:
+        :param model:
+        :param loss_fn_dgi:
+        :return:
+        """
+
+        # make dir for graph i
+        # ./incremental_0808//embeddings_0403005348/block_xxx
+        save_path_i = embedding_save_path + '/block_' + str(i)
+        if not os.path.isdir(save_path_i):
+            os.mkdir(save_path_i)
+
+        # load data
+        relation_ids: List[str] = ['entity', 'userid', 'word']
+        homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
+        multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
+        num_relations = len(multi_r_data)
+
+        device = torch.device('cuda' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
+
+        # input dimension (300 in our paper)
+        num_dim = homo_data.x.size(0)
+        feat_dim = homo_data.x.size(1)
+
+        # prepare graph configs for node filtering
+        if self.args.is_initial:
+            print('prepare node configures...')
+            pre_node_dist(multi_r_data, homo_data.x, save_path_i)
+            filter_path = save_path_i
+        else:
+            filter_path = self.args.data_path + str(i)
+
+        if model is None:  # pre-training stage in our paper
+            # print('Pre-Train Stage...')
+            model = MarGNN((feat_dim, self.args.hidden_dim, self.args.out_dim, self.args.heads),
+                           num_relations=num_relations, inter_opt=self.args.inter_opt, is_shared=self.args.is_shared)
+
+        # define sampler
+        sampler = MySampler(self.args.sampler)
+        # load model to device
+        model.to(device)
+
+        # initialize RL thresholds
+        # RL_threshold: [[.5], [.5], [.5]]
+        RL_thresholds = torch.FloatTensor(self.args.threshold_start0)
+
+        # define optimizer
+        optimizer = optim.Adam(model.parameters(), lr=self.args.lr, weight_decay=1e-4)
+
+        # record training log
+        message = "\n------------ Start initial training / maintaining using block " + str(i) + " ------------\n"
+        print(message)
+        with open(save_path_i + '/log.txt', 'a') as f:
+            f.write(message)
+
+        # record the highest validation nmi ever got for early stopping
+        best_vali_nmi = 1e-9
+        best_epoch = 0
+        wait = 0
+        # record validation nmi of all epochs before early stop
+        all_vali_nmi = []
+        # record the time spent in seconds on each batch of all training/maintaining epochs
+        seconds_train_batches = []
+        # record the time spent in mins on each epoch
+        mins_train_epochs = []
+
+        # step13: start training
+        for epoch in range(self.args.n_epochs):
+            start_epoch = time()
+            losses = []
+            total_loss = 0.0
+
+            for metric in metrics:
+                metric.reset()
+
+            # Multi-Agent
+
+            # filter neighbor in advance to fit with neighbor sampling
+            filtered_multi_r_data = RL_neighbor_filter(self ,multi_r_data, RL_thresholds, filter_path) if epoch >= self.args.RL_start0 and self.args.sampler == 'RL_sampler' else multi_r_data
+
+            #filtered_multi_r_data = torch.load(self.args.file_path + 'multi_remain_data.pt')
+
+            print(f"Epoch {epoch + 1}/{self.args.n_epochs} - Starting training...")
+            model.train()
+
+            train_num_samples, valid_num_samples = homo_data.train_mask.size(0), homo_data.val_mask.size(0)
+            #train_num_samples, valid_num_samples = homo_data.train_mask.size(0) // 100, homo_data.val_mask.size(0)
+            all_num_samples = train_num_samples + valid_num_samples
+
+            # batch training
+            num_batches = int(train_num_samples / self.args.batch_size) + 1
+            for batch in range(num_batches):
+                start_batch = time()
+
+                # split batch
+                i_start = self.args.batch_size * batch
+                i_end = min((batch + 1) * self.args.batch_size, train_num_samples)
+                batch_nodes = homo_data.train_mask[i_start:i_end]
+                batch_labels = homo_data.y[batch_nodes]
+
+                print(
+                    f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Processing nodes {i_start} to {i_end}...")
+
+                # sampling neighbors of batch nodes
+                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
+                                             batch_size=self.args.batch_size)
+                optimizer.zero_grad()
+
+                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
+                loss_outputs = loss_fn(pred, batch_labels)
+                loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
+
+                losses.append(loss.item())
+                total_loss += loss.item()
+
+                for metric in metrics:
+                    metric(pred, batch_labels, loss_outputs)
+
+                if batch % self.args.log_interval == 0:
+                    message = 'Train: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(batch * self.args.batch_size,
+                                                                              train_num_samples, 100. * batch / ((
+                                                                                                                         train_num_samples // self.args.batch_size) + 1),
+                                                                              np.mean(losses))
+
+                    for metric in metrics:
+                        message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
+
+                    print(message)  # 输出到控制台
+                    with open(save_path_i + '/log.txt', 'a') as f:
+                        f.write(message)
+                    losses = []
+
+                del pred, loss_outputs
+                gc.collect()
+
+                print(
+                    f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Performing backward pass...")
+                loss.backward()
+                optimizer.step()
+
+                batch_seconds_spent = time() - start_batch
+                seconds_train_batches.append(batch_seconds_spent)
+
+                del loss
+                gc.collect()
+
+            # step14: print loss
+            total_loss /= (batch + 1)
+            message = 'Epoch: {}/{}. Average loss: {:.4f}'.format(epoch + 1, self.args.n_epochs, total_loss)
+            for metric in metrics:
+                message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
+            mins_spent = (time() - start_epoch) / 60
+            message += '\nThis epoch took {:.2f} mins'.format(mins_spent)
+            message += '\n'
+            print(message)
+            with open(save_path_i + '/log.txt', 'a') as f:
+                f.write(message)
+            mins_train_epochs.append(mins_spent)
+
+            # validation
+            # infer the representations of all tweets
+            model.eval()
+
+            # we recommand to forward all nodes and select the validation indices instead
+            extract_features = torch.FloatTensor([])
+
+            num_batches = int(all_num_samples / self.args.batch_size) + 1
+
+            # all mask are then splited into mini-batch in order
+            all_mask = torch.arange(0, num_dim, dtype=torch.long)
+
+            for batch in range(num_batches):
+                start_batch = time()
+
+                # split batch
+                i_start = self.args.batch_size * batch
+                i_end = min((batch + 1) * self.args.batch_size, all_num_samples)
+                batch_nodes = all_mask[i_start:i_end]
+                batch_labels = homo_data.y[batch_nodes]
+
+                # sampling neighbors of batch nodes
+                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
+                                             batch_size=self.args.batch_size)
+
+                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
+
+                extract_features = torch.cat((extract_features, pred.cpu().detach()), dim=0)
+
+                del pred
+                gc.collect()
+
+            # save_embeddings(extract_features, save_path_i)
+            epoch = epoch + 1
+            # evaluate the model: conduct kMeans clustering on the validation and report NMI
+            validation_nmi = evaluate_model(extract_features[homo_data.val_mask],
+                                            homo_data.y,
+                                            indices=homo_data.val_mask,
+                                            epoch=epoch,
+                                            num_isolated_nodes=0,
+                                            save_path=save_path_i,
+                                            is_validation=True,
+                                            cluster_type=self.args.cluster_type)
+            all_vali_nmi.append(validation_nmi)
+
+            # step16: early stop
+            if validation_nmi > best_vali_nmi:
+                best_vali_nmi = validation_nmi
+                best_epoch = epoch
+                wait = 0
+                # save model
+                model_path = save_path_i + '/models'
+                if (epoch == 1) and (not os.path.isdir(model_path)):
+                    os.mkdir(model_path)
+                p = model_path + '/best.pt'
+                torch.save(model.state_dict(), p)
+                print('Best model saved after epoch ', str(epoch))
+            else:
+                wait += 1
+            if wait >= self.args.patience:
+                print('Saved all_mins_spent')
+                print('Early stopping at epoch ', str(epoch))
+                print('Best model was at epoch ', str(best_epoch))
+                break
+            # end one epoch
+
+        # save all validation nmi
+        np.save(save_path_i + '/all_vali_nmi.npy', np.asarray(all_vali_nmi))
+        # save time spent on epochs
+        np.save(save_path_i + '/mins_train_epochs.npy', np.asarray(mins_train_epochs))
+        print('Saved mins_train_epochs.')
+        # save time spent on batches
+        np.save(save_path_i + '/seconds_train_batches.npy', np.asarray(seconds_train_batches))
+        print('Saved seconds_train_batches.')
+
+        # load the best model of the current block
+        best_model_path = save_path_i + '/models/best.pt'
+        model.load_state_dict(torch.load(best_model_path))
+        print("Best model loaded.")
+
+        del homo_data, multi_r_data
+        torch.cuda.empty_cache()
+
+        return model, RL_thresholds
 
 class Preprocessor:
     def __init__(self):
         pass
 
     def documents_to_features(self, df):
-        self.nlp = en_core_web_lg.load()
+        self.nlp = spacy.load("en_core_web_lg")
         features = df.filtered_words.apply(lambda x: self.nlp(' '.join(x)).vector).values
         return np.stack(features, axis=0)
 
@@ -139,7 +769,7 @@ class Preprocessor:
             for each in entities:
                 G.nodes[each]['entity'] = True
 
-            words = row['sampled_words']
+            words = row['filtered_words']
             words = ['w_' + each for each in words]
             G.add_nodes_from(words)
             for each in words:
@@ -517,559 +1147,13 @@ class Preprocessor:
 
         return all_mins, message
 
-    def save_edge_index(self, data_path='.../model/model_saved/finevent/incremental_test'):
+    def save_edge_index(self, data_path='../model/model_saved/finevent/incremental_test'):
         relation_ids = ['entity', 'userid', 'word']
         for i in range(22):
             save_multi_relational_graph(data_path, relation_ids, [0, i])
             print('edge index saved')
         print('all edge index saved')
 
-
-class FinEvent:
-    def __init__(self, args, dataset):
-        self.dataset = dataset
-        pass
-
-    def preprocess(self):
-        preprocessor = Preprocessor()
-        preprocessor.generate_initial_features(self.dataset)
-        preprocessor.construct_graph(self.dataset)
-        preprocessor.save_edge_index()
-
-    def fit(self):
-        embedding_save_path = args.data_path + '/embeddings'
-        os.makedirs(embedding_save_path, exist_ok=True)
-        print('embedding save path: ', embedding_save_path)
-
-        # record hyper-parameters
-        with open(embedding_save_path + '/args.txt', 'w') as f:
-            json.dump(args.__dict__, f, indent=2)
-
-        print('Batch Size:', args.batch_size)
-        print('Intra Agg Mode:', args.is_shared)
-        print('Inter Agg Mode:', args.inter_opt)
-        print('Reserve node config?', args.is_initial)
-
-        data_split = np.load(args.data_path + '/data_split.npy')
-
-        if args.use_hardest_neg:
-            loss_fn = OnlineTripletLoss(args.margin, HardestNegativeTripletSelector(args.margin))
-        else:
-            loss_fn = OnlineTripletLoss(args.margin, RandomNegativeTripletSelector(args.margin))
-
-        # define metrics
-        BCL_metrics = [AverageNonzeroTripletsMetric()]
-
-        # define detection stage
-        Streaming = FinEvent_model(args)
-
-        # pre-train stage: train on initial graph
-        train_i = 0
-        self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
-                                                                    i=0,
-                                                                    metrics=BCL_metrics,
-                                                                    embedding_save_path=embedding_save_path,
-                                                                    loss_fn=loss_fn,
-                                                                    model=None)
-
-        # detection-maintenance stage: incremental training and detection
-        for i in range(1, data_split.shape[0]):
-            # infer every block
-            self.model = Streaming.inference(train_i=train_i,
-                                             i=i,
-                                             metrics=BCL_metrics,
-                                             embedding_save_path=embedding_save_path,
-                                             loss_fn=loss_fn,
-                                             model=self.model,
-                                             RL_thresholds=self.RL_thresholds)
-
-            # maintenance in window size and desert the last block
-            if i % args.window_size == 0 and i != data_split.shape[0] - 1:
-                train_i = i
-                self.model, self.RL_thresholds = Streaming.initial_maintain(train_i=train_i,
-                                                                            i=i,
-                                                                            metrics=BCL_metrics,
-                                                                            embedding_save_path=embedding_save_path,
-                                                                            loss_fn=loss_fn,
-                                                                            model=None)
-
-    def detection(self):
-        """
-        :param eval_data_path: Path to the detection data
-        :param eval_metrics: List of detection metrics
-        :param embedding_save_path: Path to save embeddings if needed
-        :param best_model_path: Path to the best trained model
-        :param loss_fn: Loss function used during detection
-        :return: None
-        """
-
-        start_time = time()
-
-        # Load detection data
-        print("Loading detection data...")
-        relation_ids = ['entity', 'userid', 'word']
-        homo_data = create_offline_homodataset(args.data_path, [0, 0])
-        multi_r_data = create_multi_relational_graph(args.data_path, relation_ids, [0, 0])
-        print("detection data loaded. Time elapsed: {:.2f} seconds".format(time() - start_time))
-
-        device = torch.device('cuda' if torch.cuda.is_available() and args.use_cuda else 'cpu')
-
-        # Load the best trained model
-        print("Loading the best trained model...")
-        best_model_path = args.data_path + 'embeddings/block_0/models/best.pt'
-        feat_dim = homo_data.x.size(1)
-        num_relations = len(multi_r_data)
-
-        self.model = MarGNN((feat_dim, args.hidden_dim, args.out_dim, args.heads),
-                            num_relations=num_relations, inter_opt=args.inter_opt, is_shared=args.is_shared)
-
-        state_dict = torch.load(best_model_path)
-        self.model.load_state_dict(state_dict)
-        self.model.to(device)  # 将模型移动到指定设备（如果使用GPU）
-
-        # 设置模型为评估模式
-        self.model.eval()
-        print("Best model loaded and set to eval mode. Time elapsed: {:.2f} seconds".format(time() - start_time))
-
-        RL_thresholds = torch.FloatTensor(args.threshold_start0)
-        filtered_multi_r_data = torch.load('../model/model_saved/finevent/multi_remain_data.pt')
-
-        # Sampling nodes
-        print("Sampling nodes...")
-        sampler = MySampler(args.sampler)
-        test_num_samples = homo_data.test_mask.size(0)
-        num_batches = int(test_num_samples / args.batch_size) + 1
-
-        extract_features = []
-
-        for batch in range(num_batches):
-            print(f"Processing batch {batch + 1}/{num_batches}...")
-            i_start = args.batch_size * batch
-            i_end = min((batch + 1) * args.batch_size, test_num_samples)
-            batch_nodes = homo_data.test_mask[i_start:i_end]
-            batch_labels = homo_data.y[batch_nodes]
-            adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
-                                         batch_size=args.batch_size)
-
-            # Perform prediction
-            with torch.no_grad():
-                pred = self.model(homo_data.x, adjs, n_ids, device, RL_thresholds)
-
-            extract_features.append(pred.cpu().detach())
-            print(f"Batch {batch + 1} processed.")
-
-        extract_features = torch.cat(extract_features, dim=0)
-
-        all_nodes = homo_data.test_mask
-        ground_truths = homo_data.y[all_nodes]
-
-        X = extract_features.cpu().detach().numpy()
-        assert ground_truths.shape[0] == X.shape[0]
-
-        # Get the total number of classes
-        n_classes = len(set(ground_truths.tolist()))
-
-        # k-means clustering
-        print("Performing k-means clustering...")
-        kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
-        predictions = kmeans.labels_
-        print("k-means clustering done. Time elapsed: {:.2f} seconds".format(time() - start_time))
-
-        print("Detection complete. Total time elapsed: {:.2f} seconds".format(time() - start_time))
-        return ground_truths, predictions
-
-
-    def evaluate(self, predictions, ground_truths):
-        ars = metrics.adjusted_rand_score(ground_truths, predictions)
-
-        # Calculate Adjusted Mutual Information (AMI)
-        ami = metrics.adjusted_mutual_info_score(ground_truths, predictions)
-
-        # Calculate Normalized Mutual Information (NMI)
-        nmi = metrics.normalized_mutual_info_score(ground_truths, predictions)
-
-        print(f"Model Adjusted Rand Index (ARI): {ars}")
-        print(f"Model Adjusted Mutual Information (AMI): {ami}")
-        print(f"Model Normalized Mutual Information (NMI): {nmi}")
-        return ars, ami, nmi
-
-
-class FinEvent_model():
-    def __init__(self, args) -> None:
-        # register args
-        self.args = args
-
-    def inference(self,
-                  train_i, i,
-                  metrics,
-                  embedding_save_path,
-                  loss_fn,
-                  model,
-                  RL_thresholds=None,
-                  loss_fn_dgi=None):
-
-        model = MarGNN()
-        # make dir for graph i
-        # ./incremental_0808//embeddings_0403005348/block_xxx
-        save_path_i = embedding_save_path + '/block_' + str(i)
-        if not os.path.isdir(save_path_i):
-            os.mkdir(save_path_i)
-
-        # load data
-        relation_ids: List[str] = ['entity', 'userid', 'word']
-        homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
-        multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
-
-        print('embedding save path: ', embedding_save_path)
-        num_relations = len(multi_r_data)
-
-        device = torch.device('cuda:0' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
-
-        # input dimension (300 in our paper)
-        features = homo_data.x
-        feat_dim = features.size(1)
-
-        # prepare graph configs for node filtering
-        if self.args.is_initial:
-            print('prepare node configures...')
-            pre_node_dist(multi_r_data, homo_data.x, save_path_i)
-            filter_path = save_path_i
-        else:
-            filter_path = save_path_i
-
-        if model is None:
-            assert 'Cannot find pre-trained model'
-
-        # directly predict
-        message = "\n------------ Directly predict on block " + str(i) + " ------------\n"
-        print(message)
-        print('RL Threshold using in this block:', RL_thresholds)
-
-        model.eval()
-
-        test_indices, labels = homo_data.test_mask, homo_data.y
-        test_num_samples = test_indices.size(0)
-
-        sampler = MySampler(self.args.sampler)
-
-        # filter neighbor in advance to fit with neighbor sampling
-        filtered_multi_r_data = RL_neighbor_filter(multi_r_data, RL_thresholds,
-                                                   filter_path) if RL_thresholds is not None and self.args.sampler == 'RL_sampler' else multi_r_data
-
-        # batch testing
-        extract_features = torch.FloatTensor([])
-        num_batches = int(test_num_samples / self.args.batch_size) + 1
-        with torch.no_grad():
-            for batch in range(num_batches):
-
-                start_batch = time()
-
-                # split batch
-                i_start = self.args.batch_size * batch
-                i_end = min((batch + 1) * self.args.batch_size, test_num_samples)
-                batch_nodes = test_indices[i_start:i_end]
-                if not len(batch_nodes):
-                    continue
-                # sampling neighbors of batch nodes
-                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
-                                             batch_size=self.args.batch_size)
-
-                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
-
-                batch_seconds_spent = time() - start_batch
-
-                # for we haven't shuffle the test indices(see utils.py),
-                # the output embeddings can be simply stacked together
-                extract_features = torch.cat((extract_features, pred.cpu().detach()), dim=0)
-
-                del pred
-                gc.collect()
-
-        extract_labels = labels.cpu().numpy()
-        labels_true = extract_labels[test_indices]
-        n_classes = len(set(labels_true.tolist()))
-        # save_embeddings(extract_features, save_path_i)
-        PPpath = '/home/lipu/smed/fin_data/french/fin_eva_2018'
-        print(f"save Evaluate_datas{i} to {PPpath}", end='')
-        Evaluate_datas = {'msg_feats': extract_features, 'msg_tags': labels_true, 'n_clust': n_classes}
-        if not os.path.exists(PPpath):
-            os.makedirs(PPpath, exist_ok=True)
-        np.save(PPpath + f'evaluate_data_M{i}.npy', Evaluate_datas)
-        print('done')
-
-        nmi, ami, ari, = evaluate_model(extract_features,
-                                        labels,
-                                        indices=test_indices,
-                                        epoch=-1,  # just for test
-                                        num_isolated_nodes=0,
-                                        save_path=save_path_i,
-                                        is_validation=False,
-                                        cluster_type=self.args.cluster_type,
-                                        )
-
-        k_score = {"NMI": nmi, "AMI": ami, "ARI": ari}
-        del homo_data, multi_r_data, features, filtered_multi_r_data
-        torch.cuda.empty_cache()
-
-        return model, k_score
-
-    # train on initial/maintenance graphs, t == 0 or t % window_size == 0 in this paper
-
-    def initial_maintain(self,
-                         train_i, i,
-                         metrics,
-                         embedding_save_path,
-                         loss_fn,
-                         model=None,
-                         loss_fn_dgi=None):
-        """
-        :param i:
-        :param data_split:
-        :param metrics:
-        :param embedding_save_path:
-        :param loss_fn:
-        :param model:
-        :param loss_fn_dgi:
-        :return:
-        """
-
-        # make dir for graph i
-        # ./incremental_0808//embeddings_0403005348/block_xxx
-        save_path_i = embedding_save_path + '/block_' + str(i)
-        if not os.path.isdir(save_path_i):
-            os.mkdir(save_path_i)
-
-        # load data
-        relation_ids: List[str] = ['entity', 'userid', 'word']
-        homo_data = create_homodataset(self.args.data_path, [train_i, i], self.args.validation_percent)
-        multi_r_data = create_multi_relational_graph(self.args.data_path, relation_ids, [train_i, i])
-        num_relations = len(multi_r_data)
-
-        device = torch.device('cuda' if torch.cuda.is_available() and self.args.use_cuda else 'cpu')
-
-        # input dimension (300 in our paper)
-        num_dim = homo_data.x.size(0)
-        feat_dim = homo_data.x.size(1)
-
-        # prepare graph configs for node filtering
-        if self.args.is_initial:
-            print('prepare node configures...')
-            # pre_node_dist(multi_r_data, homo_data.x, save_path_i)
-            filter_path = save_path_i
-        else:
-            filter_path = self.args.data_path + str(i)
-
-        if model is None:  # pre-training stage in our paper
-            # print('Pre-Train Stage...')
-            model = MarGNN((feat_dim, self.args.hidden_dim, self.args.out_dim, self.args.heads),
-                           num_relations=num_relations, inter_opt=self.args.inter_opt, is_shared=self.args.is_shared)
-
-        # define sampler
-        sampler = MySampler(self.args.sampler)
-        # load model to device
-        model.to(device)
-
-        # initialize RL thresholds
-        # RL_threshold: [[.5], [.5], [.5]]
-        RL_thresholds = torch.FloatTensor(self.args.threshold_start0)
-
-        # define optimizer
-        optimizer = optim.Adam(model.parameters(), lr=self.args.lr, weight_decay=1e-4)
-
-        # record training log
-        message = "\n------------ Start initial training / maintaining using block " + str(i) + " ------------\n"
-        print(message)
-        with open(save_path_i + '/log.txt', 'a') as f:
-            f.write(message)
-
-        # record the highest validation nmi ever got for early stopping
-        best_vali_nmi = 1e-9
-        best_epoch = 0
-        wait = 0
-        # record validation nmi of all epochs before early stop
-        all_vali_nmi = []
-        # record the time spent in seconds on each batch of all training/maintaining epochs
-        seconds_train_batches = []
-        # record the time spent in mins on each epoch
-        mins_train_epochs = []
-
-        # step13: start training
-        for epoch in range(self.args.n_epochs):
-            start_epoch = time()
-            losses = []
-            total_loss = 0.0
-
-            for metric in metrics:
-                metric.reset()
-
-            # Multi-Agent
-
-            # filter neighbor in advance to fit with neighbor sampling
-            # filtered_multi_r_data = RL_neighbor_filter(multi_r_data, RL_thresholds, filter_path) if epoch >= self.args.RL_start0 and self.args.sampler == 'RL_sampler' else multi_r_data
-
-            filtered_multi_r_data = torch.load(self.args.file_path + 'multi_remain_data.pt')
-
-            print(f"Epoch {epoch + 1}/{self.args.n_epochs} - Starting training...")
-            model.train()
-
-            train_num_samples, valid_num_samples = homo_data.train_mask.size(0), homo_data.val_mask.size(0)
-            #train_num_samples, valid_num_samples = homo_data.train_mask.size(0) // 100, homo_data.val_mask.size(0)
-            all_num_samples = train_num_samples + valid_num_samples
-
-            # batch training
-            num_batches = int(train_num_samples / self.args.batch_size) + 1
-            for batch in range(num_batches):
-                start_batch = time()
-
-                # split batch
-                i_start = self.args.batch_size * batch
-                i_end = min((batch + 1) * self.args.batch_size, train_num_samples)
-                batch_nodes = homo_data.train_mask[i_start:i_end]
-                batch_labels = homo_data.y[batch_nodes]
-
-                print(
-                    f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Processing nodes {i_start} to {i_end}...")
-
-                # sampling neighbors of batch nodes
-                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
-                                             batch_size=self.args.batch_size)
-                optimizer.zero_grad()
-
-                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
-                loss_outputs = loss_fn(pred, batch_labels)
-                loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
-
-                losses.append(loss.item())
-                total_loss += loss.item()
-
-                for metric in metrics:
-                    metric(pred, batch_labels, loss_outputs)
-
-                if batch % self.args.log_interval == 0:
-                    message = 'Train: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(batch * self.args.batch_size,
-                                                                              train_num_samples, 100. * batch / ((
-                                                                                                                         train_num_samples // self.args.batch_size) + 1),
-                                                                              np.mean(losses))
-
-                    for metric in metrics:
-                        message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
-
-                    print(message)  # 输出到控制台
-                    with open(save_path_i + '/log.txt', 'a') as f:
-                        f.write(message)
-                    losses = []
-
-                del pred, loss_outputs
-                gc.collect()
-
-                print(
-                    f"Epoch {epoch + 1}/{self.args.n_epochs} - Batch {batch + 1}/{num_batches}: Performing backward pass...")
-                loss.backward()
-                optimizer.step()
-
-                batch_seconds_spent = time() - start_batch
-                seconds_train_batches.append(batch_seconds_spent)
-
-                del loss
-                gc.collect()
-
-            # step14: print loss
-            total_loss /= (batch + 1)
-            message = 'Epoch: {}/{}. Average loss: {:.4f}'.format(epoch + 1, self.args.n_epochs, total_loss)
-            for metric in metrics:
-                message += '\t{}: {:.4f}'.format(metric.name(), metric.value())
-            mins_spent = (time() - start_epoch) / 60
-            message += '\nThis epoch took {:.2f} mins'.format(mins_spent)
-            message += '\n'
-            print(message)
-            with open(save_path_i + '/log.txt', 'a') as f:
-                f.write(message)
-            mins_train_epochs.append(mins_spent)
-
-            # validation
-            # infer the representations of all tweets
-            model.eval()
-
-            # we recommand to forward all nodes and select the validation indices instead
-            extract_features = torch.FloatTensor([])
-
-            num_batches = int(all_num_samples / self.args.batch_size) + 1
-
-            # all mask are then splited into mini-batch in order
-            all_mask = torch.arange(0, num_dim, dtype=torch.long)
-
-            for batch in range(num_batches):
-                start_batch = time()
-
-                # split batch
-                i_start = self.args.batch_size * batch
-                i_end = min((batch + 1) * self.args.batch_size, all_num_samples)
-                batch_nodes = all_mask[i_start:i_end]
-                batch_labels = homo_data.y[batch_nodes]
-
-                # sampling neighbors of batch nodes
-                adjs, n_ids = sampler.sample(filtered_multi_r_data, node_idx=batch_nodes, sizes=[-1, -1],
-                                             batch_size=self.args.batch_size)
-
-                pred = model(homo_data.x, adjs, n_ids, device, RL_thresholds)
-
-                extract_features = torch.cat((extract_features, pred.cpu().detach()), dim=0)
-
-                del pred
-                gc.collect()
-
-            # save_embeddings(extract_features, save_path_i)
-            epoch = epoch + 1
-            # evaluate the model: conduct kMeans clustering on the validation and report NMI
-            validation_nmi = evaluate_model(extract_features[homo_data.val_mask],
-                                            homo_data.y,
-                                            indices=homo_data.val_mask,
-                                            epoch=epoch,
-                                            num_isolated_nodes=0,
-                                            save_path=save_path_i,
-                                            is_validation=True,
-                                            cluster_type=self.args.cluster_type)
-            all_vali_nmi.append(validation_nmi)
-
-            # step16: early stop
-            if validation_nmi > best_vali_nmi:
-                best_vali_nmi = validation_nmi
-                best_epoch = epoch
-                wait = 0
-                # save model
-                model_path = save_path_i + '/models'
-                if (epoch == 1) and (not os.path.isdir(model_path)):
-                    os.mkdir(model_path)
-                p = model_path + '/best.pt'
-                torch.save(model.state_dict(), p)
-                print('Best model saved after epoch ', str(epoch))
-            else:
-                wait += 1
-            if wait >= self.args.patience:
-                print('Saved all_mins_spent')
-                print('Early stopping at epoch ', str(epoch))
-                print('Best model was at epoch ', str(best_epoch))
-                break
-            # end one epoch
-
-        # save all validation nmi
-        np.save(save_path_i + '/all_vali_nmi.npy', np.asarray(all_vali_nmi))
-        # save time spent on epochs
-        np.save(save_path_i + '/mins_train_epochs.npy', np.asarray(mins_train_epochs))
-        print('Saved mins_train_epochs.')
-        # save time spent on batches
-        np.save(save_path_i + '/seconds_train_batches.npy', np.asarray(seconds_train_batches))
-        print('Saved seconds_train_batches.')
-
-        # load the best model of the current block
-        best_model_path = save_path_i + '/models/best.pt'
-        model.load_state_dict(torch.load(best_model_path))
-        print("Best model loaded.")
-
-        del homo_data, multi_r_data
-        torch.cuda.empty_cache()
-
-        return model, RL_thresholds
 
 
 # gen_dataset
@@ -1804,8 +1888,7 @@ def pre_node_dist(multi_r_data, features, save_path=None):
         np.save(save_path, relation_config)
 
 
-def RL_neighbor_filter(multi_r_data, RL_thresholds, load_path):
-    args = args_define.args
+def RL_neighbor_filter(args,multi_r_data, RL_thresholds, load_path):
 
     load_path = os.path.join(load_path, 'relation_config.npy')
     relation_config = np.load(load_path, allow_pickle=True)
@@ -2032,13 +2115,3 @@ def RandomNegativeTripletSelector(margin, cpu=False): return FunctionNegativeTri
                                                                                              cpu=cpu)
 
 
-if __name__ == '__main__':
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    args = args_define().args
-
-    finevent = FinEvent(args, dataset)
-    finevent.preprocess()
-    finevent.fit()
-    predictions, ground_truths = finevent.detection()
-    finevent.evaluate(predictions, ground_truths)

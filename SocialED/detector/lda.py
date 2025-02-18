@@ -13,8 +13,42 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import Event2012
 
 class LDA:
+    r"""The LDA model for social event detection that uses Latent Dirichlet Allocation
+    for topic modeling and event detection.
+
+    .. note::
+        This detector uses topic modeling to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    See :cite:`blei2003latent` for details.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    num_topics : int, optional
+        Number of topics to extract. Default: ``50``.
+    passes : int, optional
+        Number of passes through corpus during training. Default: ``20``.
+    iterations : int, optional
+        Maximum number of iterations through corpus. Default: ``50``.
+    alpha : str or float, optional
+        Prior document-topic distribution. Default: ``'symmetric'``.
+    eta : float, optional
+        Prior topic-word distribution. Default: ``None``.
+    random_state : int, optional
+        Random seed for reproducibility. Default: ``1``.
+    eval_every : int, optional
+        Log perplexity evaluation frequency. Default: ``10``.
+    chunksize : int, optional
+        Number of documents per training chunk. Default: ``2000``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/LDA/'``.
+    """
+
     def __init__(self,
-                 dataset=Event2012().load_data(),
+                 dataset,
                  num_topics=50,
                  passes=20,
                  iterations=50,
@@ -24,7 +58,7 @@ class LDA:
                  eval_every=10,
                  chunksize=2000,
                  file_path='../model/model_saved/LDA/'):
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.num_topics = num_topics
         self.passes = passes
         self.iterations = iterations
@@ -159,13 +193,3 @@ class LDA:
             f.write("\n")  # Add a newline for better readability
 
 
-# Main function
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-
-    dataset = Event2012().load_data()
-    lda = LDA(dataset)
-    lda.preprocess()
-    lda.fit()
-    ground_truths, predictions = lda.detection()
-    lda.evaluate(ground_truths, predictions)

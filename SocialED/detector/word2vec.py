@@ -15,6 +15,32 @@ from dataset.dataloader import DatasetLoader
 
 
 class WORD2VEC:
+    r"""The Word2Vec model for social event detection that uses word embeddings 
+    to detect events in social media data.
+
+    .. note::
+        This detector uses word embeddings to identify semantic relationships
+        and detect events in social media data. The model requires a dataset
+        object with a load_data() method.
+
+    See :cite:`mikolov2013efficient` for details.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    vector_size : int, optional
+        Dimensionality of word vectors. Default: ``100``.
+    window : int, optional
+        Maximum distance between current and predicted word. Default: ``5``.
+    min_count : int, optional
+        Minimum word frequency. Default: ``1``.
+    sg : int, optional
+        Training algorithm: Skip-gram (1) or CBOW (0). Default: ``1``.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/Word2vec/word2vec_model.model'``.
+    """
     def __init__(self,
                  dataset,
                  vector_size=100, 
@@ -23,7 +49,7 @@ class WORD2VEC:
                  sg=1,
                  file_path='../model/model_saved/Word2vec/word2vec_model.model'):
 
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         self.vector_size = vector_size
         self.window = window
         self.min_count = min_count
@@ -125,13 +151,3 @@ class WORD2VEC:
         return ari, ami, nmi
 
 
-# Main function
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    word2vec = WORD2VEC(dataset)
-
-    word2vec.preprocess()
-    word2vec.fit()
-    ground_truths, predictions = word2vec.detection()
-    word2vec.evaluate(ground_truths, predictions)

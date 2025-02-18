@@ -12,13 +12,35 @@ from dataset.dataloader import DatasetLoader
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 class SBERT:
+    r"""The SBERT model for social event detection that uses Sentence-BERT 
+    for text embedding and event detection.
+
+    .. note::
+        This detector uses Sentence-BERT to generate text embeddings for identifying events 
+        in social media data. The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    model_name : str, optional
+        Path or name of the SBERT model to use.
+        Default: ``'../model/model_needed/paraphrase-MiniLM-L6-v2'``
+    df : pandas.DataFrame, optional
+        Processed dataframe. Default: ``None``
+    train_df : pandas.DataFrame, optional
+        Training dataframe. Default: ``None``
+    test_df : pandas.DataFrame, optional
+        Test dataframe. Default: ``None``
+    """
     def __init__(self,
                  dataset,
                  model_name='../model/model_needed/paraphrase-MiniLM-L6-v2',
                  df=None,
                  train_df=None,
                  test_df=None, ):
-        self.dataset = dataset
+        self.dataset = dataset.load_data()
         if os.path.exists(model_name):
             self.model_name = model_name
         else:
@@ -43,6 +65,9 @@ class SBERT:
         Get SBERT embeddings for a given text.
         """
         return self.model.encode(text)
+
+    def fit(self):
+        pass
 
     def detection(self):
         """
@@ -89,12 +114,3 @@ class SBERT:
         print(f"Adjusted Rand Index (ARI): {ari}")
 
 
-# Main function
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012().load_data()
-    sbert = SBERT(dataset)
-
-    sbert.preprocess()
-    ground_truths, predictions = sbert.detection()
-    sbert.evaluate(ground_truths, predictions)

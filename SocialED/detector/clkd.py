@@ -21,86 +21,224 @@ from scipy import sparse
 from dgl.data.utils import save_graphs, load_graphs
 import pickle
 from collections import Counter
-import en_core_web_lg
-import fr_core_news_lg
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataset.dataloader import Event2012,Event2018,ArabicTwitter
+from dataset.dataloader import Event2012,Event2018,Arabic_Twitter
 from torch.utils.data import Dataset
 
-class args_define:
-    def __init__(self, **kwargs):
-        # Default values for all parameters
-        defaults = {
-            'n_epochs': 1,
-            'n_infer_epochs': 0, 
-            'window_size': 3,
-            'patience': 5,
-            'margin': 3.0,
-            'lr': 1e-3,
-            'batch_size': 2000,
-            'n_neighbors': 800,
-            'word_embedding_dim': 300,
-            'hidden_dim': 8,
-            'out_dim': 32,
-            'num_heads': 4,
-            'use_residual': True,
-            'validation_percent': 0.1,
-            'test_percent': 0.2,
-            'use_hardest_neg': False,
-            'metrics': 'ami',
-            'use_cuda': False,
-            'gpuid': 0,
-            'mask_path': None,
-            'log_interval': 10,
-            'is_incremental': False,
-            'mutual': False,
-            'mode': 0,
-            'add_mapping': False,
-            'data_path': '../model/model_saved/clkd/English',
-            'file_path': '../model/model_saved/clkd',
-            'Tmodel_path': '../model/model_saved/clkd/English/Tmodel/',
-            'lang': 'French',
-            'Tealang': 'English',
-            't': 1,
-            'data_path1': '../model/model_saved/clkd/English',
-            'data_path2': '../model/model_saved/clkd/French', 
-            'lang1': 'English',
-            'lang2': 'French',
-            'e': 0,
-            'mt': 0.5,
-            'rd': 0.1,
-            'is_static': False,
-            'graph_lang': 'French',
-            'tgtlang': 'French',
-            'days': 7,
-            'initial_lang': 'English',
-            'TransLinear': True,
-            'tgt': 'English',
-            'embpath': '../model/model_saved/clkd/dictrans/fr-en-for.npy',
-            'wordpath': '../model/model_saved/clkd/dictrans/wordsFrench.txt'
-        }
-
-        # Update defaults with any provided kwargs
-        defaults.update(kwargs)
-
-        # Set all attributes
-        for key, value in defaults.items():
-            setattr(self, key, value)
-
-        # Store all arguments in Namespace
-        self.args = argparse.Namespace(**defaults)
 
 class CLKD:
-    def __init__(self, args, dataset):
+    r"""The CLKD (Contrastive Learning with Knowledge Distillation) model for social event detection.
+
+    .. note::
+        This detector uses contrastive learning and knowledge distillation to identify events in social media data.
+        The model requires a dataset object with a load_data() method.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() method that returns the raw data.
+    n_epochs : int, optional
+        Number of training epochs. Default: ``1``.
+    n_infer_epochs : int, optional 
+        Number of inference epochs. Default: ``0``.
+    window_size : int, optional
+        Size of sliding window for incremental learning. Default: ``3``.
+    patience : int, optional
+        Number of epochs to wait before early stopping. Default: ``5``.
+    margin : float, optional
+        Margin for triplet loss. Default: ``3.0``.
+    lr : float, optional
+        Learning rate. Default: ``1e-3``.
+    batch_size : int, optional
+        Mini-batch size. Default: ``2000``.
+    n_neighbors : int, optional
+        Number of neighbors for graph construction. Default: ``800``.
+    word_embedding_dim : int, optional
+        Dimension of word embeddings. Default: ``300``.
+    hidden_dim : int, optional
+        Hidden layer dimension. Default: ``8``.
+    out_dim : int, optional
+        Output dimension. Default: ``32``.
+    num_heads : int, optional
+        Number of attention heads. Default: ``4``.
+    use_residual : bool, optional
+        Whether to use residual connections. Default: ``True``.
+    validation_percent : float, optional
+        Percentage of data for validation. Default: ``0.1``.
+    test_percent : float, optional
+        Percentage of data for testing. Default: ``0.2``.
+    use_hardest_neg : bool, optional
+        Whether to use hardest negative mining. Default: ``False``.
+    metrics : str, optional
+        Evaluation metric to use. Default: ``'ami'``.
+    use_cuda : bool, optional
+        Whether to use GPU acceleration. Default: ``False``.
+    gpuid : int, optional
+        ID of GPU to use. Default: ``0``.
+    mask_path : str, optional
+        Path to attention mask file. Default: ``None``.
+    log_interval : int, optional
+        Number of steps between logging. Default: ``10``.
+    is_incremental : bool, optional
+        Whether to use incremental learning. Default: ``False``.
+    mutual : bool, optional
+        Whether to use mutual learning. Default: ``False``.
+    mode : int, optional
+        Training mode. Default: ``0``.
+    add_mapping : bool, optional
+        Whether to add mapping layer. Default: ``False``.
+    data_path : str, optional
+        Path to data directory. Default: ``'../model/model_saved/clkd/English'``.
+    file_path : str, optional
+        Path to save files. Default: ``'../model/model_saved/clkd'``.
+    Tmodel_path : str, optional
+        Path to teacher model. Default: ``'../model/model_saved/clkd/English/Tmodel/'``.
+    lang : str, optional
+        Language of the data. Default: ``'French'``.
+    Tealang : str, optional
+        Language of teacher model. Default: ``'English'``.
+    t : float, optional
+        Temperature parameter. Default: ``1``.
+    data_path1 : str, optional
+        Path to first language data. Default: ``'../model/model_saved/clkd/English'``.
+    data_path2 : str, optional
+        Path to second language data. Default: ``'../model/model_saved/clkd/French'``.
+    lang1 : str, optional
+        First language. Default: ``'English'``.
+    lang2 : str, optional
+        Second language. Default: ``'French'``.
+    e : float, optional
+        Epsilon parameter. Default: ``0``.
+    mt : float, optional
+        Momentum parameter. Default: ``0.5``.
+    rd : float, optional
+        Random drop rate. Default: ``0.1``.
+    is_static : bool, optional
+        Whether to use static embeddings. Default: ``False``.
+    graph_lang : str, optional
+        Language for graph construction. Default: ``'English'``.
+    tgtlang : str, optional
+        Target language. Default: ``'French'``.
+    days : int, optional
+        Number of days for temporal window. Default: ``7``.
+    initial_lang : str, optional
+        Initial language. Default: ``'French'``.
+    TransLinear : bool, optional
+        Whether to use linear transformation. Default: ``True``.
+    tgt : str, optional
+        Target language code. Default: ``'English'``.
+    embpath : str, optional
+        Path to embedding file. Default: ``'../model/model_saved/clkd/dictrans/fr-en-for.npy'``.
+    wordpath : str, optional
+        Path to word dictionary. Default: ``'../model/model_saved/clkd/dictrans/wordsFrench.txt'``.
+    """
+    def __init__(self, 
+                 dataset,
+                 n_epochs=1,
+                 n_infer_epochs=0,
+                 window_size=3,
+                 patience=5,
+                 margin=3.0,
+                 lr=1e-3,
+                 batch_size=2000,
+                 n_neighbors=800,
+                 word_embedding_dim=300,
+                 hidden_dim=8,
+                 out_dim=32,
+                 num_heads=4,
+                 use_residual=True,
+                 validation_percent=0.1,
+                 test_percent=0.2,
+                 use_hardest_neg=False,
+                 metrics='ami',
+                 use_cuda=False,
+                 gpuid=0,
+                 mask_path=None,
+                 log_interval=10,
+                 is_incremental=False,
+                 mutual=False,
+                 mode=0,
+                 add_mapping=False,
+                 data_path='../model/model_saved/clkd/English',
+                 file_path='../model/model_saved/clkd',
+                 Tmodel_path='../model/model_saved/clkd/English/Tmodel/',
+                 lang='French',
+                 Tealang='English',
+                 t=1,
+                 data_path1='../model/model_saved/clkd/English',
+                 data_path2='../model/model_saved/clkd/French',
+                 lang1='English',
+                 lang2='French',
+                 e=0,
+                 mt=0.5,
+                 rd=0.1,
+                 is_static=False,
+                 graph_lang='English',
+                 tgtlang='French',
+                 days=7,
+                 initial_lang='French',
+                 TransLinear=True,
+                 tgt='English',
+                 embpath='../model/model_saved/clkd/dictrans/fr-en-for.npy',
+                 wordpath='../model/model_saved/clkd/dictrans/wordsFrench.txt'):
         self.embedding_save_path1 = None
         self.embedding_save_path2 = None
         self.embedding_save_path = None
         self.data_split1 = None
         self.data_split2 = None
         self.data_split = None
-        self.args = args
         self.dataset = dataset
+        
+        # Store all parameters as attributes
+        self.n_epochs = n_epochs
+        self.n_infer_epochs = n_infer_epochs
+        self.window_size = window_size
+        self.patience = patience
+        self.margin = margin
+        self.lr = lr
+        self.batch_size = batch_size
+        self.n_neighbors = n_neighbors
+        self.word_embedding_dim = word_embedding_dim
+        self.hidden_dim = hidden_dim
+        self.out_dim = out_dim
+        self.num_heads = num_heads
+        self.use_residual = use_residual
+        self.validation_percent = validation_percent
+        self.test_percent = test_percent
+        self.use_hardest_neg = use_hardest_neg
+        self.metrics = metrics
+        self.use_cuda = use_cuda
+        self.gpuid = gpuid
+        self.mask_path = mask_path
+        self.log_interval = log_interval
+        self.is_incremental = is_incremental
+        self.mutual = mutual
+        self.mode = mode
+        self.add_mapping = add_mapping
+        self.data_path = data_path
+        self.file_path = file_path
+        self.Tmodel_path = Tmodel_path
+        self.lang = lang
+        self.Tealang = Tealang
+        self.t = t
+        self.data_path1 = data_path1
+        self.data_path2 = data_path2
+        self.lang1 = lang1
+        self.lang2 = lang2
+        self.e = e
+        self.mt = mt
+        self.rd = rd
+        self.is_static = is_static
+        self.graph_lang = graph_lang
+        self.tgtlang = tgtlang
+        self.days = days
+        self.initial_lang = initial_lang
+        self.TransLinear = TransLinear
+        self.tgt = tgt
+        self.embpath = embpath
+        self.wordpath = wordpath
 
     def preprocess(self):
         preprocessor = Preprocessor(self.args)
@@ -320,7 +458,7 @@ class Preprocessor:
         if self.args.initial_lang == "French":
             df = Event2018().load_data()
         elif self.args.initial_lang == "Arabic":
-            df = ArabicTwitter().load_data()
+            df = Arabic_Twitter().load_data()
         elif self.args.initial_lang == "English":
             df = Event2012().load_data()
         else:
@@ -348,7 +486,6 @@ class Preprocessor:
             np.save(os.path.join(save_path, 'features_69612_0709_spacy_lg_zero_multiclasses_filtered_{}_{}.npy'.format(
                 self.args.initial_lang, self.args.tgt)),
                     lcombined_features)
-
 
 
     def documents_to_features(self, df, initial_lang):
@@ -410,7 +547,7 @@ class Preprocessor:
         if self.args.graph_lang == "French":
             df = Event2018().load_data()
         elif self.args.graph_lang == "Arabic":
-            df = ArabicTwitter().load_data()
+            df = Arabic_Twitter().load_data()
         elif self.args.graph_lang == "English":
             df = Event2012().load_data()
 
@@ -1889,12 +2026,3 @@ def graph_statistics(G, save_path):
     return num_isolated_nodes
 
 
-if __name__ == '__main__':
-    from dataset.dataloader import Event2012
-    dataset = Event2012()
-    args = args_define().args
-    clkd = CLKD(args, dataset)
-    clkd.preprocess()
-    clkd.fit()  # 训练模型
-    predictions, ground_truths = clkd.detection()  
-    results = clkd.evaluate(predictions, ground_truths)  

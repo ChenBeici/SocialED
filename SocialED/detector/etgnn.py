@@ -9,8 +9,6 @@ import pandas as pd
 import numpy as np
 from scipy import sparse
 import spacy
-import en_core_web_lg
-import fr_core_news_lg
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, f1_score, accuracy_score
 import copy
@@ -21,41 +19,89 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataset.dataloader import DatasetLoader
 
-import argparse
-
-
-class args_define:
-    def __init__(self, **kwargs):
-        # Define default values for all parameters
-        defaults = {
-            'file_path': '../model/model_saved/uclsed/',
-            'lang': 'French', 
-            'epoch': 2,
-            'batch_size': 20000,
-            'neighbours_num': 80,
-            'GNN_h_dim': 256,
-            'GNN_out_dim': 256,
-            'E_h_dim': 128,
-            'use_uncertainty': True,
-            'use_cuda': True,
-            'gpuid': 0,
-            'mode': 0,
-            'mse': False,
-            'digamma': True,
-            'log': False
-        }
-
-        # Set attributes using kwargs with defaults
-        for key, default in defaults.items():
-            setattr(self, key, kwargs.get(key, default))
-
-        # Create args namespace with all parameters
-        self.args = argparse.Namespace(**{k: getattr(self, k) for k in defaults.keys()})
-
-
 
 class ETGNN:
-    def __init__(self, args, dataset):
+    r"""The ETGNN model for social event detection that uses uncertainty-aware contrastive learning
+    for event detection.
+
+    .. note::
+        This detector uses uncertainty-aware contrastive learning to identify events in social media data.
+        The model requires a dataset object with load_data() and get_dataset_language() methods.
+
+    Parameters
+    ----------
+    dataset : object
+        The dataset object containing social media data.
+        Must provide load_data() and get_dataset_language() methods.
+    file_path : str, optional
+        Path to save model files. Default: ``'../model/model_saved/etgnn/'``.
+    epoch : int, optional
+        Number of training epochs. Default: ``50``.
+    batch_size : int, optional
+        Batch size for training. Default: ``128``.
+    neighbours_num : int, optional
+        Number of neighbors to sample. Default: ``80``.
+    GNN_h_dim : int, optional
+        Hidden dimension of GNN. Default: ``256``.
+    GNN_out_dim : int, optional
+        Output dimension of GNN. Default: ``256``.
+    E_h_dim : int, optional
+        Hidden dimension of encoder. Default: ``128``.
+    use_uncertainty : bool, optional
+        Whether to use uncertainty estimation. Default: ``True``.
+    use_cuda : bool, optional
+        Whether to use GPU acceleration. Default: ``True``.
+    gpuid : int, optional
+        GPU device ID to use. Default: ``0``.
+    mode : int, optional
+        Training mode. Default: ``0``.
+    mse : bool, optional
+        Whether to use MSE loss. Default: ``False``.
+    digamma : bool, optional
+        Whether to use digamma function. Default: ``True``.
+    log : bool, optional
+        Whether to use log transformation. Default: ``False``.
+    learning_rate : float, optional
+        Learning rate for optimizer. Default: ``1e-4``.
+    weight_decay : float, optional
+        Weight decay for optimizer. Default: ``1e-5``.
+    """
+    def __init__(
+        self,
+        dataset,
+        file_path='../model/model_saved/etgnn/',
+        epoch=50,
+        batch_size=128,
+        neighbours_num=80,
+        GNN_h_dim=256,
+        GNN_out_dim=256,
+        E_h_dim=128,
+        use_cuda=True,
+        gpuid=0,
+        mode=0,
+        mse=False,
+        digamma=True,
+        log=False,
+        learning_rate=1e-4,
+        weight_decay=1e-5
+    ):
+        # 将参数赋值给 self
+        self.file_path = file_path
+        self.epoch = epoch
+        self.batch_size = batch_size
+        self.neighbours_num = neighbours_num
+        self.GNN_h_dim = GNN_h_dim
+        self.GNN_out_dim = GNN_out_dim
+        self.E_h_dim = E_h_dim
+        self.use_cuda = use_cuda
+        self.gpuid = gpuid
+        self.mode = mode
+        self.mse = mse
+        self.digamma = digamma
+        self.log = log
+        self.learning_rate = learning_rate
+        self.weight_decay = weight_decay
+
         self.save_path = None
         self.test_indices = None
         self.val_indices = None
@@ -66,20 +112,24 @@ class ETGNN:
         self.g_dict = None
         self.views = None
         self.features = None
+        self.dataset = dataset.load_data()
+        self.language = dataset.get_dataset_language()
+        
 
     def preprocess(self):
-        preprocessor = Preprocessor(args)
-        preprocessor.construct_graph(dataset)
+        preprocessor = Preprocessor(self)
+        preprocessor.construct_graph(self.dataset,self.language)
 
     def fit(self):
+        args=self
         parser = argparse.ArgumentParser()
         print("Using CUDA:", args.use_cuda)
         if args.use_cuda:
             torch.cuda.set_device(args.gpuid)
 
         self.views = ['h', 'e', 'u']
-        self.g_dict, self.times, self.features, self.labels = get_dgl_data(self.views)
-        self.mask_path = f"{args.file_path}{args.lang}/" + "masks/"
+        self.g_dict, self.times, self.features, self.labels = get_dgl_data(self,self.views,self.language)
+        self.mask_path = f"{args.file_path}{self.language}/" + "masks/"
         if not os.path.exists(self.mask_path):
             os.mkdir(self.mask_path)
         self.train_indices, self.val_indices, self.test_indices = ava_split_data(len(self.labels), self.labels,
@@ -93,23 +143,14 @@ class ETGNN:
             if args.use_uncertainty:
                 print("use_uncertainty")
                 flag = "evi"
-            self.save_path = f"{args.file_path}{args.lang}/" + flag + "/"
+            self.save_path = f"{args.file_path}{self.language}/" + flag + "/"
             print(self.save_path)
             os.makedirs(self.save_path, exist_ok=True)
         else:
-            self.save_path = '../model/model_saved/uclsed/Eng_CrisisLexT26/'
+            self.save_path = '../model/model_saved/etgnn/'
 
-        if args.use_uncertainty:
-            if args.digamma:
-                criterion = edl_digamma_loss
-            elif args.log:
-                criterion = edl_log_loss
-            elif args.mse:
-                criterion = edl_mse_loss
-            else:
-                parser.error("--uncertainty requires --mse, --log or --digamma.")
-        else:
-            criterion = nn.CrossEntropyLoss()
+
+        criterion = nn.CrossEntropyLoss()
 
         self.model = UCLSED_model(self.features.shape[1], args.GNN_h_dim, args.GNN_out_dim, args.E_h_dim,
                                   len(set(self.labels)), self.views)
@@ -117,6 +158,7 @@ class ETGNN:
                                  args.epoch, criterion, self.mask_path, self.save_path, args)
 
     def detection(self):
+        args=self
         self.model.eval()
         self.val_indices = torch.load(self.mask_path + "val_indices.pt")
         classes = len(set(self.labels))
@@ -171,10 +213,14 @@ class ETGNN:
         print(f"Validation F1 Score: {val_f1}")
         print(f"Validation Accuracy: {val_acc}")
 
+        return val_f1, val_acc
 
-class Preprocessor:
-    def __init__(self, dataset):
-        pass
+
+class Preprocessor():
+    def __init__(self,  args):
+        super(Preprocessor, self).__init__()
+
+        self.args = args
 
     def str2list(self, str_ele):
         if str_ele == "[]":
@@ -202,20 +248,40 @@ class Preprocessor:
 
         for (i, j) in id_num[0:100]:
             print(j, end=",")
-        sorted_id_dict = dict(zip(np.array(id_num)[:, 0], range(0, len(set(ori_df["event_id"])))))
+        
+        event_ids = [item[0] for item in id_num]
+        sorted_id_dict = dict(zip(event_ids, range(len(set(ori_df["event_id"])))))
+
         sorted_df = select_df
         sorted_df["event_id"] = sorted_df["event_id"].apply(lambda x: sorted_id_dict[x])
 
         print(sorted_df.shape)
-        data_value = sorted_df[
-            ["tweet_id", "user_mentions", "text", "hashtags", "entities", "urls", "filtered_words", "created_at",
-             "event_id"]].values
-        event_df = pd.DataFrame(data=data_value,
-                                columns=["tweet_id", "mention_user", "text", "hashtags", "entities", "urls",
-                                         "filtered_words", "timestamp", "event_id"])
-        event_df['hashtags'] = event_df['hashtags'].apply(lambda x: ["h_" + i for i in x])
-        event_df['entities'] = event_df['entities'].apply(lambda x: ["e_" + str(i) for i in x])
-        event_df['mention_user'] = event_df['mention_user'].apply(lambda x: ["u_" + str(i) for i in x])
+        
+        # 修改这部分：使用列表来选择多个列
+        columns = [
+            'tweet_id', 'text', 'event_id', 'words', 'filtered_words',
+            'entities', 'user_id', 'created_at', 'urls', 'hashtags', 'user_mentions'
+        ]
+        
+        # 检查列是否存在
+        existing_columns = [col for col in columns if col in sorted_df.columns]
+        if len(existing_columns) != len(columns):
+            missing_columns = set(columns) - set(existing_columns)
+            print(f"Warning: Missing columns in DataFrame: {missing_columns}")
+            print(f"Available columns: {sorted_df.columns.tolist()}")
+        
+        data_value = sorted_df[existing_columns].values
+        
+        event_df = pd.DataFrame(data=data_value, columns=existing_columns)
+        
+        # 确保所需的列存在后再处理
+        if 'hashtags' in event_df.columns:
+            event_df['hashtags'] = event_df['hashtags'].apply(lambda x: ["h_" + str(i) for i in x])
+        if 'entities' in event_df.columns:
+            event_df['entities'] = event_df['entities'].apply(lambda x: ["e_" + str(i) for i in x])
+        if 'user_mentions' in event_df.columns:
+            event_df['user_mentions'] = event_df['user_mentions'].apply(lambda x: ["u_" + str(i) for i in x])
+        
         event_df = event_df.loc[event_df['event_id'] < 100]
         event_df = event_df.reset_index(drop=True)
 
@@ -223,12 +289,12 @@ class Preprocessor:
         return event_df
 
     def get_nlp(self, lang):
-        if lang == "English" or lang == "Arabic":
-            # nlp = en_core_web_lg.load()
+        if lang == "English":
             nlp =spacy.load('en_core_web_lg')
         elif lang == "French":
-            # nlp = fr_core_news_lg.load()
             nlp=spacy.load('fr_core_news_lg')
+        elif lang == "Arabic":
+            nlp = spacy.load('ar_core_news_lg')
         return nlp
 
     def construct_graph_base_eles(self, view_dict, df, path, lang):
@@ -242,6 +308,27 @@ class Preprocessor:
         print(features.shape)
         np.save(path + "features.npy", features)
         print("text features are saved in {}features.npy".format(path))
+        
+        if 'timestamp' not in df.columns and 'created_at' in df.columns:
+            try:
+                # 如果 created_at 是字符串格式，先转换为 datetime
+                if df['created_at'].dtype == 'object':
+                    df['timestamp'] = pd.to_datetime(df['created_at'])
+                else:
+                    df['timestamp'] = df['created_at']
+                
+                # 转换为 UNIX 时间戳（秒）
+                df['timestamp'] = df['timestamp'].astype(np.int64) // 10**9
+                
+            except Exception as e:
+                print(f"Error converting created_at to timestamp: {e}")
+                print("Using default timestamps...")
+                df['timestamp'] = np.arange(len(df))  # 使用序列号作为后备方案
+        elif 'timestamp' not in df.columns:
+            print("Warning: No timestamp or created_at column found, using sequential numbers")
+            df['timestamp'] = np.arange(len(df))
+    
+        
         np.save(path + "time.npy", df['timestamp'].values)
         print("time features are saved in {}time.npy".format(path))
         df["event_id"] = df["event_id"].apply(lambda x: int(x))
@@ -292,11 +379,16 @@ class Preprocessor:
             sparse.save_npz(os.path.join(path, f"s_tweet_tweet_matrix_{v}.npz"), s_tweet_tweet_matrix)
             print(f"Sparse binary {v} commuting matrix is saved in {path}s_tweet_tweet_matrix_{v}.npz")
 
-    def construct_graph(self, dataset):
+    def construct_graph(self, dataset, lang):
+        args=self
         event_df = self.load_data(dataset)
-        view_dict = {"h": ["hashtags", "urls"], "u": ["mention_user"], "e": ["entities"]}
-        path = args.file_path + args.lang + '/'
-        self.construct_graph_base_eles(view_dict, event_df, path, args.lang)
+        view_dict = {
+            "h": ["hashtags", "urls"], 
+            "u": ["user_mentions"],  # 修改这里：mention_user -> user_mentions
+            "e": ["entities"]
+        }
+        path = self.args.file_path + lang + '/'
+        self.construct_graph_base_eles(view_dict, event_df, path, lang)
 
 
 def extract_results(g_dict, views, labels, model, args, train_indices=None):
@@ -389,7 +481,7 @@ def train_model(model, g_dict, views, features, times, labels, epoch, criterion,
         g_dict[v].ndata['features'] = features
         g_dict[v].ndata['t'] = times
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-3, weight_decay=0.005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
     if args.mode == 0:
@@ -991,9 +1083,9 @@ def graph_statistics(G, save_path):
     return num_isolated_nodes
 
 
-def get_dgl_data(views):
+def get_dgl_data(args,views,language):
     g_dict = {}
-    path = args.file_path + args.lang + '/'
+    path = args.file_path + language + '/'
     features = torch.FloatTensor(np.load(path + "features.npy"))
     times = np.load(path + "time.npy")
     times = torch.FloatTensor(((times - times.min()).astype('timedelta64[D]') / np.timedelta64(1, 'D')))
@@ -1050,14 +1142,3 @@ def ava_split_data(length, labels, classes):
     return train_indices, val_indices, test_indices
 
 
-if __name__ == "__main__":
-    from dataset.dataloader import Event2012
-    dataset = Event2012()
-    args = args_define().args
-    etgnn = ETGNN(args, dataset)
-
-    etgnn.preprocess()
-    etgnn.fit()
-
-    predictions, ground_truths = etgnn.detection()  
-    etgnn.evaluate(predictions, ground_truths)  

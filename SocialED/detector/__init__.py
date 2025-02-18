@@ -5,7 +5,7 @@ from .bilstm import BiLSTM
 from .word2vec import WORD2VEC
 from .glove import GloVe
 from .wmd import WMD
-from .bertmodel import BERT
+from .bert import BERT
 from .sbert import SBERT
 from .eventx import EventX
 from .clkd import CLKD
@@ -18,10 +18,8 @@ from .uclsed import UCLSED
 from .rplmsed import RPLMSED
 from .hisevent import HISEvent
 from .adpsemevent import ADPSEMEvent
-from .hypersed import Hypersed
+from .hypersed import HyperSED
 # List of all classes to be exported
-
-
 __all__ = [
     "LDA",
     "BiLSTM", # test 20s
@@ -41,5 +39,5 @@ __all__ = [
     "RPLMSED",
     "HISEvent", #test160s
     "ADPSEMEvent", #test160s
-    "Hypersed"
+    "HyperSED"
 ]
