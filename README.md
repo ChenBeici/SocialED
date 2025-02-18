@@ -332,54 +332,53 @@ The library provides several utility functions including:
 
 ### 🌟 Core Team
 
-<table>
+<table style="border: none;">
   <tr>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Kun Zhang</b><br>
       🎓 Beihang University<br>
       📧 zhangkun23@buaa.edu.cn
     </td>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Xiaoyan Yu</b><br>
       🎓 Beijing Institute of Technology<br>
       📧 xiaoyan.yu@bit.edu.cn
     </td>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Pu Li</b><br>
       🎓 Kunming University of Science and Technology<br>
       📧 lip@stu.kust.edu.cn
     </td>
   </tr>
   <tr>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Ye Tian</b><br>
       🎓 Laboratory for Advanced Computing<br>and Intelligence Engineering<br>
       📧 sweetwild@mail.ustc.edu.cn
     </td>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>ZhiLin Xu</b><br>
       🎓 Beihang University<br>
       📧 21377240@buaa.edu.cn
     </td>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Kaiwei Yang</b><br>
       🎓 Beihang University<br>
       📧 yangkw@buaa.edu.cn
     </td>
   </tr>
   <tr>
-    <td align="center">
+    <td align="center" style="border: none;">
       <b>Hao Peng</b> 📍<br>
       <i>Corresponding Author</i><br>
       🎓 Beihang University<br>
       📧 penghao@buaa.edu.cn
     </td>
-    <td align="center">
+    <td align="center" colspan="2" style="border: none;">
       <b>Philip S. Yu</b><br>
       🎓 University of Illinois at Chicago<br>
       📧 psyu@uic.edu
     </td>
-    <td></td>
   </tr>
 </table>
 
