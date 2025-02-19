@@ -281,7 +281,7 @@ Inspired by the API designs of established frameworks, we developed a unified AP
 
 
 ## Demo
-This is a demo showing how to use the KPGNN model for event detection. The code below demonstrates loading the Event2012 dataset, initializing and training a KPGNN model with 3 epochs and batch size of 2048, and evaluating its performance. For more details about KPGNN, see [the original paper](https://dl.acm.org/doi/abs/10.1145/3442381.3449834).
+This is a demo showing how to use the KPGNN model for event detection. For quick demonstration purposes, we set epochs=3 and batch_size=2048 to speed up training. The code below demonstrates loading the Event2012 dataset, initializing and training a KPGNN model, and evaluating its performance.
 
 <img src="docs/demo.gif">
 
