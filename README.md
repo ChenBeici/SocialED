@@ -270,7 +270,7 @@ Inspired by the API designs of established frameworks, we developed a unified AP
     dataset = Event2012()                                  # Load "Event2012" dataset
     
     from SocialED.detector import KPGNN                    # Import KPGNN model
-    kpgnn = KPGNN(dataset, batch_size=200)                # Initialize KPGNN model
+    kpgnn = KPGNN(dataset, batch_size=2048)                # Initialize KPGNN model
     
     kpgnn.preprocess()                                     # Preprocess data
     kpgnn.fit()                                           # Train the model
@@ -281,7 +281,7 @@ Inspired by the API designs of established frameworks, we developed a unified AP
 
 
 ## Demo
-This is a demo shows the training and testing process of [KPGNN](https://dl.acm.org/doi/abs/10.1145/3442381.3449834) model with unKR.
+This is a demo showing how to use the KPGNN model for event detection. The code below demonstrates loading the Event2012 dataset, initializing and training a KPGNN model with 3 epochs and batch size of 2048, and evaluating its performance. For more details about KPGNN, see [the original paper](https://dl.acm.org/doi/abs/10.1145/3442381.3449834).
 
 <img src="docs/demo.gif">
 
