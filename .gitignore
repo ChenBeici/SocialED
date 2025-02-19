@@ -1,2 +1,2 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
-socialED/detector/data/
+socialED/detector/data/ 

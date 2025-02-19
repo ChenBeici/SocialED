@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="install.html" />
 
     <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED 1.1.3 documentation</title>
+        <title>SocialED 1.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">SocialED 1.1.3 documentation</div></a>
+      <a href="#"><div class="brand">SocialED 1.1.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -272,7 +272,7 @@ disasters and viral phenomena.</p>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Comprehensive Algorithm Collection</strong>: Integrates 19 detection algorithms and supports 14 widely-used datasets, with continuous updates to include emerging methods</p></li>
+<li><p><strong>Comprehensive Algorithm Collection</strong>: Integrates 19 detection algorithms and supports 15 widely-used datasets, with continuous updates to include emerging methods</p></li>
 <li><p><strong>Unified API Design</strong>: Implements algorithms with a consistent interface, allowing seamless data preparation and integration across all models</p></li>
 <li><p><strong>Modular Components</strong>: Provides customizable components for each algorithm, enabling users to adjust models to specific needs</p></li>
 <li><p><strong>Rich Utility Functions</strong>: Offers tools designed to simplify the construction of social event detection workflows</p></li>
@@ -291,17 +291,17 @@ See examples below for detecting outliers with SocialED in 7 lines!</p>
 <li><p>And more…</p></li>
 </ul>
 <p><strong>Social Event Detection Using SocialED with 5 Lines of Code</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">SocialED.dataset</span> <span class="kn">import</span> <span class="n">MAVEN</span>                 <span class="c1"># Load the dataset</span>
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">MAVEN</span><span class="p">()</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>   <span class="c1"># Load &quot;arabic_twitter&quot; dataset</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">SocialED.dataset</span> <span class="kn">import</span> <span class="n">Event2012</span>                 <span class="c1"># Load the dataset</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Event2012</span><span class="p">()</span>                                  <span class="c1"># Load &quot;Event2012&quot; dataset</span>
 
-<span class="kn">from</span> <span class="nn">SocialED.detector</span> <span class="kn">import</span> <span class="n">KPGNN</span>        <span class="c1"># Import KPGNN model</span>
-<span class="n">args</span> <span class="o">=</span> <span class="n">args_define</span><span class="p">()</span><span class="o">.</span><span class="n">args</span>                  <span class="c1"># Get training arguments</span>
-<span class="n">kpgnn</span> <span class="o">=</span> <span class="n">KPGNN</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>              <span class="c1"># Initialize KPGNN model</span>
+<span class="kn">from</span> <span class="nn">SocialED.detector</span> <span class="kn">import</span> <span class="n">KPGNN</span>                    <span class="c1"># Import KPGNN model</span>
+<span class="n">kpgnn</span> <span class="o">=</span> <span class="n">KPGNN</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>                <span class="c1"># Initialize KPGNN model</span>
 
-<span class="n">kpgnn</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>                        <span class="c1"># Preprocess data</span>
-<span class="n">kpgnn</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>                               <span class="c1"># Train the model</span>
-<span class="n">pres</span><span class="p">,</span> <span class="n">trus</span> <span class="o">=</span> <span class="n">kpgnn</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>            <span class="c1"># Detect events</span>
-<span class="n">kpgnn</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span> <span class="n">trus</span><span class="p">)</span>                <span class="c1"># Evaluate detection results</span>
+<span class="n">kpgnn</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>                                     <span class="c1"># Preprocess data</span>
+<span class="n">kpgnn</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>                                           <span class="c1"># Train the model</span>
+<span class="n">pres</span><span class="p">,</span> <span class="n">trus</span> <span class="o">=</span> <span class="n">kpgnn</span><span class="o">.</span><span class="n">detection</span><span class="p">()</span>                        <span class="c1"># Detect events</span>
+
+<span class="n">kpgnn</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span> <span class="n">trus</span><span class="p">)</span>                            <span class="c1"># Evaluate detection results</span>
 </pre></div>
 </div>
 </section>
@@ -574,7 +574,7 @@ See examples below for detecting outliers with SocialED in 7 lines!</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e9012143"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=86f03597"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

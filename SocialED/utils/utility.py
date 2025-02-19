@@ -10,6 +10,65 @@ from itertools import combinations
 from datetime import datetime
 import numpy as np
 
+
+def construct_graph(df, G=None):
+    """Construct a graph from a DataFrame containing social media data.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing social media data with columns:
+        tweet_id, user_mentions, user_id, entities, sampled_words
+    G : networkx.Graph, optional (default=None)
+        Existing graph to add nodes/edges to. If None, creates new graph.
+        
+    Returns
+    -------
+    G : networkx.Graph
+        Graph with nodes for tweets, users, entities and words, and edges between them.
+    """
+    import networkx as nx
+    
+    if G is None:
+        G = nx.Graph()
+        
+    for _, row in df.iterrows():
+        # Add tweet node
+        tid = 't_' + str(row['tweet_id'])
+        G.add_node(tid)
+        G.nodes[tid]['tweet_id'] = True
+
+        # Add user nodes
+        user_ids = row['user_mentions']
+        user_ids.append(row['user_id']) 
+        user_ids = ['u_' + str(each) for each in user_ids]
+        G.add_nodes_from(user_ids)
+        for each in user_ids:
+            G.nodes[each]['user_id'] = True
+
+        # Add entity nodes
+        entities = row['entities']
+        G.add_nodes_from(entities)
+        for each in entities:
+            G.nodes[each]['entity'] = True
+
+        # Add word nodes
+        words = ['w_' + each for each in row['sampled_words']]
+        G.add_nodes_from(words)
+        for each in words:
+            G.nodes[each]['word'] = True
+
+        # Add edges between tweet and other nodes
+        edges = []
+        edges += [(tid, each) for each in user_ids]
+        edges += [(tid, each) for each in entities] 
+        edges += [(tid, each) for each in words]
+        G.add_edges_from(edges)
+
+    return G
+
+
+
 def tokenize_text(text, max_length=512):
     """Tokenize text for social event detection tasks.
     

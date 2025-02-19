@@ -9,6 +9,31 @@ import subprocess
 import tempfile
 
 class DatasetLoader:
+    r"""Base class for loading social event detection datasets.
+
+    .. note::
+        This is the base dataset loader class that provides common functionality for loading
+        and preprocessing social event detection datasets. All specific dataset loaders should
+        inherit from this class.
+
+    Parameters
+    ----------
+    dataset : str, optional
+        Name of the dataset to load.
+        Default: ``None``.
+    dir_path : str, optional
+        Custom directory path to load data from.
+        Default: ``None``.
+
+    Attributes
+    ----------
+    required_columns : list
+        Required columns that must be present in loaded datasets.
+    repo_url : str
+        URL of the repository containing the datasets.
+    target_folder : str 
+        Target folder name for downloaded data.
+    """
     def __init__(self, dataset=None, dir_path=None):
         self.dir_path = dir_path
         self.dataset = dataset
@@ -139,6 +164,12 @@ class DatasetLoader:
 
 
 class MAVEN(DatasetLoader):
+    r"""The MAVEN dataset for social event detection.
+
+    .. note::
+        This dataset contains English language social media posts related to various events.
+        The dataset provides text content and event labels for social event detection tasks.
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='MAVEN', dir_path=dir_path)
     
@@ -166,6 +197,12 @@ class MAVEN(DatasetLoader):
         return df
 
 class CrisisNLP(DatasetLoader):
+    r"""The CrisisNLP dataset for social event detection.
+
+    .. note::
+        This dataset contains English language social media posts related to crisis events.
+        The dataset provides text content and event labels for crisis event detection tasks.
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='CrisisNLP', dir_path=dir_path)
     
@@ -192,6 +229,12 @@ class CrisisNLP(DatasetLoader):
         return df
 
 class Event2012(DatasetLoader):
+    r"""The Event2012 dataset for social event detection.
+
+    .. note::
+        This dataset contains English language social media posts from 2012.
+        The dataset provides text content and event labels for social event detection tasks.
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Event2012', dir_path=dir_path)
     
@@ -219,6 +262,12 @@ class Event2012(DatasetLoader):
 
 
 class Event2018(DatasetLoader):
+    r"""The Event2018 dataset for social event detection.
+
+    .. note::
+        This dataset contains French language social media posts from 2018.
+        The dataset provides text content and event labels for social event detection tasks.
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Event2018', dir_path=dir_path)
     
@@ -246,6 +295,13 @@ class Event2018(DatasetLoader):
 
 
 class Arabic_Twitter(DatasetLoader):
+    r"""The Arabic Twitter dataset for social event detection.
+
+    .. note::
+        This dataset contains Arabic language tweets related to various events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Arabic_Twitter', dir_path=dir_path)
     
@@ -271,8 +327,14 @@ class Arabic_Twitter(DatasetLoader):
         print("Arabic Twitter dataset loaded successfully.")
         return df
 
-
 class CrisisLexT26(DatasetLoader):
+    r"""The CrisisLexT26 dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets related to 26 different crisis events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='CrisisLexT26', dir_path=dir_path)
     
@@ -299,6 +361,13 @@ class CrisisLexT26(DatasetLoader):
         return df
 
 class CrisisMMD(DatasetLoader):
+    r"""The CrisisMMD dataset for social event detection.
+
+    .. note::
+        This dataset contains multimodal crisis-related social media data.
+        The dataset provides text, images and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='CrisisMMD', dir_path=dir_path)
     
@@ -325,6 +394,13 @@ class CrisisMMD(DatasetLoader):
         return df
 
 class HumAID(DatasetLoader):
+    r"""The HumAID dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets related to humanitarian crises and disasters.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='HumAID', dir_path=dir_path)
     
@@ -351,6 +427,13 @@ class HumAID(DatasetLoader):
         return df
 
 class KBP(DatasetLoader):
+    r"""The KBP dataset for social event detection.
+
+    .. note::
+        This dataset contains knowledge base population event data.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='KBP', dir_path=dir_path)
     
@@ -377,6 +460,13 @@ class KBP(DatasetLoader):
         return df
 
 class Arabic_7(DatasetLoader):
+    r"""The Arabic_7 dataset for social event detection.
+
+    .. note::
+        This dataset contains Arabic language social media posts for 7 event types.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Arabic_7', dir_path=dir_path)
     
@@ -403,6 +493,13 @@ class Arabic_7(DatasetLoader):
         return df
 
 class Event2012_100(DatasetLoader):
+    r"""The Event2012_100 dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets from 2012 related to 100 different events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Event2012_100', dir_path=dir_path)
     
@@ -429,6 +526,13 @@ class Event2012_100(DatasetLoader):
         return df
 
 class Event2018_100(DatasetLoader):
+    r"""The Event2018_100 dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets from 2018 related to 100 different events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Event2018_100', dir_path=dir_path)
     
@@ -455,6 +559,13 @@ class Event2018_100(DatasetLoader):
         return df
 
 class Mix_Data(DatasetLoader):
+    r"""The Mix_Data dataset for social event detection.
+
+    .. note::
+        This dataset contains a mixture of social media data from various sources.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='Mix_Data', dir_path=dir_path)
     
@@ -481,6 +592,13 @@ class Mix_Data(DatasetLoader):
         return df
 
 class CrisisLexT6(DatasetLoader):
+    r"""The CrisisLexT6 dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets related to 6 different crisis events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='CrisisLexT6', dir_path=dir_path)
     
@@ -507,6 +625,13 @@ class CrisisLexT6(DatasetLoader):
         return df
 
 class CrisisLexT7(DatasetLoader):
+    r"""The CrisisLexT7 dataset for social event detection.
+
+    .. note::
+        This dataset contains tweets related to 7 different crisis events.
+        The dataset provides text content and event labels for social event detection tasks.
+
+    """
     def __init__(self, dir_path=None):
         super().__init__(dataset='CrisisLexT7', dir_path=dir_path)
     

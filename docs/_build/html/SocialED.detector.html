@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="SocialED.metrics" href="SocialED.metrics.html" /><link rel="prev" title="SocialED.dataset" href="SocialED.dataset.html" />
 
     <link rel="shortcut icon" href="_static/socialed.ico"/><!-- Generated with Sphinx 7.1.2 and Furo 2024.07.18 -->
-        <title>SocialED.detector - SocialED 1.1.3 documentation</title>
+        <title>SocialED.detector - SocialED 1.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SocialED 1.1.3 documentation</div></a>
+      <a href="index.html"><div class="brand">SocialED 1.1.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SocialED 1.1.3 documentation</span>
+  <span class="sidebar-brand-text">SocialED 1.1.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -528,7 +528,7 @@ to detect events in social media data.</p>
 and detect events in social media data. The model requires a dataset
 object with a load_data() method.</p>
 </div>
-<p>See <span id="id2">[]</span> for details.</p>
+<p>See <span id="id2">[<a class="reference internal" href="reference.html#id11">2</a>]</span> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -725,8 +725,70 @@ Must provide load_data() method that returns the raw data.</p></li>
 <dd></dd></dl>
 
 </section>
-<section id="bert">
-<h2>Bert<a class="headerlink" href="#bert" title="Permalink to this heading">¶</a></h2>
+<section id="module-SocialED.detector.bert">
+<span id="bert"></span><h2>Bert<a class="headerlink" href="#module-SocialED.detector.bert" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SocialED.detector.bert.</span></span><span class="sig-name descname"><span class="pre">BERT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../model/model_needed/bert-base-uncased'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The BERT model for social event detection that uses BERT embeddings to
+detect events in social media data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This detector uses BERT embeddings to identify events in social media data.
+The model requires a dataset object with a load_data() method.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The dataset object containing social media data.
+Must provide load_data() method that returns the raw data.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Path to pretrained BERT model or name from HuggingFace.
+If path doesn’t exist, defaults to ‘bert-base-uncased’.
+Default: <code class="docutils literal notranslate"><span class="pre">'../model/model_needed/bert-base-uncased'</span></code>.</p></li>
+<li><p><strong>max_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum sequence length for BERT tokenizer.
+Longer sequences will be truncated.
+Default: <code class="docutils literal notranslate"><span class="pre">128</span></code>.</p></li>
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Preprocessed dataframe. If None, will be created during preprocessing.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>train_df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Training data split. If None, will be created during model fitting.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>test_df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Test data split. If None, will be created during model fitting.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preprocessing: tokenization, stop words removal, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.get_bert_embeddings">
+<span class="sig-name descname"><span class="pre">get_bert_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.get_bert_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.get_bert_embeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get BERT embeddings for a given text.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.detection">
+<span class="sig-name descname"><span class="pre">detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect events by comparing BERT embeddings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SocialED.detector.bert.BERT.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SocialED/detector/bert.html#BERT.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#SocialED.detector.bert.BERT.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the BERT-based model.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-SocialED.detector.sbert">
 <span id="sbert"></span><h2>SBert<a class="headerlink" href="#module-SocialED.detector.sbert" title="Permalink to this heading">¶</a></h2>
@@ -799,7 +861,7 @@ using keyword co-occurrence and graph-based clustering.</p>
 <p>This detector uses keyword co-occurrence and graph-based clustering to identify events in social media data.
 The model requires a dataset object with a load_data() method.</p>
 </div>
-<p>See <span id="id3">[<a class="reference internal" href="reference.html#id24" title="Bang Liu, Fred X Han, Di Niu, Linglong Kong, Kunfeng Lai, and Yu Xu. Story forest: extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data (TKDD), 14(3):1–28, 2020.">2</a>]</span> for details.</p>
+<p>See <span id="id3">[<a class="reference internal" href="reference.html#id24" title="Bang Liu, Fred X Han, Di Niu, Linglong Kong, Kunfeng Lai, and Yu Xu. Story forest: extracting events and telling stories from breaking news. ACM Transactions on Knowledge Discovery from Data (TKDD), 14(3):1–28, 2020.">3</a>]</span> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1321,7 +1383,7 @@ for event detection.</p>
 <p>This detector uses graph neural networks with knowledge preservation to identify events in social media data.
 The model requires a dataset object with a load_data() method.</p>
 </div>
-<p>See <span id="id4">[]</span> for details.</p>
+<p>See <span id="id4">[<a class="reference internal" href="reference.html#id43" title="Yuwei Wang, Zhenfeng Liu, Chenwei Zhu, Meng Jiang, Yixuan Zhang, and Yizhou Wang. Kpgnn: knowledge-guided pattern graph neural network for social event detection. In Proceedings of the 29th ACM International Conference on Information &amp; Knowledge Management, 1025–1034. 2020.">4</a>]</span> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -5936,7 +5998,17 @@ then store them into self.struc_data_2d</p>
 <li><a class="reference internal" href="#SocialED.detector.wmd.process_document"><code class="docutils literal notranslate"><span class="pre">process_document()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#bert">Bert</a></li>
+<li><a class="reference internal" href="#module-SocialED.detector.bert">Bert</a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT"><code class="docutils literal notranslate"><span class="pre">BERT</span></code></a><ul>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.preprocess"><code class="docutils literal notranslate"><span class="pre">BERT.preprocess()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.get_bert_embeddings"><code class="docutils literal notranslate"><span class="pre">BERT.get_bert_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.fit"><code class="docutils literal notranslate"><span class="pre">BERT.fit()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.detection"><code class="docutils literal notranslate"><span class="pre">BERT.detection()</span></code></a></li>
+<li><a class="reference internal" href="#SocialED.detector.bert.BERT.evaluate"><code class="docutils literal notranslate"><span class="pre">BERT.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-SocialED.detector.sbert">SBert</a><ul>
 <li><a class="reference internal" href="#SocialED.detector.sbert.SBERT"><code class="docutils literal notranslate"><span class="pre">SBERT</span></code></a><ul>
 <li><a class="reference internal" href="#SocialED.detector.sbert.SBERT.preprocess"><code class="docutils literal notranslate"><span class="pre">SBERT.preprocess()</span></code></a></li>
@@ -7042,7 +7114,7 @@ then store them into self.struc_data_2d</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e9012143"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=86f03597"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
