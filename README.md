@@ -278,6 +278,14 @@ Inspired by the API designs of established frameworks, we developed a unified AP
     
     kpgnn.evaluate(pres, trus)                            # Evaluate detection results
 
+
+
+## Demo
+This is a demo shows the training and testing process of [KPGNN](https://dl.acm.org/doi/abs/10.1145/3442381.3449834) model with unKR.
+
+<img src="docs/demo.gif">
+
+
 ### 🧩 Modular Design and Utility Functions
 
 SocialED is built with a modular design to improve reusability and reduce redundancy. It organizes social event detection into distinct modules:
@@ -291,7 +299,6 @@ The library provides several utility functions including:
 
 * ``utils.tokenize_text`` and ``utils.construct_graph`` for data preprocessing
 * ``metric`` for evaluation metrics
-* ``utils.load_data`` for built-in datasets
 
 ## 🛡️ Library Robustness and Accessibility
 
