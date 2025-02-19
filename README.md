@@ -307,7 +307,6 @@ The library provides several utility functions including:
 * Built with robustness and high-quality standards
 * Continuous integration through GitHub Actions
 * Automated testing across Python versions and operating systems
-* >99% code coverage
 * PyPI-compatible and PEP 625 compliant
 * Follows PEP 8 style guide
 
